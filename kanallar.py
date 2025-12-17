@@ -21,49 +21,57 @@ def link_bul(url, regex_pattern):
         print(f"Hata: {e}")
     return None
 
-# --- KANAL LISTESI (6 KANAL) ---
+# --- KANAL LISTESI ---
 kanallar = [
-    # 1. TRT 1
+    # 1. TRT 1 (Kucuk harf: trt1.jpg)
     {
         "isim": "TRT 1",
         "url": "https://www.tabii.com/tr/watch/live/trt1?trackId=150002",
         "regex": r'["\'](https:[^"\']*?trt1[^"\']*?\.m3u8[^"\']*?)["\']', 
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/trt1.jpg"
     },
-    # 2. TRT SPOR
+    # 2. TRT SPOR (Kucuk harf: trtspor.jpg)
     {
         "isim": "TRT Spor",
         "url": "https://www.tabii.com/tr/watch/live/trtspor?trackId=150002",
         "regex": r'["\'](https:[^"\']*?trtspor[^"\']*?\.m3u8[^"\']*?)["\']',
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/trtspor.jpg"
     },
-    # 3. TRT SPOR YILDIZ (Senin istedigin site: trtspor.com.tr)
+    # 3. TRT SPOR YILDIZ (Senin verdigin OZEL LINK)
     {
         "isim": "TRT Spor Yildiz",
-        "url": "https://www.tabii.com/tr/watch/live/trtsporyildiz?trackId=150028",
+        "url": "https://www.trtspor.com.tr/canli-yayin-izle/trt-spor-yildiz",
         "regex": r'["\'](https:[^"\']*?\.m3u8[^"\']*?)["\']',
+        # DIKKAT: Verdigin ozel linki birebir kullandim:
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/refs/heads/main/logolar/trtsporyildiz.jpg"
     },
-    # 4. TABII SPOR (Saglam Link - Geri Geldi)
+    # 4. TABII SPOR (Kucuk harf: tabiispor.jpg)
     {
         "isim": "Tabii Spor",
         "url": "https://www.tabii.com/tr/watch/live/trtsporyildiz?trackId=150002",
         "regex": r'["\'](https:[^"\']*?\.m3u8[^"\']*?)["\']',
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/tabiispor.jpg"
     },
-    # 5. DMAX
+    # 5. DMAX (Kucuk harf: dmax.jpg)
     {
         "isim": "DMAX TR",
         "url": "https://www.dmax.com.tr/canli-izle",
         "regex": r'["\'](https:[^"\']*?\.m3u8[^"\']*?)["\']',
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/dmax.jpg"
     },
-    # 6. TLC
+    # 6. TLC (Kucuk harf: tlc.jpg)
     {
         "isim": "TLC TR",
         "url": "https://www.tlctv.com.tr/canli-izle",
         "regex": r'["\'](https:[^"\']*?\.m3u8[^"\']*?)["\']',
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/tlc.jpg"
+    },
+    # 7. TABII COCUK (Kucuk harf: tabiicocuk.jpg)
+    {
+        "isim": "Tabii Cocuk",
+        "url": "https://www.tabii.com/tr/watch/live/tabii-cocuk?trackId=516992",
+        "regex": r'["\'](https:[^"\']*?\.m3u8[^"\']*?)["\']',
+        "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/tabiicocuk.jpg"
     }
 ]
 
@@ -79,4 +87,4 @@ for k in kanallar:
 with open("playlist.m3u", "w", encoding="utf-8") as f:
     f.write(dosya_icerigi)
 
-print("Liste guncellendi: 6 Kanal (TRT Yildiz ve Tabii Spor dahil).")
+print("Liste guncellendi: Kucuk harf kuralina uyuldu.")
