@@ -45,7 +45,7 @@ kanallar = [
     },
     {
         "isim": "TRT Spor", 
-        "url": "https://www.tabii.com/tr/watch/live/trtspor?trackId=150002", 
+        "url": "https://www.trtspor.com.tr/canli-yayin-izle/trt-spor", 
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/trtspor.jpg"
     },
     {
