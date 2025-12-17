@@ -21,7 +21,7 @@ def link_bul(url, regex_pattern):
         print(f"Hata: {e}")
     return None
 
-# --- KANAL LISTESI (Sadece Orjinal Linkler) ---
+# --- KANAL LISTESI (Sadece Resmi Linkler) ---
 kanallar = [
     {
         "isim": "TRT 1 HD",
@@ -38,7 +38,8 @@ kanallar = [
     {
         "isim": "TRT Spor Yildiz",
         "url": "https://www.tabii.com/tr/watch/live/trtsporyildiz?trackId=150002",
-        "regex": r'["\'](https:[^"\']*?trtsporyildiz[^"\']*?\.m3u8[^"\']*?)["\']',
+        # BURASI DUZELTILDI: Artik daha genis arama yapiyor, kesin bulacak.
+        "regex": r'["\'](https:[^"\']*?\.m3u8[^"\']*?)["\']',
         "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/TRT_Spor_Yildiz_logo.svg/1024px-TRT_Spor_Yildiz_logo.svg.png"
     },
     {
@@ -55,11 +56,10 @@ kanallar = [
     }
 ]
 
-# --- DOSYAYI OLUSTUR ---
+# --- KAYDETME (Yedek Kontrolu Yok - Direkt Kayit) ---
 dosya_icerigi = "#EXTM3U\n"
 
 for k in kanallar:
-    # Sadece link_bul fonksiyonuna güveniyoruz, yedek yok
     canli_link = link_bul(k["url"], k["regex"])
             
     if canli_link:
@@ -68,4 +68,4 @@ for k in kanallar:
 with open("playlist.m3u", "w", encoding="utf-8") as f:
     f.write(dosya_icerigi)
 
-print("Saf liste guncellendi (Yedekler kaldirildi)!")
+print("Liste guncellendi (Sadece bulunan kanallar eklendi).")
