@@ -33,7 +33,7 @@ kanallar = [
         "isim": "TRT Spor",
         "url": "https://www.tabii.com/tr/watch/live/trtspor?trackId=150002",
         "regex": r'["\'](https:[^"\']*?trtspor[^"\']*?\.m3u8[^"\']*?)["\']',
-        "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/Trtspor.jpg"
+        "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/refs/heads/main/logolar/trtspor.jpg"
     },
     {
         "isim": "Tabii Spor",
