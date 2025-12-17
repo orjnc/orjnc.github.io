@@ -31,15 +31,23 @@ kanallar = [
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/trt1.jpg",
         "tip": "ara"
     },
-    # 2. TABII TV (SABIT LINK)
+    # 2. KANAL D HD (YENI EKLENDI - 2. SIRA)
+    {
+        "isim": "Kanal D HD",
+        "url": "https://www.todtv.com.tr/canli-tv/kanal-d",
+        "regex": r'["\'](https:[^"\']*?\.m3u8[^"\']*?)["\']',
+        "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/kanald.jpg",
+        "tip": "ara"
+    },
+    # 3. TABII TV (SABIT LINK)
     {
         "isim": "Tabii TV",
         "url": "https://ceokzokgtd.erbvr.com/tabiitv/tabiitv.m3u8",
         "regex": None,
-        "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/tabiitv.jpg",
+        "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/tabiispor.jpg",
         "tip": "sabit" 
     },
-    # 3. DMAX (ISTEGIN UZERINE 3. SIRA)
+    # 4. DMAX
     {
         "isim": "DMAX TR",
         "url": "https://www.dmax.com.tr/canli-izle",
@@ -47,7 +55,7 @@ kanallar = [
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/dmax.jpg",
         "tip": "ara"
     },
-    # 4. TLC (ISTEGIN UZERINE 4. SIRA)
+    # 5. TLC
     {
         "isim": "TLC TR",
         "url": "https://www.tlctv.com.tr/canli-izle",
@@ -55,7 +63,7 @@ kanallar = [
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/tlc.jpg",
         "tip": "ara"
     },
-    # 5. TRT SPOR
+    # 6. TRT SPOR
     {
         "isim": "TRT Spor",
         "url": "https://www.tabii.com/tr/watch/live/trtspor?trackId=150002",
@@ -63,7 +71,7 @@ kanallar = [
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/trtspor.jpg",
         "tip": "ara"
     },
-    # 6. TRT SPOR YILDIZ (Ozel logo ve link)
+    # 7. TRT SPOR YILDIZ
     {
         "isim": "TRT Spor Yildiz",
         "url": "https://www.trtspor.com.tr/canli-yayin-izle/trt-spor-yildiz",
@@ -71,7 +79,7 @@ kanallar = [
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/refs/heads/main/logolar/trtsporyildiz.jpg",
         "tip": "ara"
     },
-    # 7. TABII SPOR
+    # 8. TABII SPOR
     {
         "isim": "Tabii Spor",
         "url": "https://www.tabii.com/tr/watch/live/trtsporyildiz?trackId=150002",
@@ -99,4 +107,4 @@ for k in kanallar:
 with open("playlist.m3u", "w", encoding="utf-8") as f:
     f.write(dosya_icerigi)
 
-print("Liste guncellendi: DMAX 3, TLC 4 oldu.")
+print("Liste guncellendi: Kanal D 2. siraya eklendi.")
