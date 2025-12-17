@@ -1,34 +1,48 @@
 import requests
 import re
+import json
 
-# --- UST DUZEY TARAYICI TAKLIDI (TOD ICIN OZEL) ---
+# --- UST DUZEY TARAYICI TAKLIDI ---
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Referer": "https://www.todtv.com.tr/",
-    "Origin": "https://www.todtv.com.tr"
+    "Referer": "https://www.google.com/",
+    "Accept-Language": "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7"
 }
 
-def link_bul(url, regex_pattern):
+def link_bul(url, tip="standart"):
+    """
+    Url'yi tarar. 'tip' parametresine gore basit veya derinlemesine arama yapar.
+    """
     try:
-        print(f"Taraniyor (HD Kalite Icin): {url}")
+        print(f"🕵️ Taraniyor ({tip}): {url}")
         r = requests.get(url, headers=headers, timeout=15)
         
         if r.status_code == 200:
-            # 1. Deneme: Standart m3u8
-            match = re.search(regex_pattern, r.text)
-            if match:
-                temiz_link = match.group(1).replace("\\/", "/")
-                print(f"✅ BULUNDU: {temiz_link}")
-                return temiz_link
+            icerik = r.text
             
-            # 2. Deneme: Gizli Tokenli Linkler (TOD ozel)
-            # TOD bazen linki JSON icinde saklar
-            gizli_match = re.search(r'["\'](https:.*?\.m3u8.*?)["\']', r.text)
-            if gizli_match:
-                temiz_link = gizli_match.group(1).replace("\\/", "/")
-                print(f"✅ BULUNDU (Gizli): {temiz_link}")
-                return temiz_link
+            # --- YONTEM 1: Standart m3u8 Arama ---
+            match = re.search(r'["\'](https?://[^"\']*?\.m3u8[^"\']*?)["\']', icerik)
+            if match:
+                link = match.group(1).replace("\\/", "/")
+                print(f"✅ BULUNDU (Standart): {link}")
+                return link
+            
+            # --- YONTEM 2: JSON/Script Ici Derin Arama (Kanal D/TOD Icin) ---
+            if tip == "derin":
+                print("⏳ Derin analiz (JSON/Script) yapiliyor...")
+                # Genelde player config icinde 'file': '...', 'src': '...' gibi saklanir
+                # Tokenli ve uzun linkleri yakalamak icin genis regex
+                # Ornek: "secureUrl":"https://..." veya file:"https://..."
                 
+                # Regex: tırnak icinde http ile baslayip m3u8 ile biten her sey
+                gizli_matchler = re.findall(r'(https?://[^"\'\s<>]*?\.m3u8[^"\'\s<>]*)', icerik)
+                
+                if gizli_matchler:
+                    # En uzun link genelde en dogru/kaliteli olandir
+                    en_iyi_link = max(gizli_matchler, key=len).replace("\\/", "/")
+                    print(f"✅ BULUNDU (Derin Analiz): {en_iyi_link}")
+                    return en_iyi_link
+                    
     except Exception as e:
         print(f"❌ Hata: {e}")
     return None
@@ -39,66 +53,57 @@ kanallar = [
     {
         "isim": "TRT 1",
         "url": "https://www.tabii.com/tr/watch/live/trt1?trackId=150002",
-        "regex": r'["\'](https:[^"\']*?trt1[^"\']*?\.m3u8[^"\']*?)["\']', 
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/trt1.jpg",
-        "tip": "ara"
+        "mod": "standart"
     },
-    # 2. KANAL D HD (SADECE TOD TV KAYNAGI)
+    # 2. KANAL D HD (TOD TV - DERIN ANALIZ MODU)
     {
         "isim": "Kanal D HD",
         "url": "https://www.todtv.com.tr/canli-tv/kanal-d",
-        # TOD icin genis kapsamli arama
-        "regex": r'["\'](https:[^"\']*?\.m3u8[^"\']*?)["\']',
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/kanald.jpg",
-        "tip": "ara"
+        "mod": "derin" # Ozel mod aktif
     },
     # 3. TABII TV (SABIT)
     {
         "isim": "Tabii TV",
         "url": "https://ceokzokgtd.erbvr.com/tabiitv/tabiitv.m3u8",
-        "regex": None,
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/tabiispor.jpg",
-        "tip": "sabit" 
+        "mod": "sabit" 
     },
     # 4. DMAX
     {
         "isim": "DMAX TR",
         "url": "https://www.dmax.com.tr/canli-izle",
-        "regex": r'["\'](https:[^"\']*?\.m3u8[^"\']*?)["\']',
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/dmax.jpg",
-        "tip": "ara"
+        "mod": "standart"
     },
     # 5. TLC
     {
         "isim": "TLC TR",
         "url": "https://www.tlctv.com.tr/canli-izle",
-        "regex": r'["\'](https:[^"\']*?\.m3u8[^"\']*?)["\']',
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/tlc.jpg",
-        "tip": "ara"
+        "mod": "standart"
     },
     # 6. TRT SPOR
     {
         "isim": "TRT Spor",
         "url": "https://www.tabii.com/tr/watch/live/trtspor?trackId=150002",
-        "regex": r'["\'](https:[^"\']*?trtspor[^"\']*?\.m3u8[^"\']*?)["\']',
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/trtspor.jpg",
-        "tip": "ara"
+        "mod": "standart"
     },
     # 7. TRT SPOR YILDIZ
     {
         "isim": "TRT Spor Yildiz",
         "url": "https://www.trtspor.com.tr/canli-yayin-izle/trt-spor-yildiz",
-        "regex": r'["\'](https:[^"\']*?\.m3u8[^"\']*?)["\']',
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/refs/heads/main/logolar/trtsporyildiz.jpg",
-        "tip": "ara"
+        "mod": "standart"
     },
     # 8. TABII SPOR
     {
         "isim": "Tabii Spor",
         "url": "https://www.tabii.com/tr/watch/live/trtsporyildiz?trackId=150002",
-        "regex": r'["\'](https:[^"\']*?\.m3u8[^"\']*?)["\']',
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/tabiispor.jpg",
-        "tip": "ara"
+        "mod": "standart"
     }
 ]
 
@@ -108,16 +113,17 @@ dosya_icerigi = "#EXTM3U\n"
 for k in kanallar:
     canli_link = None
     
-    # Eger tip "sabit" ise direkt URL'yi kullan
-    if k.get("tip") == "sabit":
+    # Moduna gore islem yap
+    if k.get("mod") == "sabit":
         canli_link = k["url"]
         print(f"SABIT EKLENDI: {k['isim']}")
     else:
-        canli_link = link_bul(k["url"], k["regex"])
+        # Standart veya Derin analiz yap
+        canli_link = link_bul(k["url"], k["mod"])
             
-    # Eger link bulunamazsa, kanal silinmesin. Site adresini yazsin.
+    # Link bulunamazsa bile site adresini yaz (Listede gozuksun)
     if not canli_link:
-        print(f"⚠️ UYARI: {k['isim']} (TOD) linki cekilemedi. Site adresi yaziliyor.")
+        print(f"⚠️ {k['isim']} linki bulunamadi. Web adresi yaziliyor.")
         canli_link = k["url"]
             
     dosya_icerigi += f'#EXTINF:-1 tvg-logo="{k["logo"]}", {k["isim"]}\n{canli_link}\n'
@@ -125,4 +131,4 @@ for k in kanallar:
 with open("playlist.m3u", "w", encoding="utf-8") as f:
     f.write(dosya_icerigi)
 
-print("Liste guncellendi: Kanal D icin sadece TOD zorlandi.")
+print("🚀 Liste guncellendi: Kanal D icin Derin Analiz Modu kullanildi.")
