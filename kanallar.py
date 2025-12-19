@@ -25,7 +25,7 @@ kanallar = [
     },
     {
         "isim": "ATV", 
-        "url":  "www.atv.com.tr/canli-yayin" , 
+        "url":  "https://www.atv.com.tr/canli-yayin" , 
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/atv.jpg"
     },
     {
