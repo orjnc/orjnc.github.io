@@ -20,7 +20,7 @@ def link_yakala(url):
 kanallar = [
     {
         "isim": "TRT 1", 
-        "url": "https://www.canlitv.me/live/trt1-canli-kesintisiz-izle", 
+        "url": "https://trt.daioncdn.net/trt-1/master.m3u8?app=web", 
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/trt1.jpg"
     },
     {
@@ -45,12 +45,12 @@ kanallar = [
     },
     {
         "isim": "TRT Spor", 
-        "url": "https://www.canlitv.me/live/trtspor-canli-yayin", 
+        "url": "https://tv-trtspor1.medya.trt.com.tr/master.m3u8", 
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/trtspor.jpg"
     },
     {
         "isim": "TRT Spor Yildiz", 
-        "url": "https://www.canlitv.me/live/trtsporyildiz-hd", 
+        "url": "https://tv-trtspor2.medya.trt.com.tr/master.m3u8", 
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/refs/heads/main/logolar/trtsporyildiz.jpg"
     },
     {
