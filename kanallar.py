@@ -6,9 +6,13 @@ def link_yakala(url):
     if ".m3u8" in url:
         return url
     try:
-        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}
+        # Headers kısmına Referer ekledik ki ATV ve diğerleri botu engellemesin
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Referer": url
+        }
         r = requests.get(url, headers=headers, timeout=10)
-        # Sayfadaki m3u8 linkini çek (Kanal D ve diğerleri için)
+        # Sayfadaki m3u8 linkini çek (Ters bölüleri temizleyerek)
         match = re.search(r'["\'](https?://[^"\']*?\.m3u8[^"\']*?)["\']', r.text.replace("\\/", "/"))
         if match:
             return match.group(1)
@@ -74,4 +78,4 @@ for k in kanallar:
 with open("playlist.m3u", "w", encoding="utf-8") as f:
     f.write(m3u_icerik)
 
-print("✅ Liste başarıyla eski haline döndürüldü. Tüm kanallar eklendi.")
+print("✅ Tüm kanallar (ATV dahil) başarıyla güncellendi.")
