@@ -1,0 +1,33 @@
+name: Otomatik Playlist Guncelle
+
+on:
+  push:
+    paths:
+      - 'kanallar.py'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Klasoru Kopyala
+        uses: actions/checkout@v3
+
+      - name: Python Kur
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Gereklilikleri Yukle
+        run: pip install requests
+
+      - name: Kodu Calistir
+        run: python kanallar.py
+
+      - name: Degisiklikleri Geri Yukle
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add playlist.m3u
+          git commit -m "Playlist otomatik güncellendi" || echo "Değişiklik yok"
+          git push
+          
