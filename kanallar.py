@@ -2,20 +2,23 @@ import requests
 import re
 
 def link_yakala(url):
+    # Link zaten doğrudan m3u8 ise dokunma
     if ".m3u8" in url:
         return url
     
     # ATV'nin asıl yayın linkini sakladığı gizli API adresi
     if "atv.com.tr" in url:
-        url = "https://v.atv.com.tr/videodeti/atv"
+        hedef_url = "https://v.atv.com.tr/videodeti/atv"
+    else:
+        hedef_url = url
 
     try:
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             "Referer": "https://www.atv.com.tr/"
         }
-        r = requests.get(url, headers=headers, timeout=10)
-        # ATV linkleri json içinde veya düz metin olarak 'video_url' diye geçer
+        r = requests.get(hedef_url, headers=headers, timeout=10)
+        # Sayfadaki m3u8 linkini çek (Ters bölüleri temizleyerek)
         match = re.search(r'["\'](https?://[^"\']*?\.m3u8[^"\']*?)["\']', r.text.replace("\\/", "/"))
         if match:
             return match.group(1)
@@ -23,7 +26,7 @@ def link_yakala(url):
         pass
     return url
 
-# --- KANAL LİSTESİ ---
+# --- SENİN TAM KANAL LİSTEN (EKSİKSİZ) ---
 kanallar = [
     {
         "isim": "TRT 1", 
@@ -32,7 +35,7 @@ kanallar = [
     },
     {
         "isim": "ATV", 
-        "url": "https://www.atv.com.tr/canli-yayin", 
+        "url":  "https://www.atv.com.tr/canli-yayin" , 
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/atv.jpg"
     },
     {
@@ -54,10 +57,26 @@ kanallar = [
         "isim": "TLC TR", 
         "url": "https://www.tlctv.com.tr/canli-izle", 
         "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/tlc.jpg"
+    },
+    {
+        "isim": "TRT Spor", 
+        "url": "https://tv-trtspor1.medya.trt.com.tr/master.m3u8", 
+        "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/trtspor.jpg"
+    },
+    {
+        "isim": "TRT Spor Yildiz", 
+        "url": "https://tv-trtspor2.medya.trt.com.tr/master.m3u8", 
+        "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/refs/heads/main/logolar/trtsporyildiz.jpg"
+    },
+    {
+        "isim": "Tabii Spor", 
+        "url": "https://www.tabii.com/tr/watch/live/trtsporyildiz?trackId=150002", 
+        "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/tabiispor.jpg"
     }
 ]
 
 m3u_icerik = "#EXTM3U\n"
+
 for k in kanallar:
     canli_link = link_yakala(k["url"])
     m3u_icerik += f'#EXTINF:-1 tvg-logo="{k["logo"]}", {k["isim"]}\n{canli_link}\n'
@@ -65,4 +84,4 @@ for k in kanallar:
 with open("playlist.m3u", "w", encoding="utf-8") as f:
     f.write(m3u_icerik)
 
-print("✅ ATV'nin gizli linki yakalandı ve liste güncellendi.")
+print("✅ Liste ATV dahil eksiksiz şekilde güncellendi.")
