@@ -12,17 +12,17 @@ https://ciner.daioncdn.net/showtv/showtv.m3u8?ce=3&app=4bc856ef-4c68-4a94-bc87-3
 #EXTINF:-1 tvg-logo="https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/now.jpg", NOW TV
 https://uycyyuuzyh.turknet.ercdn.net/nphindgytw/nowtv/nowtv.m3u8
 #EXTINF:-1 tvg-logo="https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/tv8.jpg", TV8
-https://tv8-tb-live.ercdn.net/tv8-geo/playlist.m3u8?st=BzpvJLJ9hDX-H3W1sQWquA&e=1639061641
+https://tv8.daioncdn.net/tv8/tv8.m3u8?app=7ddc255a-ef47-4e81-ab14-c0e5f2949788&ce=3
 #EXTINF:-1 tvg-logo="https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/beyaztv.jpg", Beyaz TV
 https://beyaztv.daioncdn.net/beyaztv/beyaztv.m3u8?app=fcd5c66b-da9d-44ba-a410-4f34805c397d&ce=3
 #EXTINF:-1 tvg-logo="https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/kanal7.jpg", Kanal 7
-https://www.kanal7.com/canli-izle
+https://www.kanal7.com/canli-izle/
 #EXTINF:-1 tvg-logo="https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/tabiispor.jpg", Tabii TV
 https://ceokzokgtd.erbvr.com/tabiitv/tabiitv.m3u8
 #EXTINF:-1 tvg-logo="https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/dmax.jpg", DMAX TR
-https://dogus.daioncdn.net/dmax/dmax.m3u8?ce=3&app=5a02c599-d17e-4982-9b04-090934d51af7&token=dm9nSlF3R0o4T05ROHFrVE5FSTAzcXIxU2xSQXhJaGRiemFySGNUdXB2QT0=
+https://dogus.daioncdn.net/dmax/dmax.m3u8?ce=3&app=5a02c599-d17e-4982-9b04-090934d51af7&token=dHZqbnEyRXJibjNSaWdmNXEzYlU3c29GSUtmNDg2djkrTks3TUpqQk8zUT0=
 #EXTINF:-1 tvg-logo="https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/tlc.jpg", TLC TR
-https://dogus.daioncdn.net/tlc/tlc.m3u8?ce=3&app=1aca0aa1-06e3-41ff-a8e5-38d7df475469&token=eGpzbW1kcU1aV0N6anJVWG85dXNwMXhqem5LUmZVbzNienRLVXEyQmFXbz0=
+https://dogus.daioncdn.net/tlc/tlc.m3u8?ce=3&app=1aca0aa1-06e3-41ff-a8e5-38d7df475469&token=b0lPbUllbGFzcTNiMUFnTjZULzF6U2lMeTVsRHdjNVR1OTJZSUYrTTFIOD0=
 #EXTINF:-1 tvg-logo="https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/trtspor.jpg", TRT Spor
 https://tv-trtspor1.medya.trt.com.tr/master.m3u8
 #EXTINF:-1 tvg-logo="https://raw.githubusercontent.com/orjnc/Tv-listem/refs/heads/main/logolar/trtsporyildiz.jpg", TRT Spor Yildiz
