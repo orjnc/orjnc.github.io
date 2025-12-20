@@ -2,18 +2,18 @@ name: Playlist Guncelle
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # 6 saatte bir otomatik çalışır
-  workflow_dispatch: # Senin manuel başlatman için buton ekler
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest # İşletim sistemi
+    runs-on: ubuntu-latest
     steps:
       - name: Kodlari Cek
         uses: actions/checkout@v3
 
       - name: Python Kur
-        uses: setup-python@v4
+        uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
@@ -22,7 +22,7 @@ jobs:
           pip install playwright requests
           playwright install chromium
 
-      - name: Kanallari Tara (Playwright ile)
+      - name: Kanallari Tara
         run: python kanallar.py
 
       - name: Playlisti Kaydet
@@ -30,6 +30,6 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add playlist.m3u
-          git commit -m "Playlist Playwright ile guncellendi" || exit 0
+          git commit -m "Playlist guncellendi" || exit 0
           git push
           
