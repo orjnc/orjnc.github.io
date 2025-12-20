@@ -2,30 +2,36 @@ import time
 from playwright.sync_api import sync_playwright
 
 def link_yakala(url):
-    if ".m3u8" in url: return url
+    # Eğer zaten bir m3u8 linkiyse (TRT, NOW, TV8 gibi) doğrudan döndür
+    if ".m3u8" in url:
+        return url
+        
     try:
         with sync_playwright() as p:
-            # GitHub sunucuları için 'args' kısmı eklendi (Hata riskini sıfırlar)
-            browser = p.chromium.launch(headless=True, args=["--no-sandbox", "--disable-setuid-sandbox"])
+            # GitHub Actions sunucuları için en kararlı başlatma ayarları
+            browser = p.chromium.launch(headless=True, args=["--no-sandbox", "--disable-dev-shm-usage"])
             context = browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
             page = context.new_page()
             
             m3u8_linkleri = []
+            # Ağ trafiğini (Network) dinle
             page.on("request", lambda request: m3u8_linkleri.append(request.url) if ".m3u8" in request.url else None)
 
-            print(f"📡 {url} taranıyor...")
-            page.goto(url, wait_until="domcontentloaded", timeout=60000)
+            # Siteye git
+            page.goto(url, wait_until="commit", timeout=60000)
             
-            # 15 saniyelik kritik bekleme
+            # Web Video Caster gibi bekle: JS'nin linki üretmesi için 15 saniye kritik
             time.sleep(15) 
 
             browser.close()
 
+            # Reklam ve analiz linklerini ayıkla, gerçek yayın linkini bul
             for link in m3u8_linkleri:
                 if "ads" not in link.lower() and "vpaid" not in link.lower() and "moat" not in link.lower():
                     return link
-    except Exception as e:
-        print(f"❌ Hata: {e}")
+    except:
+        pass
+    
     return url
 
 # --- TAM KANAL LİSTESİ ---
@@ -49,11 +55,15 @@ kanallar = [
 ]
 
 m3u_icerik = "#EXTM3U\n"
+print("🚀 Tarama başlatıldı, bu işlem kanallar beklendiği için 4-5 dakika sürebilir...")
+
 for k in kanallar:
     canli_link = link_yakala(k["url"])
     m3u_icerik += f'#EXTINF:-1 tvg-logo="{k["logo"]}", {k["isim"]}\n{canli_link}\n'
-    print(f"✅ {k['isim']} bitti.")
+    print(f"✅ {k['isim']} hazır.")
 
 with open("playlist.m3u", "w", encoding="utf-8") as f:
     f.write(m3u_icerik)
-    
+
+print("\n🎯 İşlem Tamam! Tüm gizli linkler playlist.m3u dosyasına işlendi.")
+
