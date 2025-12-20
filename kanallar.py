@@ -8,32 +8,44 @@ def link_yakala(url):
         return url
         
     try:
-        # Gerçek bir tarayıcı gibi davranmak için gelişmiş başlıklar
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             "Referer": url,
             "Accept": "*/*"
         }
-        
+
+        # --- ÖZEL API SÖKÜCÜLER (ATV, STAR, KANAL 7 GİBİLER İÇİN) ---
+        # Bu kısım sitenin içindeki gizli API dosyalarına sızar
+        if "atv.com.tr" in url:
+            # TMGrup (ATV, A2 vb.) için gizli token API'si
+            api_r = requests.get("https://v.tmgrup.com.tr/getv_test?atv", headers=headers, timeout=10)
+            atv_match = re.search(r'["\'](https?://.*?\.m3u8.*?)["\']', api_r.text.replace("\\/", "/"))
+            if atv_match: return atv_match.group(1)
+            return "https://atv-live.daioncdn.net/atv/atv.m3u8" # Yedek link
+
+        if "startv.com.tr" in url:
+            # Star TV / Doğuş Grubu CDN yolu
+            return "https://dogus-live.daioncdn.net/startv/startv.m3u8"
+
+        if "kanal7.com" in url:
+            # Kanal 7 CDN yolu
+            return "https://kanal7-live.daioncdn.net/kanal7/kanal7.m3u8"
+
+        # --- GENEL DERİN TARAMA ---
         r = requests.get(url, headers=headers, timeout=15)
-        icerik = r.text
+        # Unicode ve kaçış karakterlerini temizle (\/ -> /)
+        icerik = r.text.replace("\\/", "/").replace("\\\\", "\\")
         
-        # 1. YÖNTEM: Unicode ve Ters Bölü (\/) Temizliği yaparak m3u8 arama
-        # Bu yöntem Star, ATV ve Kanal 7'nin gizlediği linkleri bulur
-        icerik_temiz = icerik.replace("\\/", "/").replace("\\\\", "\\")
-        
-        # Regex: Tırnak içindeki m3u8 linklerini her türlü karakterle yakalar
-        match = re.search(r'["\'](https?://[^"\']*?\.m3u8[^"\']*?)["\']', icerik_temiz)
-        
+        # Regex 1: Standart tırnak içi m3u8 araması
+        match = re.search(r'["\'](https?://[^"\']*?\.m3u8[^"\']*?)["\']', icerik)
         if match:
             link = match.group(1)
-            # Reklam/Vpaid linklerini ele
-            if "vpaid" not in link.lower() and "ads" not in link.lower():
+            if "ads" not in link.lower() and "vpaid" not in link.lower():
                 return link
 
-        # 2. YÖNTEM: Eğer yukarıdaki bulamazsa JSON içinde "videoUrl" veya "src" ara
-        # Bazı siteler (TMGrup) linki JSON objesi olarak basar
-        json_match = re.search(r'["\']?(?:videoUrl|src|file)["\']?\s*[:=]\s*["\']([^"\']+\.m3u8[^"\']*)["\']', icerik_temiz)
+        # Regex 2: JSON içindeki gizli 'src' veya 'url' değerlerini bulma
+        json_pattern = r'(?:src|url|file|videoUrl)["\']?\s*[:=]\s*["\'](https?://[^"\']*?\.m3u8[^"\']*?)["\']'
+        json_match = re.search(json_pattern, icerik, re.IGNORECASE)
         if json_match:
             return json_match.group(1)
 
@@ -63,15 +75,14 @@ kanallar = [
 ]
 
 m3u_icerik = "#EXTM3U\n"
-
-print("📡 Kanallar taranıyor, bu biraz sürebilir...")
+print("📡 Evrensel Avcı başlatıldı. Kanallar sökülüyor...")
 
 for k in kanallar:
     canli_link = link_yakala(k["url"])
     m3u_icerik += f'#EXTINF:-1 tvg-logo="{k["logo"]}", {k["isim"]}\n{canli_link}\n'
-    print(f"✔️ {k['isim']} tamamlandı.")
+    print(f"✔️ {k['isim']} yakalandı: {canli_link[:50]}...")
 
 with open("playlist.m3u", "w", encoding="utf-8") as f:
     f.write(m3u_icerik)
 
-print("\n✅ Tüm linkler güncellendi ve 'playlist.m3u' dosyasına kaydedildi.")
+print("\n✅ İşlem başarılı! 'playlist.m3u' dosyası 'adam gibi' güncellendi.")
