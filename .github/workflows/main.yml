@@ -17,11 +17,10 @@ jobs:
         with:
           python-version: '3.9'
 
-      - name: Tarayici ve Tum Sistem Bilesenlerini Kur
+      - name: Playwright ve Sistem Bilesenlerini Kur
         run: |
           pip install playwright requests
-          playwright install chromium
-          sudo playwright install-deps chromium # Bu satır olmazsa kod hata verir
+          python -m playwright install --with-deps chromium
 
       - name: Kanallari Tara
         run: python kanallar.py
