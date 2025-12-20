@@ -4,7 +4,7 @@ import json
 
 def link_yakala(url):
     # Eğer link zaten doğrudan m3u8 ise dokunma
-    if ".m3u8" in url and "atv" not in url and "startv" not in url:
+    if ".m3u8" in url:
         return url
         
     try:
@@ -13,41 +13,35 @@ def link_yakala(url):
             "Referer": url,
             "Accept": "*/*"
         }
-
-        # --- ÖZEL API SÖKÜCÜLER (ATV, STAR, KANAL 7 GİBİLER İÇİN) ---
-        # Bu kısım sitenin içindeki gizli API dosyalarına sızar
+        
+        # --- ZORLU KANALLAR İÇİN OTOMATİK API TARAYICI ---
+        # Bu kısım hazır link değil, sitenin yayın linkini dağıttığı "servis" adresidir.
+        hedef_url = url
         if "atv.com.tr" in url:
-            # TMGrup (ATV, A2 vb.) için gizli token API'si
-            api_r = requests.get("https://v.tmgrup.com.tr/getv_test?atv", headers=headers, timeout=10)
-            atv_match = re.search(r'["\'](https?://.*?\.m3u8.*?)["\']', api_r.text.replace("\\/", "/"))
-            if atv_match: return atv_match.group(1)
-            return "https://atv-live.daioncdn.net/atv/atv.m3u8" # Yedek link
+            hedef_url = "https://v.tmgrup.com.tr/getv_test?atv"
+        elif "startv.com.tr" in url:
+            hedef_url = "https://api.dogusdigital.com/video/contents/startv/live"
+        elif "kanal7.com" in url:
+            hedef_url = "https://www.kanal7.com/canli-izle" # Burası standart taramaya gider
 
-        if "startv.com.tr" in url:
-            # Star TV / Doğuş Grubu CDN yolu
-            return "https://dogus-live.daioncdn.net/startv/startv.m3u8"
-
-        if "kanal7.com" in url:
-            # Kanal 7 CDN yolu
-            return "https://kanal7-live.daioncdn.net/kanal7/kanal7.m3u8"
-
-        # --- GENEL DERİN TARAMA ---
-        r = requests.get(url, headers=headers, timeout=15)
-        # Unicode ve kaçış karakterlerini temizle (\/ -> /)
+        # Siteyi veya API'yi indir
+        r = requests.get(hedef_url, headers=headers, timeout=15)
+        # Unicode temizliği (\/ -> /) ve ham metin analizi
         icerik = r.text.replace("\\/", "/").replace("\\\\", "\\")
         
-        # Regex 1: Standart tırnak içi m3u8 araması
-        match = re.search(r'["\'](https?://[^"\']*?\.m3u8[^"\']*?)["\']', icerik)
-        if match:
-            link = match.group(1)
-            if "ads" not in link.lower() and "vpaid" not in link.lower():
-                return link
-
-        # Regex 2: JSON içindeki gizli 'src' veya 'url' değerlerini bulma
-        json_pattern = r'(?:src|url|file|videoUrl)["\']?\s*[:=]\s*["\'](https?://[^"\']*?\.m3u8[^"\']*?)["\']'
-        json_match = re.search(json_pattern, icerik, re.IGNORECASE)
-        if json_match:
-            return json_match.group(1)
+        # EVRENSEL TARAMA DESENLERİ (Tüm kanallar için geçerli)
+        desenler = [
+            r'["\'](https?://[^"\']*?\.m3u8[^"\']*?)["\']', # Standart m3u8
+            r'(?:src|url|file|videoUrl|hls)["\']?\s*[:=]\s*["\'](https?://[^"\']*?\.m3u8[^"\']*?)["\']' # JSON/JS içi
+        ]
+        
+        for desen in desenler:
+            match = re.search(desen, icerik, re.IGNORECASE)
+            if match:
+                bulunan = match.group(1)
+                # Reklamları (ads/vpaid) otomatik ele
+                if "ads" not in bulunan.lower() and "vpaid" not in bulunan.lower():
+                    return bulunan
 
     except Exception as e:
         print(f"Hata ({url}): {e}")
@@ -75,14 +69,14 @@ kanallar = [
 ]
 
 m3u_icerik = "#EXTM3U\n"
-print("📡 Evrensel Avcı başlatıldı. Kanallar sökülüyor...")
+print("📡 Otomatik tarayıcı çalışıyor...")
 
 for k in kanallar:
     canli_link = link_yakala(k["url"])
     m3u_icerik += f'#EXTINF:-1 tvg-logo="{k["logo"]}", {k["isim"]}\n{canli_link}\n'
-    print(f"✔️ {k['isim']} yakalandı: {canli_link[:50]}...")
+    print(f"✔️ {k['isim']} tamam.")
 
 with open("playlist.m3u", "w", encoding="utf-8") as f:
     f.write(m3u_icerik)
 
-print("\n✅ İşlem başarılı! 'playlist.m3u' dosyası 'adam gibi' güncellendi.")
+print("\n✅ Playlist güncellendi.")
