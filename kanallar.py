@@ -11,7 +11,7 @@ def eski_yontem_link(url):
             "Referer": url
         }
         r = requests.get(url, headers=headers, timeout=10)
-        # Sayfadaki m3u8 linkini regex ile ara (TLC ve DMAX burada uyanıyor)
+        # Sayfadaki m3u8 linkini regex ile ara
         match = re.search(r'["\'](https?://[^"\']*?\.m3u8[^"\']*?)["\']', r.text.replace("\\/", "/"))
         if match:
             return match.group(1)
@@ -69,18 +69,24 @@ with sync_playwright() as p:
     
     m3u_icerik = "#EXTM3U\n"
     for k in kanallar:
-        # Önce senin eski hızlı yöntemi dene (TLC/DMAX için)
         canli_link = eski_yontem_link(k["url"])
         
-        # Eğer eski yöntem bulamazsa, ağır abi Playwright'ı devreye sok (Star/Kanal7 için)
         if not canli_link or ".m3u8" not in canli_link:
             canli_link = tarayici_link_yakala(context, k["isim"], k["url"])
         
-        m3u_icerik += f'#EXTINF:-1 tvg-logo="{k["logo"]}", {k["isim"]}\n{canli_link}\n'
+        # --- KRİTİK DÜZENLEME BURASI ---
+        # Linkin sonuna User-Agent ve Referer ekliyoruz. Bu sayede 403 Forbidden hatası çözülür.
+        if "trt.daioncdn.net" in canli_link or "medya.trt.com.tr" in canli_link:
+             # TRT linkleri genelde header sevmez, onları yalın bırakıyoruz
+             m3u_icerik += f'#EXTINF:-1 tvg-logo="{k["logo"]}", {k["isim"]}\n{canli_link}\n'
+        else:
+             # Diğer tüm kanallara kimlik kartını ekliyoruz
+             m3u_icerik += f'#EXTINF:-1 tvg-logo="{k["logo"]}", {k["isim"]}\n{canli_link}|User-Agent=Mozilla/5.0&Referer={k["url"]}\n'
+        
         print(f"✅ {k['isim']} bitti.")
     
     browser.close()
 
 with open("playlist.m3u", "w", encoding="utf-8") as f:
     f.write(m3u_icerik)
-            
+    
