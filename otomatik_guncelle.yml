@@ -1,18 +1,18 @@
 name: Otomatik Playlist Guncelle
 
 on:
-  workflow_dispatch: # Manuel başlatma butonu için
-  push:
-    paths:
-      - 'kanallar.py'
   schedule:
-    - cron: '0 */3 * * *' # Her 3 saatte bir otomatik çalışır
+    - cron: '0 */4 * * *' # Her 4 saatte bir otomatik çalışır
+  workflow_dispatch: # İstediğinde elle başlatabilmen için
+
+permissions:
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Klasoru Kopyala
+      - name: Kodlari Cek
         uses: actions/checkout@v3
 
       - name: Python Kur
@@ -20,19 +20,19 @@ jobs:
         with:
           python-version: '3.9'
 
-      - name: Gerekli Kutuphaneleri Yukle
+      - name: Tarayici ve Kutuphaneleri Kur
         run: |
-          pip install requests playwright
-          playwright install chromium
+          pip install playwright requests
+          python -m playwright install --with-deps chromium
 
-      - name: Kodu Calistir
+      - name: Kanallari Guncelle
         run: python kanallar.py
 
-      - name: Dosyalari Kaydet ve Yukle
+      - name: Degisiklikleri Depoya Yukle
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add kanallar.json playlist.m3u
-          git commit -m "Kanallar ve JSON guncellendi" || echo "Degisiklik yok"
-          git push
+          git commit -m "Otomatik guncelleme: JSON ve M3U yenilendi" || exit 0
+          git push origin main
           
