@@ -5,7 +5,6 @@ on:
     - cron: '0 */6 * * *'
   workflow_dispatch:
 
-# YAZMA YETKİSİ EKLEDİK (Hata 128'i bu çözer)
 permissions:
   contents: write
 
@@ -29,11 +28,11 @@ jobs:
       - name: Kanallari Tara
         run: python kanallar.py
 
-      - name: Playlisti Kaydet
+      - name: Degisiklikleri Kaydet
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add playlist.m3u
-          git commit -m "Playlist guncellendi" || exit 0
+          git add kanallar.json playlist.m3u
+          git commit -m "Veriler guncellendi" || exit 0
           git push origin main
           
