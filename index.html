@@ -21,8 +21,7 @@
         /* Reklam Alanları Stili */
         .ad-box { background: #1a1a1a; border: 1px dashed #333; border-radius: 15px; margin: 15px; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .ad-label { position: absolute; top: 2px; left: 8px; font-size: 8px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
-        .ad-close { position: absolute; top: 2px; right: 8px; color: #555; cursor: pointer; font-size: 12px; z-index: 10; }
-        .ad-banner { min-height: 60px; } /* 320x50 için boyutu optimize ettik */
+        .ad-banner { min-height: 60px; }
         .ad-sidebar { height: 180px; margin-top: auto; }
         .ad-player { min-height: 250px; margin: 20px 0; }
 
@@ -42,21 +41,17 @@
         .square-logo { width: 50%; height: 50%; object-fit: contain; margin-bottom: 8px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5)); }
         .square-name { font-size: 0.75rem; font-weight: 600; text-align: center; }
 
-        /* Favori Yıldızı */
         .fav-star { position: absolute; top: 8px; right: 8px; font-size: 0.9rem; color: #444; z-index: 5; transition: 0.3s; }
         .fav-star.active { color: #ffc107; font-weight: 900; }
 
-        /* List View */
         .list-item { background: var(--card); border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 12px; border: 1px solid #222; cursor: pointer; }
         .list-logo { width: 55px; height: 55px; object-fit: contain; background: #fff; border-radius: 12px; padding: 5px; }
         .list-info { flex-grow: 1; }
         .list-prog { font-size: 0.7rem; color: var(--gray); margin-top: 4px; }
 
-        /* Player Area */
         #player-box { display: none; padding: 0; position: sticky; top: 60px; z-index: 900; background: #000; }
         video { width: 100%; aspect-ratio: 16/9; }
 
-        /* Bottom Nav */
         .bottom-nav { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 92%; background: rgba(26, 26, 26, 0.95); backdrop-filter: blur(10px); border-radius: 25px; display: flex; justify-content: space-around; padding: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 1000; border: 1px solid #333; }
         .nav-btn { color: #666; font-size: 1.2rem; display: flex; flex-direction: column; align-items: center; text-decoration: none; }
         .nav-btn.active { color: var(--accent); }
@@ -77,13 +72,12 @@
             <i class="fas fa-times fs-4" onclick="toggleSidebar()"></i>
         </div>
         <div class="menu-links">
-            <a href="#" class="menu-item"><i class="fas fa-code-branch"></i> Version <span class="ms-auto small text-muted">1.0.6</span></a>
+            <a href="#" class="menu-item"><i class="fas fa-code-branch"></i> Version <span class="ms-auto small text-muted">1.0.7</span></a>
             <a href="javascript:void(0)" onclick="showFavorites(); toggleSidebar();" class="menu-item"><i class="fas fa-star"></i> My Favorites</a>
             <a href="#" class="menu-item"><i class="fas fa-share-nodes"></i> Share App</a>
             <hr style="border-color: #333; margin: 20px 0;">
             <a href="#" class="menu-item"><i class="fas fa-comment-alt"></i> Contact</a>
         </div>
-
         <div class="ad-box ad-sidebar">
             <span class="ad-label">Advertisement</span>
             <div style="color:#444; font-size:12px; text-align:center;">Reklam Yayında</div>
@@ -175,7 +169,27 @@
             .then(data => {
                 allChannels = data;
                 renderGrid(data);
+                // Sayfa ilk yüklendiğinde linkte kanal varsa aç
+                checkHash();
             });
+
+        function checkHash() {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                const channelName = decodeURIComponent(hash);
+                const channel = allChannels.find(k => k.ad === channelName);
+                if (channel) playChannel(channel.url, channel.ad, true);
+            }
+        }
+
+        // Geri tuşu takibi
+        window.onpopstate = function() {
+            if (window.location.hash === "") {
+                showHome(true);
+            } else {
+                checkHash();
+            }
+        };
 
         function renderGrid(data) {
             const container = document.getElementById('grid-container');
@@ -216,7 +230,12 @@
             document.querySelector('.ad-banner').style.display = "flex";
         }
 
-        function playChannel(url, ad) {
+        function playChannel(url, ad, fromHash = false) {
+            // Linki güncelle
+            if(!fromHash) {
+                history.pushState({page: 'player'}, ad, "#" + encodeURIComponent(ad));
+            }
+
             document.getElementById('player-box').style.display = "block";
             document.getElementById('home-section').style.display = "none";
             document.getElementById('search-section').style.display = "none";
@@ -264,7 +283,11 @@
             setActive('btn-search');
         }
 
-        function showHome() {
+        function showHome(fromPopState = false) {
+            if(!fromPopState && window.location.hash !== "") {
+                history.pushState({page: 'home'}, "Home", window.location.pathname);
+            }
+            
             document.getElementById('list-title').innerText = "TV Channels";
             document.getElementById('home-section').style.display = "block";
             document.getElementById('search-section').style.display = "none";
@@ -273,6 +296,10 @@
             document.querySelector('.ad-banner').style.display = "flex";
             renderGrid(allChannels);
             setActive('btn-home');
+            
+            // Videoyu durdur
+            video.pause();
+            video.src = "";
         }
 
         function setActive(id) {
