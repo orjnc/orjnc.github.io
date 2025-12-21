@@ -4,7 +4,7 @@ import re
 from playwright.sync_api import sync_playwright
 
 def eski_yontem_link(url):
-    """Senin gönderdiğin hızlı regex yöntemi - Akıllandırıldı"""
+    """Senin hızlı regex yöntemin - Daioncdn ve Parametre önceliği eklendi"""
     try:
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -12,46 +12,57 @@ def eski_yontem_link(url):
         }
         r = requests.get(url, headers=headers, timeout=10)
         text = r.text.replace("\\/", "/")
-        # Sayfadaki tüm m3u8 linklerini bul
         matches = re.findall(r'["\'](https?://[^"\']*?\.m3u8[^"\']*?)["\']', text)
         
         if matches:
-            # ÖNCELİK: Senin Web Video Caster'da bulduğun o zengin (tokenlı) linkleri ara
+            # ÖNCELİK 1: Hem daioncdn olan hem de token/reklam kimliği (st, dfp, ppid) içeren link
             for m in matches:
-                if "daioncdn" in m and ("st=" in m or "dfp" in m):
+                if "daioncdn" in m and any(x in m for x in ["st=", "dfp", "ppid", "app="]):
                     return m
-            # Yoksa ilk bulduğunu döndür (Eski sistemin)
+            # ÖNCELİK 2: Sadece daioncdn olan link
+            for m in matches:
+                if "daioncdn" in m:
+                    return m
+            # VARSAYILAN: Hiçbiri yoksa ilk bulduğun m3u8 (Eski sistemin)
             return matches[0]
-    except:
-        pass
+    except: pass
     return None
 
 def tarayici_link_yakala(context, kanal_adi, url):
-    """Star ve Kanal 7 gibi zor kanallar için Playwright - Akıllandırıldı"""
+    """Playwright Yakalayıcı - En iyi linki (daioncdn) bulana kadar seçim yapar"""
     page = context.new_page()
     bulunan_link = [url]
 
     def istek_kontrol(request):
         u = request.url
-        # .m3u8 kontrolü (Eski sistemin)
+        # .m3u8 kontrolü ve reklam/izleme linklerini eleme
         if ".m3u8" in u.lower() and not any(x in u.lower() for x in ["ads", "vpaid", "telemetry", "moat"]):
-            # ÖNCELİK: daioncdn ve token içeren linki kap
-            if "daioncdn" in u and ("st=" in u or "dfp" in u):
+            
+            # MAKİNE BURADA KARAR VERİYOR:
+            # Yeni gelen link "Altın Link" kriterlerine (daioncdn + parametre) uyuyor mu?
+            yeni_link_kaliteli = "daioncdn" in u and any(x in u for x in ["st=", "dfp", "ppid", "app="])
+            mevcut_link_kaliteli = "daioncdn" in bulunan_link[0] and "st=" in bulunan_link[0]
+
+            if yeni_link_kaliteli:
+                # En iyi linki bulduk, bunu kaydet
                 bulunan_link[0] = u
-            # Yoksa ve henüz hiç link bulamadıysak, ilk gördüğünü kaydet (Eski sistemin)
+            elif "daioncdn" in u and not mevcut_link_kaliteli:
+                # Mevcut link sıradan ama yeni gelen daioncdn ise onu al
+                bulunan_link[0] = u
             elif bulunan_link[0] == url:
+                # Henüz hiçbir şey bulunmadıysa ilk m3u8'i kaydet
                 bulunan_link[0] = u
 
     page.on("request", istek_kontrol)
     try:
-        # domcontentloaded yerine networkidle kullanarak o uzun linklerin oluşmasını bekliyoruz
+        # Sayfanın tamamen yüklenmesini ve tüm tokenların akmasını bekliyoruz
         page.goto(url, wait_until="networkidle", timeout=45000)
-        time.sleep(3) 
+        time.sleep(5) # Asıl yayın linkinin düşmesi için ekstra zaman
     except: pass
     page.close()
     return bulunan_link[0]
 
-# --- KANAL LİSTESİ (Senin tam listen) ---
+# --- KANAL LİSTESİ VE ANA DÖNGÜ (Burası senin verdiğin iskeletle birebir aynı) ---
 kanallar = [
     {"isim": "TRT 1", "url": "https://trt.daioncdn.net/trt-1/master.m3u8?app=web", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/trt1.jpg"},
     {"isim": "ATV", "url": "https://www.atv.com.tr/canli-yayin", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/atv.jpg"},
@@ -59,7 +70,7 @@ kanallar = [
     {"isim": "Star TV", "url": "https://www.startv.com.tr/canli-yayin", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/star.jpg"},
     {"isim": "Show TV", "url": "https://www.showtv.com.tr/canli-yayin", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/showtv.jpg"},
     {"isim": "NOW TV", "url": "https://uycyyuuzyh.turknet.ercdn.net/nphindgytw/nowtv/nowtv.m3u8", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/now.jpg"},
-    {"isim": "TV8", "url": "https://tv8.daioncdn.net/tv8/tv8.m3u8?app=7ddc255a-ef47-4e81-ab14-c0e5f2949788&ce=3", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/tv8.jpg"},
+    {"isim": "TV8", "url": "https://www.tv8.com.tr/canli-yayin", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/tv8.jpg"},
     {"isim": "Beyaz TV", "url": "https://www.beyaztv.com.tr/canli-yayin", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/beyaztv.jpg"},
     {"isim": "Teve2", "url": "https://www.teve2.com.tr/canli-yayin", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/teve2.jpg"},
     {"isim": "360", "url": "https://www.tv360.com.tr/canli-yayin", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/360.jpg"},
@@ -82,24 +93,17 @@ with sync_playwright() as p:
     m3u_icerik = "#EXTM3U\n"
     for k in kanallar:
         canli_link = eski_yontem_link(k["url"])
-        
         if not canli_link or ".m3u8" not in canli_link:
             canli_link = tarayici_link_yakala(context, k["isim"], k["url"])
         
-        # --- REFERER AKILLANDIRMA ---
-        # 403 hatasını kırmak için ana site domainlerini temizliyoruz
-        if "atv" in k["url"] or "a2tv" in k["url"]:
-            ref = "https://www.atv.com.tr/"
-        elif "cnbce" in k["url"]:
-            ref = "https://www.cnbce.com/"
-        else:
-            ref = k["url"]
+        # Referer Ayarı
+        if "atv" in k["url"] or "a2tv" in k["url"]: ref = "https://www.atv.com.tr/"
+        elif "cnbce" in k["url"]: ref = "https://www.cnbce.com/"
+        else: ref = k["url"]
 
-        # TRT ve Tabii linklerine ekleme yapmıyoruz (Hassaslar, eski sistemdeki gibi kalsın)
         if any(x in canli_link for x in ["trt.daioncdn", "medya.trt.com.tr", "erbvr.com"]):
              m3u_icerik += f'#EXTINF:-1 tvg-logo="{k["logo"]}", {k["isim"]}\n{canli_link}\n'
         else:
-             # Diğerlerine 403 engelini aşmak için "kimlik kartı" ekle
              m3u_icerik += f'#EXTINF:-1 tvg-logo="{k["logo"]}", {k["isim"]}\n{canli_link}|User-Agent=Mozilla/5.0&Referer={ref}\n'
         
         print(f"✅ {k['isim']} bitti.")
