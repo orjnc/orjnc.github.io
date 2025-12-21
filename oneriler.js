@@ -3,19 +3,19 @@ const oneriListesi = [
     {
         title: "UZAK ŞEHİR",
         desc: "Bu Akşam 20:00'da Kanal D'de!",
-        image: "https://r.resimlink.com/39V_Xl6H.jpg", 
+        image: "https://i.imgur.com/NKiF8WO.jpeg", 
         targetChannel: "Kanal D"
     },
     {
-        title: "MİLLİ MAÇ",
-        desc: "Türkiye - Galler | Canlı Yayın",
-        image: "https://img.fanatik.com.tr/img/75/0x0/652fce9f66a97ca80053722f.jpg", 
-        targetChannel: "TRT 1"
+        title: "BERGEN",
+        desc: "Bu Akşam 20:00'da ATV'de!",
+        image: "https://i.imgur.com/LNW86ek.jpeg", 
+        targetChannel: "ATV"
     },
     {
         title: "MASTERCHEF",
-        desc: "Yeni Bölüm Heyecanı Başlıyor!",
-        image: "https://img3.aksam.com.tr/imgsdisk/2024/06/14/masterchef-turkiye-all-st-414.jpg",
+        desc: "20:00'da Yeni Bölüm Heyecanı Başlıyor!",
+        image: "https://i.imgur.com/wAX4TER.jpeg",
         targetChannel: "TV8"
     }
 ];
