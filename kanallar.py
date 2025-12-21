@@ -114,6 +114,19 @@ kanallar = [
     {"isim": "TRT Spor Yildiz", "url": "https://tv-trtspor2.medya.trt.com.tr/master.m3u8", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/refs/heads/main/logolar/trtsporyildiz.jpg"},
     {"isim": "Tabii Spor", "url": "https://www.tabii.com/tr/watch/live/trtsporyildiz?trackId=150002", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/tabiispor.jpg"},
     {"isim": "Sports TV", "url": "https://www.sportstv.com.tr/canli/sportstv", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/sportstv.jpg"},
+    {"isim": "Powertürk TV", "url": "https://www.powerapp.com.tr/tvs/power-tvs/powerturktv/", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/powerturk.jpg"},
+    {"isim": "Power TV", "url": "https://www.powerapp.com.tr/tvs/power-tvs/powertv/", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/powertv.jpg"},
+    {"isim": "Power Love TV", "url": "https://www.powerapp.com.tr/tvs/power-tvs/powerlovetv/", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/powerlove.jpg"},
+    {"isim": "PowerTürk Akustik TV", "url": "https://www.powerapp.com.tr/tvs/power-tvs/powerturkakustiktv/", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/powerturkakustik.jpg"},
+    {"isim": "PowerTürk Slow TV", "url": "https://www.powerapp.com.tr/tvs/power-tvs/powertrslowtv/", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/powerturkslow.jpg"},
+    {"isim": "PowerTürk Taptaze TV", "url": "https://www.powerapp.com.tr/tvs/power-tvs/powerturktaptazetv/", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/pttaptaze.jpg"},
+    {"isim": "Nr1 Türk", "url": "https://www.numberone.com.tr/2015/12/20/number1-turk-tv-canli-yayin/", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/nr1turk.jpg"},
+    {"isim": "Nr1", "url": "https://www.numberone.com.tr/2015/12/18/nr1-tv-canli-yayin/", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/nr1.jpg"},
+    {"isim": "Nr1 Aşk", "url": "https://www.numberone.com.tr/2017/10/05/nr1-ask-tv-canli-yayin-izle/", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/nr1ask.jpg"},
+    {"isim": "Nr1 Dance", "url": "https://www.numberone.com.tr/2017/10/03/number1-dance-ty-canli-yayin-izle/", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/nr1dance.jpg"},
+    {"isim": "Nr1 Rap", "url": "https://www.numberone.com.tr/2017/10/05/number1-rap-tv-canli-yayin-izle/", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/nr1rap.jpg"},
+    {"isim": "Dream Türk", "url": "https://www.dreamturk.com.tr/canli-yayin-izle", "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/dreamturk.jpg"},
+    
 ]
 
 with sync_playwright() as p:
