@@ -148,11 +148,18 @@
         .fav-star { position: absolute; top: 10px; right: 10px; font-size: 0.8rem; color: rgba(255,255,255,0.2); z-index: 5; }
         .fav-star.active { color: #ffc107; }
 
-        /* Player */
-        #player-box { display: none; background: #000; }
-        .video-wrapper { position: sticky; top: 0; z-index: 1100; background: #000; }
-        video { width: 100%; aspect-ratio: 16/9; }
-        .player-info-sticky { padding: 15px 20px; border-bottom: 2px solid #222; }
+        /* Player Sayfası Genel Arka Planı */
+#player-box { 
+    display: none; 
+    background: #000; /* Varsayılan siyah */
+    min-height: 100vh;
+}
+
+/* Sadece Normal Modda Senin Arka Plan Görselin */
+body.normal-mode #player-box {
+    background: linear-gradient(to bottom, #bd00d1 0%, #000000 100%) !important;
+    background-attachment: fixed !important;
+}
 
         /* Navigasyon */
 .bottom-nav { 
@@ -198,8 +205,35 @@
         
         #search-section { padding: 15px; display: none; }
         .search-input { background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 15px; padding: 12px 20px; width: 100%; margin-bottom: 20px; }
-        .list-item { background: var(--card); border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 12px; border: 1px solid #222; cursor: pointer; }
-        .list-logo { width: 55px; height: 55px; object-fit: contain; }
+        /* ÖNERİLEN KANALLAR: Normal Modda Mavi Cam */
+body.normal-mode .list-item {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 12px;
+}
+
+/* ÖNERİLEN KANALLAR: Koyu Modda Siyah Cam */
+@media (prefers-color-scheme: dark) {
+    .list-item {
+        background: rgba(0, 0, 0, 0.6) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 12px;
+    }
+}
 
         /* Promo Card */
         .promo-slider { padding: 0 15px; margin-bottom: 30px; transition: 0.5s; }
