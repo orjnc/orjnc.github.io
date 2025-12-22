@@ -6,6 +6,7 @@ const oneriListesi = [
 
 let aktifSira = 0;
 
+// İŞTE BURAYA YAPIŞTIRIYORSUN:
 function setupFeatured() {
     const card = document.getElementById('featured-card');
     const title = document.getElementById('featured-title');
@@ -14,14 +15,21 @@ function setupFeatured() {
     if (!card || oneriListesi.length === 0) return;
 
     const veri = oneriListesi[aktifSira];
-    card.style.opacity = "0.5";
 
-    setTimeout(() => {
-        title.innerText = veri.title;
-        desc.innerText = veri.desc;
-        card.style.backgroundImage = `url('${veri.image}')`;
-        card.style.opacity = "1";
-    }, 300);
+    // Önce resmi arka planda yükletelim ki beyaz/boş görünmesin
+    const imgPreload = new Image();
+    imgPreload.src = veri.image;
+    
+    imgPreload.onload = () => {
+        card.style.opacity = "0"; // Değişim anında yumuşak geçiş için sıfırla
+        
+        setTimeout(() => {
+            title.innerText = veri.title;
+            desc.innerText = veri.desc;
+            card.style.backgroundImage = `url('${veri.image}')`; // URL tırnaklarına dikkat!
+            card.style.opacity = "1"; // Resim hazır olduğunda göster
+        }, 300);
+    };
 
     aktifSira = (aktifSira + 1) % oneriListesi.length;
 }
@@ -33,7 +41,7 @@ function playFeatured() {
     if (channel) playChannel(channel.url, channel.ad, false, channel.kategori);
 }
 
-// Başlatma
+// Başlatma (Burası aynı kalıyor)
 setTimeout(() => {
     setupFeatured();
     setInterval(setupFeatured, 5000);
