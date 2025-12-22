@@ -101,17 +101,19 @@
 .promo-active {
     animation: promoSwift 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
-
-@keyframes promoSwift {
-    0% { opacity: 0; transform: scale(0.94) translateY(10px); filter: blur(4px); }
-    100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
-}
-
-@keyframes promoSwift {
-    0% { opacity: 0.6; transform: scale(0.96); filter: blur(2px); }
-    100% { opacity: 1; transform: scale(1); filter: blur(0); }
-}
-        
+        @keyframes promoSwift {
+    0% { 
+        opacity: 0; 
+        transform: scale(0.95) translateY(5px); 
+        filter: blur(5px); 
+    }
+    100% { 
+        opacity: 1; 
+        transform: scale(1) translateY(0); 
+        filter: blur(0); 
+    }
+        }
+         
         .promo-card > div { position: relative; z-index: 2; width: 100%; }
         .promo-hidden { display: none !important; }
     </style>
@@ -321,14 +323,17 @@
 // Öneriler değiştikçe animasyonu tetikleyen sistem
 const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
-        const pCard = document.getElementById('featured-card');
-        if (pCard) {
-            pCard.classList.remove('promo-active');
-            void pCard.offsetWidth; // Sihirli reset satırı
-            pCard.classList.add('promo-active');
+        // Sadece içerik veya resim değiştiğinde çalış, sınıf (class) değişimini görmezden gel
+        if (mutation.type === "childList" || (mutation.type === "attributes" && mutation.attributeName === "style")) {
+            const pCard = document.getElementById('featured-card');
+            if (pCard && !pCard.classList.contains('promo-active')) {
+                pCard.classList.add('promo-active');
+                setTimeout(() => pCard.classList.remove('promo-active'), 700);
+            }
         }
     });
 });
+    
 
 const targetNode = document.getElementById('featured-card');
 if (targetNode) {
