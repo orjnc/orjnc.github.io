@@ -148,13 +148,75 @@
         .fav-star { position: absolute; top: 10px; right: 10px; font-size: 0.8rem; color: rgba(255,255,255,0.2); z-index: 5; }
         .fav-star.active { color: #ffc107; }
 
-        /* Player Sayfası Genel Arka Planı */
+        /* --- PLAYER SAYFASI ANA DÜZENLEME --- */
 #player-box { 
     display: none; 
-    background: #000; /* Varsayılan siyah */
+    background: #000; 
     min-height: 100vh;
+    padding-bottom: 120px !important; /* Alt navigasyon çubuğu için boşluk */
 }
 
+/* NORMAL MODDA: Seçtiğin Mor Degrade Arka Plan */
+body.normal-mode #player-box {
+    background: linear-gradient(to bottom, #bd00d1 0%, #000000 100%) !important;
+    background-attachment: fixed !important;
+}
+
+/* ÖNERİLEN KANAL KUTULARI (Cam Efekti) */
+.list-item { 
+    border-radius: 15px; 
+    padding: 15px; 
+    display: flex; 
+    align-items: center; 
+    gap: 15px; 
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+/* --- PLAYER VE ÖNERİLER ANA TASARIM --- */
+#player-box { 
+    display: none; 
+    background: #000; 
+    min-height: 100vh;
+    padding-bottom: 120px !important; /* Alt menüye çarpmaması için */
+}
+
+/* NORMAL MOD: Mor Degrade Arka Plan */
+body.normal-mode #player-box {
+    background: linear-gradient(to bottom, #bd00d1 0%, #000000 100%) !important;
+    background-attachment: fixed !important;
+}
+
+/* KANAL LİSTESİ (CAM EFEKTİ) */
+.list-item { 
+    border-radius: 15px; 
+    padding: 15px; 
+    display: flex; 
+    align-items: center; 
+    gap: 15px; 
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Normal Modda: Buzlu Cam */
+body.normal-mode .list-item {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Koyu Modda: Siyah Sis */
+@media (prefers-color-scheme: dark) {
+    .list-item {
+        background: rgba(0, 0, 0, 0.6) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+}
+        
 /* Sadece Normal Modda Senin Arka Plan Görselin */
 body.normal-mode #player-box {
     background: linear-gradient(to bottom, #bd00d1 0%, #000000 100%) !important;
