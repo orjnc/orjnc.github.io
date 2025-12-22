@@ -344,25 +344,65 @@
                 .then(data => { allChannels = data; renderGrid(data); checkHash(); });
         });
 
+                // ANA EKRAN: Tüm kanalları genel yapıya göre dizer
         function renderGrid(data) {
-    const container = document.getElementById('grid-container');
-    if(!container) return; // Hata almamak için kontrol
-    container.innerHTML = "";
-    data.forEach(k => {
-        const isFav = favorites.includes(k.ad) ? 'active' : '';
-        // Logoların senin GitHub klasöründen çekilmesi için yol eklendi
-        // Ayrıca .jpg olanları otomatik .png olarak dener (klasöründe hepsi png görünüyor)
-        const logoName = k.logo.split('/').pop().replace('.jpg', '.png'); 
-        
-        container.innerHTML += `
-            <div class="channel-square">
-                <i class="fas fa-star fav-star ${isFav}" onclick="toggleFav(event, '${k.ad}')"></i>
-                <div class="w-100 h-100 d-flex align-items-center justify-content-center" onclick="playChannel('${k.url}', '${k.ad}', false, '${k.kategori || "TV"}')">
-                    <img src="logolar/${logoName}" class="square-logo" onerror="this.onerror=null; this.src='logolar/logo.png'">
-                </div>
-            </div>`;
-    });
+            const container = document.getElementById('grid-container');
+            if(!container) return;
+            container.innerHTML = "";
+            data.forEach(k => {
+                const isFav = favorites.includes(k.ad) ? 'active' : '';
+                const logoName = k.logo.split('/').pop().replace('.jpg', '.png'); 
+                const kategori = getKategori(k); // Kategori kontrolü
+
+                container.innerHTML += `
+                    <div class="channel-square">
+                        <i class="fas fa-star fav-star ${isFav}" onclick="toggleFav(event, '${k.ad}')"></i>
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center" 
+                             onclick="playChannel('${k.url}', '${k.ad}', false, '${kategori}')">
+                            <img src="logolar/${logoName}" class="square-logo" 
+                                 onerror="this.onerror=null; this.src='logolar/logo.png'">
+                        </div>
+                    </div>`;
+            });
         }
+
+        // OYNATICI: Kategori bilgisini otomatik alt satıra ekler
+        function playChannel(url, ad, fromHash = false, kategori = "Genel") {
+            if(!fromHash) window.location.hash = encodeURIComponent(ad);
+            
+            document.getElementById('player-box').style.display = "block";
+            document.getElementById('main-content').style.display = "none";
+            
+            // Üst başlık ve kategori
+            document.getElementById('now-playing').innerText = ad;
+            document.getElementById('player-cat-info').innerText = "Canlı Yayın • " + kategori;
+            
+            if (Hls.isSupported()) {
+                hls.loadSource(url); hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+            } else { video.src = url; video.play(); }
+
+            // ÖNERİLER: Yeni eklenen her kanal için otomatik çalışır
+            const shuffled = [...allChannels].sort(() => 0.5 - Math.random()).slice(0, 5);
+            const sugList = document.getElementById('suggested-list');
+            if(sugList) {
+                sugList.innerHTML = "";
+                shuffled.forEach(s => {
+                    const sugLogo = s.logo.split('/').pop().replace('.jpg', '.png');
+                    const sugCat = getKategori(s); // Dinamik kategori çekimi
+                    
+                    sugList.innerHTML += `
+                        <div class="list-item" onclick="playChannel('${s.url}','${s.ad}', false, '${sugCat}')">
+                            <img src="logolar/${sugLogo}" class="list-logo" onerror="this.onerror=null; this.src='logolar/logo.png'"> 
+                            <div class="list-info" style="display: flex; flex-direction: column; margin-left: 10px;">
+                                <span style="font-weight: bold; color: white;">${s.ad}</span>
+                                <span style="font-size: 12px; color: #aaa;">${sugCat}</span>
+                            </div>
+                        </div>`;
+                });
+            }
+        }
+        
 
         function renderList(data, targetId) {
             const container = document.getElementById(targetId);
@@ -476,6 +516,13 @@
             if (document.getElementById('search-section').style.display === "block") doSearch();
             else if (document.getElementById('promo-slider').classList.contains('promo-hidden')) showFavorites();
             else renderGrid(allChannels);
+        }
+
+        function getKategori(kanal) {
+    // Eğer kategori alanı varsa ve boş değilse onu döndür, yoksa "Genel" döndür
+    return (kanal.kategori && kanal.kategori.trim() !== "" && kanal.kategori !== "undefined") 
+           ? kanal.kategori 
+           : "Genel";
         }
 
         function filterCategory(cat, btn) {
