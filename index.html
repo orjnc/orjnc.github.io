@@ -14,7 +14,6 @@
     <style>
         :root { --bg: #000000; --card: #121212; --accent: #ff005c; --text: #ffffff; --gray: #888888; --selected-cat: #F683BE; }
         
-        /* Arka plan sızıntısı engelleme */
         html { background-color: #000000 !important; }
         body { background-color: #000000 !important; color: #ffffff !important; min-height: 100vh; margin: 0; }
 
@@ -24,19 +23,19 @@
             background-size: cover !important;
         }
 
-        /* SENİN SİLDİĞİM O KRİTİK ALT BOŞLUK (PADDING) BURADA */
-        #main-content, #suggested-list, #grid-container { padding-bottom: 150px !important; }
+        /* ALTTA KALMA SORUNU İÇİN KRİTİK BOŞLUK */
+        #main-content, #suggested-list, #grid-container { padding-bottom: 160px !important; }
 
         .sidebar { position: fixed; left: -280px; top: 0; height: 100%; width: 280px; background: rgba(18, 18, 18, 0.98); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 2000; padding: 30px 20px; border-right: 1px solid #222; display: flex; flex-direction: column; }
         .sidebar.active { left: 0; }
         .menu-item { display: flex; align-items: center; gap: 15px; padding: 15px; color: var(--text); text-decoration: none; border-radius: 12px; transition: 0.3s; margin-bottom: 5px; cursor: pointer; }
         .menu-item i { color: var(--accent); font-size: 1.2rem; width: 25px; }
 
-        /* SENİN O MEŞHUR KATEGORİ ANİMASYONLARIN */
+        /* KATEGORİ ANİMASYONLARI */
         .category-container { display: flex; gap: 10px; overflow-x: auto; padding: 15px 15px 20px 15px; white-space: nowrap; scrollbar-width: none; position: relative; min-height: 75px; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
-        .cat-btn { background: #1a1a1a; color: var(--gray); border: 1px solid #333; padding: 10px 22px !important; border-radius: 100px !important; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; min-width: 80px; gap: 8px; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); opacity: 1; flex-shrink: 0; position: relative; left: 0; }
+        .cat-btn { background: #1a1a1a; color: var(--gray); border: 1px solid #333; padding: 10px 22px !important; border-radius: 100px !important; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; min-width: 80px; gap: 8px; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); opacity: 1; flex-shrink: 0; position: relative; }
         .cat-btn.active { background: var(--selected-cat) !important; color: white; border-color: var(--selected-cat); z-index: 100; position: absolute; right: 15px; top: 15px; min-width: 100px; }
-        .cat-btn .close-cat { display: none; font-size: 0.8rem; opacity: 0.8; }
+        .cat-btn .close-cat { display: none; font-size: 0.8rem; }
         .cat-btn.active .close-cat { display: inline-block; animation: fadeIn 0.3s forwards; }
         .cat-hidden { opacity: 0 !important; transform: scale(0.5); pointer-events: none; width: 0 !important; margin: 0 !important; padding: 0 !important; border: none !important; visibility: hidden; }
 
@@ -57,20 +56,29 @@
         .nav-btn.active { color: var(--accent); }
         .nav-btn small { font-size: 0.6rem; margin-top: 4px; font-weight: bold; }
 
+        /* DEV LOGO SORUNUNU ÇÖZEN PROMO TASARIMI */
+        .promo-slider { padding: 0 15px; margin-bottom: 30px; transition: 0.5s; overflow: hidden; }
+        .promo-card { 
+            aspect-ratio: 3/4; width: 100%; max-width: 400px; margin: 0 auto; border-radius: 25px; 
+            display: flex; align-items: flex-end; padding: 25px; border: 1px solid rgba(255,255,255,0.1); 
+            background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important;
+            position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5); background-color: #1a1a1a;
+        }
+        .promo-card::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); border-radius: 25px; }
+        .promo-card > div { position: relative; z-index: 2; width: 100%; }
+        .promo-hidden { display: none !important; }
+
         #search-section { padding: 15px; display: none; }
         .search-input { background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 15px; padding: 12px 20px; width: 100%; margin-bottom: 20px; }
         .list-item { background: var(--card); border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 12px; border: 1px solid #222; cursor: pointer; }
         .list-logo { width: 55px; height: 55px; object-fit: contain; }
-
-        .promo-slider { padding: 0 15px; margin-bottom: 30px; transition: all 0.5s ease; max-height: 500px; }
-        .promo-hidden { display: none !important; }
         
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+    <div class="overlay" id="overlay" onclick="toggleSidebar()" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:1500;"></div>
 
     <div class="sidebar" id="sidebar">
         <div class="d-flex justify-content-between align-items-center mb-5">
@@ -78,28 +86,26 @@
             <i class="fas fa-times fs-4" onclick="toggleSidebar()"></i>
         </div>
         <div class="menu-links">
-            <a href="javascript:void(0)" onclick="showFavorites(); toggleSidebar();" class="menu-item"><i class="fas fa-star"></i> Favorilerim</a>
+            <div onclick="showFavorites(); toggleSidebar();" class="menu-item"><i class="fas fa-star"></i> Favorilerim</div>
             <hr style="border-color: #333; margin: 10px 0;">
             <div onclick="setTheme('dark')" class="menu-item"><i class="fas fa-moon"></i> <span>Koyu Mod</span></div>
             <div onclick="setTheme('normal')" class="menu-item"><i class="fas fa-palette"></i> <span>Normal Mod</span></div>
-            <hr style="border-color: #333; margin: 10px 0;">
-            <div class="menu-item"><i class="fas fa-code-branch"></i> Version <span class="ms-auto small text-muted">1.0.8</span></div>
         </div>
     </div>
 
     <div class="header">
         <i class="fas fa-bars fs-4" onclick="toggleSidebar()"></i>
-        <div class="logo-container" style="flex:1; display:flex; justify-content:center;">
-            <a href="javascript:void(0)" onclick="showHome()"><img src="logolar/logo.png" alt="orjnc tv+" class="site-logo"></a>
+        <div style="flex:1; display:flex; justify-content:center;">
+            <img src="logolar/logo.png" class="site-logo" onclick="showHome()">
         </div>
         <i class="fas fa-tv fs-4" style="color: var(--accent);"></i>
     </div>
 
-    <div id="player-box" style="display:none; background:#000;">
+    <div id="player-box" style="display:none;">
         <div class="video-wrapper"><video id="video" controls autoplay playsinline></video></div>
-        <div class="player-info-sticky">
-            <h5 id="now-playing" class="m-0 text-truncate">Kanal Adı</h5>
-            <p class="small mt-1 mb-0" id="player-cat-info">Canlı Yayın</p>
+        <div class="player-info-sticky" style="padding:15px 20px; background:#000; border-bottom:2px solid #222;">
+            <h5 id="now-playing" class="m-0">Kanal Adı</h5>
+            <p id="player-cat-info" class="small mt-1 mb-0">Canlı Yayın</p>
         </div>
         <div class="p-3"><div id="suggested-list"></div></div>
     </div>
@@ -114,12 +120,12 @@
         </div>
 
         <div class="promo-slider" id="promo-slider">
-            <div class="promo-card" id="featured-card" onclick="playFeatured()" style="cursor: pointer; aspect-ratio:3/4; border-radius:25px; background-size:cover; background-position:center; display:flex; align-items:flex-end; padding:25px; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+            <div class="promo-card" id="featured-card" onclick="playFeatured()" style="cursor:pointer;">
                 <div>
                     <h3 class="m-0" id="featured-title" style="font-weight: 800;">Yükleniyor...</h3>
                     <div class="d-flex gap-2 mt-2 align-items-center">
                         <span class="badge bg-danger">LIVE</span>
-                        <span id="featured-desc" class="small">Lütfen bekleyin...</span>
+                        <span id="featured-desc" class="small">Yükleniyor...</span>
                     </div>
                 </div>
             </div>
@@ -131,7 +137,7 @@
         </div>
 
         <div id="home-section">
-            <div class="px-3 mb-3 d-flex justify-content-between"><span style="font-weight:bold;">TV Channels</span></div>
+            <div class="px-3 mb-3"><span style="font-weight:bold;">TV Channels</span></div>
             <div id="grid-container" class="grid-container"></div>
         </div>
     </div>
@@ -181,7 +187,7 @@
             container.innerHTML = "";
             data.forEach(k => {
                 const isFav = favorites.includes(k.ad);
-                container.innerHTML += `<div class="list-item" onclick="playChannel('${k.url}', '${k.ad}')"><img src="${k.logo}" class="list-logo" onerror="this.src='https://via.placeholder.com/150?text=TV'"><div class="list-info"><span style="font-weight:bold; font-size:0.9rem;">${k.ad}</span><div class="small">${k.kategori}</div></div><i class="fa${isFav ? 's' : 'r'} fa-star" onclick="toggleFav(event, '${k.ad}')" style="color: ${isFav ? 'gold' : 'white'}; margin-left: auto; padding: 10px;"></i></div>`;
+                container.innerHTML += `<div class="list-item" onclick="playChannel('${k.url}', '${k.ad}')"><img src="${k.logo}" class="list-logo" onerror="this.src='https://via.placeholder.com/150?text=TV'"><div class="list-info"><span style="font-weight:bold; font-size:0.9rem; color:white;">${k.ad}</span><div class="small" style="color:#888;">${k.kategori}</div></div><i class="fa${isFav ? 's' : 'r'} fa-star" onclick="toggleFav(event, '${k.ad}')" style="color: ${isFav ? 'gold' : 'white'}; margin-left: auto; padding: 10px;"></i></div>`;
             });
         }
 
@@ -192,6 +198,32 @@
             allBtns.forEach(b => { b.classList.remove('active'); b.classList.remove('cat-hidden'); });
             if (isAlreadyActive) { promo.classList.remove('promo-hidden'); renderGrid(allChannels); } 
             else { btn.classList.add('active'); allBtns.forEach(b => { if(b !== btn) b.classList.add('cat-hidden'); }); promo.classList.add('promo-hidden'); renderGrid(allChannels.filter(k => k.kategori === cat)); }
+        }
+
+        function showHome() { 
+            document.getElementById('home-section').style.display = "block";
+            document.getElementById('search-section').style.display = "none";
+            document.getElementById('player-box').style.display = "none";
+            document.getElementById('main-content').style.display = "block";
+            document.getElementById('promo-slider').classList.remove('promo-hidden');
+            renderGrid(allChannels);
+        }
+
+        function showSearch() {
+            document.getElementById('home-section').style.display = "none";
+            document.getElementById('search-section').style.display = "block";
+            document.getElementById('player-box').style.display = "none";
+            document.getElementById('promo-slider').classList.add('promo-hidden');
+            const si = document.getElementById('searchInput');
+            if (si) setTimeout(() => si.focus(), 300);
+        }
+
+        function showFavorites() {
+            document.getElementById('home-section').style.display = "block";
+            document.getElementById('search-section').style.display = "none";
+            document.getElementById('player-box').style.display = "none";
+            document.getElementById('promo-slider').classList.add('promo-hidden');
+            renderGrid(allChannels.filter(k => favorites.includes(k.ad)));
         }
 
         function playChannel(url, ad, fromHash = false, kategori = "Canlı") {
@@ -205,29 +237,6 @@
             renderList(shuffled, 'suggested-list');
             if (Hls.isSupported()) { hls.loadSource(url); hls.attachMedia(video); hls.on(Hls.Events.MANIFEST_PARSED, () => video.play()); }
             else if (video.canPlayType('application/vnd.apple.mpegurl')) { video.src = url; }
-        }
-
-        function showHome() { window.location.href = "https://orjnc.github.io"; }
-
-        function showSearch() {
-            document.getElementById('home-section').style.display = "none";
-            document.getElementById('search-section').style.display = "block";
-            document.getElementById('player-box').style.display = "none";
-            document.getElementById('main-content').style.display = "block";
-            const promo = document.getElementById('promo-slider');
-            if (promo) promo.classList.add('promo-hidden');
-            const si = document.getElementById('searchInput');
-            if (si) setTimeout(() => si.focus(), 300);
-        }
-
-        function showFavorites() {
-            document.getElementById('home-section').style.display = "block";
-            document.getElementById('search-section').style.display = "none";
-            document.getElementById('player-box').style.display = "none";
-            document.getElementById('main-content').style.display = "block";
-            const promo = document.getElementById('promo-slider');
-            if (promo) promo.classList.add('promo-hidden');
-            renderGrid(allChannels.filter(k => favorites.includes(k.ad)));
         }
 
         function doSearch() {
@@ -247,9 +256,10 @@
         }
 
         function toggleSidebar() { 
-            document.getElementById('sidebar').classList.toggle('active');
+            const sb = document.getElementById('sidebar');
             const ov = document.getElementById('overlay');
-            ov.style.display = (ov.style.display === 'block') ? 'none' : 'block';
+            sb.classList.toggle('active');
+            ov.style.display = sb.classList.contains('active') ? "block" : "none";
         }
 
         function checkHash() {
