@@ -263,15 +263,10 @@
             });
         }
 
-        function showHome() { 
-            if(video) video.pause(); 
-            document.getElementById('player-box').style.display = "none";
-            document.getElementById('main-content').style.display = "block";
-            document.getElementById('home-section').style.display = "block";
-            document.getElementById('search-section').style.display = "none";
-            document.getElementById('promo-slider').classList.remove('promo-hidden');
-            renderGrid(allChannels);
+        function showHome() {
+    window.location.href = "https://orjnc.github.io";
         }
+        
 
         function toggleSidebar() { 
             document.getElementById('sidebar').classList.toggle('active');
