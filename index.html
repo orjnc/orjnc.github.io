@@ -72,21 +72,21 @@
     position: sticky; 
     top: 0; 
     height: 70px; 
-    z-index: 2000; 
+    z-index: 2000; /* Sidebar'ın arkasında kalması için */
     
-    /* TOZ BULUTU EFEKTI (SABİT) */
+    /* TOZ BULUTU (BLUR) HER İKİ MODDA DA SABİT */
     backdrop-filter: blur(15px); 
     -webkit-backdrop-filter: blur(15px); 
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
-    /* NORMAL MOD (Sitenin Kendi Rengi) */
+    /* 1. NORMAL MOD: Senin Mor Rengin */
     background: rgba(181, 0, 200, 0.5) !important; 
 }
 
-/* KOYU MOD TETİKLENDİĞİNDE (Cihaz veya Gövde Sınıfı) */
+/* 2. KOYU MOD: Otomatik Siyah Cam Efekti */
 @media (prefers-color-scheme: dark) {
     .header {
-        background: rgba(0, 0, 0, 0.6) !important;
+        background: rgba(0, 0, 0, 0.7) !important; /* Moru tamamen öldürüp siyah sis yapar */
     }
 }
         
