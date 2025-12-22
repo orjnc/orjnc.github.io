@@ -162,7 +162,7 @@
                 checkHash();
             });
 
-        // ANA GRID - LOGOLAR KLASÖRÜ EKLENDİ
+        // ANA GRID - YOL DUZELTILDI
         function renderGrid(data) {
             const container = document.getElementById('grid-container');
             container.innerHTML = "";
@@ -172,13 +172,13 @@
                     <div class="channel-square">
                         <i class="fas fa-star fav-star ${isFav}" onclick="toggleFav(event, '${k.ad}')"></i>
                         <div class="w-100 h-100 d-flex align-items-center justify-content-center" onclick="playChannel('${k.url}', '${k.ad}', false, '${k.kategori}')">
-                            <img src="logolar/${k.logo}" class="square-logo" onerror="this.src='https://via.placeholder.com/150?text=TV'">
+                            <img src="${k.logo}" class="square-logo" onerror="this.src='https://via.placeholder.com/150?text=TV'">
                         </div>
                     </div>`;
             });
         }
 
-        // ARAMA - LOGOLAR KLASÖRÜ EKLENDİ
+        // ARAMA - YOL DUZELTILDI
         function doSearch() {
             const val = document.getElementById('searchInput').value.toLowerCase();
             const filtered = allChannels.filter(k => k.ad.toLowerCase().includes(val));
@@ -187,20 +187,20 @@
             filtered.forEach(k => {
                 container.innerHTML += `
                     <div class="list-item" onclick="playChannel('${k.url}','${k.ad}')">
-                        <img src="logolar/${k.logo}" class="list-logo" onerror="this.src='https://via.placeholder.com/50'">
+                        <img src="${k.logo}" class="list-logo" onerror="this.src='https://via.placeholder.com/50'">
                         <span>${k.ad}</span>
                     </div>`;
             });
         }
 
-        // ÖNERİLEN LİSTE - LOGOLAR KLASÖRÜ EKLENDİ
+        // ÖNERİLEN LİSTE - YOL DUZELTILDI
         function renderList(data, targetId) {
             const container = document.getElementById(targetId);
             container.innerHTML = "";
             data.forEach(k => {
                 container.innerHTML += `
                     <div class="list-item" onclick="playChannel('${k.url}', '${k.ad}', false, '${k.kategori}')">
-                        <img src="logolar/${k.logo}" class="list-logo" onerror="this.src='https://via.placeholder.com/50'">
+                        <img src="${k.logo}" class="list-logo" onerror="this.src='https://via.placeholder.com/50'">
                         <div class="list-info">
                             <span style="font-weight:bold; font-size:0.9rem;">${k.ad}</span>
                             <div class="list-prog">${k.kategori}</div>
