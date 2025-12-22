@@ -13,7 +13,6 @@
     <style>
         :root { --bg: #000000; --card: #121212; --accent: #ff005c; --text: #ffffff; --gray: #888888; --selected-cat: #F683BE; }
         
-        /* MOD STİLLERİ */
         body.normal-mode { 
             background: linear-gradient(to bottom, #bd00d1 0%, #000000 50%) !important;
             background-attachment: fixed !important;
@@ -66,11 +65,11 @@
         .list-item { background: var(--card); border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 12px; border: 1px solid #222; cursor: pointer; }
         .list-logo { width: 55px; height: 55px; object-fit: contain; }
 
-        /* YENİ 3:4 PROMO TASARIMI */
+        /* 3:4 PROMO TASARIMI */
         .promo-slider { padding: 0 15px; margin-bottom: 30px; transition: all 0.5s ease; max-height: 500px; overflow: hidden; }
         .promo-hidden { max-height: 0; margin-bottom: 0; opacity: 0; transform: translateY(-20px); }
         .promo-card { 
-            aspect-ratio: 3/4; /* 3:4 Oranı sağlandı */
+            aspect-ratio: 3/4;
             width: 100%;
             max-width: 400px;
             margin: 0 auto;
@@ -85,7 +84,6 @@
             position: relative; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        /* Görselin üzerindeki yazıların okunması için gölge */
         .promo-card::after {
             content: "";
             position: absolute;
@@ -110,19 +108,10 @@
         </div>
         <div class="menu-links">
             <a href="javascript:void(0)" onclick="showFavorites(); toggleSidebar();" class="menu-item"><i class="fas fa-star"></i> Favorilerim</a>
-            
             <hr style="border-color: #333; margin: 10px 0;">
-            
-            <div id="dark-mode-btn" onclick="setTheme('dark')" class="menu-item">
-                <i class="fas fa-moon"></i> <span>Koyu Mod</span>
-            </div>
-
-            <div id="normal-mode-btn" onclick="setTheme('normal')" class="menu-item">
-                <i class="fas fa-palette"></i> <span>Normal Mod</span>
-            </div>
-
+            <div id="dark-mode-btn" onclick="setTheme('dark')" class="menu-item"><i class="fas fa-moon"></i> <span>Koyu Mod</span></div>
+            <div id="normal-mode-btn" onclick="setTheme('normal')" class="menu-item"><i class="fas fa-palette"></i> <span>Normal Mod</span></div>
             <hr style="border-color: #333; margin: 10px 0;">
-
             <a href="#" class="menu-item"><i class="fas fa-code-branch"></i> Version <span class="ms-auto small text-muted">1.0.8</span></a>
         </div>
     </div>
@@ -130,24 +119,18 @@
     <div class="header">
         <i class="fas fa-bars fs-4" onclick="toggleSidebar()"></i>
         <div class="logo-container">
-            <a href="https://orjnc.github.io">
-                <img src="logolar/logo.png" alt="orjnc tv+" class="site-logo">
-            </a>
+            <a href="https://orjnc.github.io"><img src="logolar/logo.png" alt="orjnc tv+" class="site-logo"></a>
         </div>
         <i class="fas fa-tv fs-4" style="color: var(--accent);"></i>
     </div>
 
     <div id="player-box">
-        <div class="video-wrapper">
-            <video id="video" controls autoplay playsinline></video>
-        </div>
+        <div class="video-wrapper"><video id="video" controls autoplay playsinline></video></div>
         <div class="player-info-sticky">
             <h5 id="now-playing" class="m-0 text-truncate">Kanal Adı</h5>
             <p style="color: white !important;" class="small mt-1 mb-0" id="player-cat-info">Canlı Yayın</p>
         </div>
-        <div class="p-3">
-            <div id="suggested-list"></div>
-        </div>
+        <div class="p-3"><div id="suggested-list"></div></div>
     </div>
 
     <div id="main-content">
@@ -165,7 +148,7 @@
                     <h3 class="m-0" id="featured-title" style="font-weight: 800;">Yükleniyor...</h3>
                     <div class="d-flex gap-2 mt-2 align-items-center">
                         <span class="badge bg-danger">LIVE</span>
-                        <span id="featured-desc" class="small" style="opacity: 0.9;">Kanal listesi hazırlanıyor...</span>
+                        <span id="featured-desc" class="small" style="opacity: 0.9;">Lütfen bekleyin...</span>
                     </div>
                 </div>
             </div>
@@ -190,97 +173,47 @@
     </div>
 
     <script>
-        const oneriListesi = [
-            { title: "UZAK ŞEHİR", desc: "Bu Akşam 20:00'da Kanal D'de!", image: "https://i.imgur.com/NKiF8WO.jpeg", targetChannel: "Kanal D" },
-            { title: "BERGEN", desc: "Bu Akşam 20:00'da ATV'de!", image: "https://i.imgur.com/LNW86ek.jpeg", targetChannel: "ATV" },
-            { title: "MASTERCHEF", desc: "20:00'da Yeni Bölüm Heyecanı Başlıyor!", image: "https://i.imgur.com/wAX4TER.jpeg", targetChannel: "TV8" }
-        ];
-
-        let aktifSira = 0;
         let allChannels = [];
         let favorites = JSON.parse(localStorage.getItem('myTVfavs')) || [];
         const hls = new Hls();
         const video = document.getElementById('video');
 
-        // TEMA YÖNETİMİ
         function setTheme(mode) {
             const body = document.body;
-            const darkBtn = document.getElementById('dark-mode-btn');
-            const normalBtn = document.getElementById('normal-mode-btn');
-
             if (mode === 'normal') {
                 body.classList.add('normal-mode');
-                normalBtn.classList.add('active-mode');
-                darkBtn.classList.remove('active-mode');
                 localStorage.setItem('themeChoice', 'normal');
             } else {
                 body.classList.remove('normal-mode');
-                darkBtn.classList.add('active-mode');
-                normalBtn.classList.remove('active-mode');
                 localStorage.setItem('themeChoice', 'dark');
             }
         }
 
-        // Sayfa açıldığında tema kontrolü
         document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('themeChoice') || 'dark';
-            setTheme(savedTheme);
+            setTheme(localStorage.getItem('themeChoice') || 'dark');
+            
+            fetch('kanallar.json?v=' + Date.now())
+                .then(res => res.json())
+                .then(data => {
+                    allChannels = data;
+                    renderGrid(data);
+                    checkHash();
+                });
         });
-
-        fetch('kanallar.json?v=' + Date.now())
-            .then(res => res.json())
-            .then(data => {
-                allChannels = data;
-                renderGrid(data);
-                checkHash();
-                setupFeatured();
-                setInterval(setupFeatured, 5000);
-            });
-
-        function setupFeatured() {
-            const card = document.getElementById('featured-card');
-            const title = document.getElementById('featured-title');
-            const desc = document.getElementById('featured-desc');
-            if (!card || oneriListesi.length === 0) return;
-
-            const veri = oneriListesi[aktifSira];
-            card.style.opacity = "0.5";
-
-            setTimeout(() => {
-                title.innerText = veri.title;
-                desc.innerText = veri.desc;
-                card.style.backgroundImage = `url('${veri.image}')`;
-                card.style.opacity = "1";
-            }, 300);
-
-            aktifSira = (aktifSira + 1) % oneriListesi.length;
-        }
-
-        function playFeatured() {
-            let suAnkiIndex = (aktifSira === 0) ? oneriListesi.length - 1 : aktifSira - 1;
-            const veri = oneriListesi[suAnkiIndex];
-            const channel = allChannels.find(k => k.ad === veri.targetChannel);
-            if (channel) playChannel(channel.url, channel.ad, false, channel.kategori);
-        }
 
         function renderGrid(data) {
             const container = document.getElementById('grid-container');
-            container.classList.add('grid-fade-out'); 
-            
-            setTimeout(() => {
-                container.innerHTML = "";
-                data.forEach(k => {
-                    const isFav = favorites.includes(k.ad) ? 'active' : '';
-                    container.innerHTML += `
-                        <div class="channel-square">
-                            <i class="fas fa-star fav-star ${isFav}" onclick="toggleFav(event, '${k.ad}')"></i>
-                            <div class="w-100 h-100 d-flex align-items-center justify-content-center" onclick="playChannel('${k.url}', '${k.ad}', false, '${k.kategori}')">
-                                <img src="${k.logo}" class="square-logo" onerror="this.src='https://via.placeholder.com/150?text=TV'">
-                            </div>
-                        </div>`;
-                });
-                container.classList.remove('grid-fade-out'); 
-            }, 400);
+            container.innerHTML = "";
+            data.forEach(k => {
+                const isFav = favorites.includes(k.ad) ? 'active' : '';
+                container.innerHTML += `
+                    <div class="channel-square">
+                        <i class="fas fa-star fav-star ${isFav}" onclick="toggleFav(event, '${k.ad}')"></i>
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center" onclick="playChannel('${k.url}', '${k.ad}', false, '${k.kategori}')">
+                            <img src="${k.logo}" class="square-logo" onerror="this.src='https://via.placeholder.com/150?text=TV'">
+                        </div>
+                    </div>`;
+            });
         }
 
         function playChannel(url, ad, fromHash = false, kategori = "Canlı") {
@@ -318,15 +251,45 @@
             });
         }
 
-        window.onpopstate = function() { window.location.href = "https://orjnc.github.io"; };
-        
         function showHome() { 
             if(video) video.pause(); 
-            const container = document.getElementById('category-list');
-            document.querySelectorAll('.cat-btn').forEach(b => { b.classList.remove('active'); b.classList.remove('cat-hidden'); });
+            document.getElementById('player-box').style.display = "none";
+            document.getElementById('main-content').style.display = "block";
+            document.getElementById('home-section').style.display = "block";
+            document.getElementById('search-section').style.display = "none";
             document.getElementById('promo-slider').classList.remove('promo-hidden');
             renderGrid(allChannels);
-            window.location.href = "https://orjnc.github.io"; 
+        }
+
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('active');
+            const ov = document.getElementById('overlay');
+            ov.style.display = (ov.style.display === 'block') ? 'none' : 'block';
+        }
+
+        function doSearch() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            const res = allChannels.filter(k => k.ad.toLowerCase().includes(q) || k.kategori.toLowerCase().includes(q));
+            renderList(res, 'search-results');
+        }
+
+        function showSearch() {
+            document.getElementById('home-section').style.display = "none";
+            document.getElementById('search-section').style.display = "block";
+            document.getElementById('player-box').style.display = "none";
+            document.getElementById('main-content').style.display = "block";
+        }
+
+        function toggleFav(e, name) {
+            e.stopPropagation();
+            const idx = favorites.indexOf(name);
+            if (idx > -1) favorites.splice(idx, 1); else favorites.push(name);
+            localStorage.setItem('myTVfavs', JSON.stringify(favorites));
+            renderGrid(allChannels);
+        }
+
+        function showFavorites() {
+            renderGrid(allChannels.filter(k => favorites.includes(k.ad)));
         }
 
         function filterCategory(cat, btn) {
@@ -341,26 +304,18 @@
             } else {
                 allBtns.forEach(b => { if (b !== btn) { b.classList.add('cat-hidden'); } else { b.classList.remove('cat-hidden'); b.classList.add('active'); } });
                 promo.classList.add('promo-hidden'); 
-                const filtered = allChannels.filter(k => k.kategori === cat);
-                renderGrid(filtered);
+                renderGrid(allChannels.filter(k => k.kategori === cat));
             }
         }
 
-        function toggleFav(e, name) {
-            e.stopPropagation();
-            const idx = favorites.indexOf(name);
-            if (idx > -1) favorites.splice(idx, 1); else favorites.push(name);
-            localStorage.setItem('myTVfavs', JSON.stringify(favorites));
-            renderGrid(allChannels);
+        function checkHash() {
+            const h = window.location.hash.substring(1);
+            if(h) {
+                const c = allChannels.find(k => k.ad === decodeURIComponent(h));
+                if(c) playChannel(c.url, c.ad, true, c.kategori);
+            }
         }
-
-        function showSearch() { 
-            document.getElementById('home-section').style.display = "none"; 
-            document.getElementById('search-section').style.display = "block";
-            document.getElementById('player-box').style.display = "none";
-            document.getElementById('main-content').style.display = "block";
-        }
-
-        function showFavorites() { renderGrid(allChannels.filter(k => favorites.includes(k.ad))); }
-
-        function toggleSi
+    </script>
+    <script src="oneriler.js"></script>
+</body>
+</html>
