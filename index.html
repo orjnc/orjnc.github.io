@@ -28,7 +28,16 @@ html {
 
 body {
     background-color: #000000 !important;
-    min-height: 100vh; /* Sayfa boyu ne olursa olsun ekranı doldurur */
+    color: #ffffff !important; /* Tüm yazıların beyaz olmasını sağlar */
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* Kategori ve Kanal isimlerinin de beyaz kaldığından emin olalım */
+.list-info span, .list-info div {
+    color: #ffffff !important;
+}
+        
 }
 
 /* Görseldeki pembe/mor gradyanın alt tarafta kesilmemesi için */
