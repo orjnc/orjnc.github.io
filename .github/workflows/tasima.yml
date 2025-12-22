@@ -15,7 +15,7 @@ jobs:
       - name: Klasor Olustur ve Tasi
         run: |
           mkdir -p logolar
-          mv *.jpg logolar/ 2>/dev/null || true
+          mv *.png logolar/ 2>/dev/null || true
           
       - name: Degisiklikleri Kaydet
         run: |
