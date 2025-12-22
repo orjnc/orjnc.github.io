@@ -198,20 +198,7 @@
         
         #search-section { padding: 15px; display: none; }
         .search-input { background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 15px; padding: 12px 20px; width: 100%; margin-bottom: 20px; }
-        .list-item { 
-    background: rgba(255, 255, 255, 0.1) !important; 
-    backdrop-filter: blur(12px); 
-    -webkit-backdrop-filter: blur(12px); 
-    border-radius: 15px; 
-    padding: 15px; 
-    display: flex; 
-    align-items: center; 
-    gap: 15px; 
-    margin-bottom: 12px; 
-    border: 1px solid rgba(255,255,255,0.1); 
-    cursor: pointer; 
-        }
-        
+        .list-item { background: var(--card); border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 12px; border: 1px solid #222; cursor: pointer; }
         .list-logo { width: 55px; height: 55px; object-fit: contain; }
 
         /* Promo Card */
@@ -338,10 +325,7 @@
         <div onclick="toggleSidebar()" class="nav-btn"><i class="fas fa-bars"></i><small>MORE</small></div>
     </div>
 
-                renderGrid(allChannels.filter(k => favorites.includes(k.ad)));
-        }
-
-    <script src="Oneriler.js"></script> <script>
+    <script>
         let allChannels = [];
         let favorites = JSON.parse(localStorage.getItem('myTVfavs')) || [];
         const hls = new Hls();
@@ -357,28 +341,19 @@
             setTheme(localStorage.getItem('themeChoice') || 'dark');
             fetch('kanallar.json?v=' + Date.now())
                 .then(res => res.json())
-                .then(data => { 
-                    allChannels = data; 
-                    renderGrid(data); 
-                    // Oneriler.js içindeki fonksiyonu tetikle
-                    if(typeof setupFeatured === 'function') setupFeatured();
-                    checkHash(); 
-                }).catch(err => console.error("JSON Yüklenemedi:", err));
+                .then(data => { allChannels = data; renderGrid(data); checkHash(); });
         });
 
         function renderGrid(data) {
             const container = document.getElementById('grid-container');
-            if(!container) return;
             container.innerHTML = "";
             data.forEach(k => {
                 const isFav = favorites.includes(k.ad) ? 'active' : '';
-                // LOGO HATASI ÇÖZÜMÜ: JSON'daki tam URL'yi kullan
-                const logo = k.logo;
                 container.innerHTML += `
                     <div class="channel-square">
                         <i class="fas fa-star fav-star ${isFav}" onclick="toggleFav(event, '${k.ad}')"></i>
-                        <div class="w-100 h-100 d-flex align-items-center justify-content-center" onclick="playChannel('${k.url}', '${k.ad}', false, '${k.kategori || "TV"}')">
-                            <img src="${logo}" class="square-logo" onerror="this.onerror=null; this.src='logolar/logo.png'">
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center" onclick="playChannel('${k.url}', '${k.ad}', false, '${k.kategori}')">
+                            <img src="${k.logo}" class="square-logo" onerror="this.src='https://via.placeholder.com/150?text=TV'">
                         </div>
                     </div>`;
             });
@@ -390,103 +365,69 @@
             container.innerHTML = "";
             data.forEach(k => {
                 const isFav = favorites.includes(k.ad);
-                const logo = k.logo;
                 container.innerHTML += `
                     <div class="list-item" onclick="playChannel('${k.url}', '${k.ad}')">
-                        <img src="${logo}" class="list-logo" onerror="this.onerror=null; this.src='logolar/logo.png'">
+                        <img src="${k.logo}" class="list-logo" onerror="this.src='https://via.placeholder.com/150?text=TV'">
                         <div class="list-info">
                             <span style="font-weight:bold; font-size:0.9rem;">${k.ad}</span>
-                            <div class="small">${k.kategori || 'Canlı'}</div>
+                            <div class="small">${k.kategori}</div>
                         </div>
                         <i class="fa${isFav ? 's' : 'r'} fa-star" onclick="toggleFav(event, '${k.ad}')" style="color: ${isFav ? 'gold' : 'white'}; margin-left: auto; padding: 10px;"></i>
                     </div>`;
             });
         }
 
-                <script src="Oneriler.js"></script> 
-
-    <script>
-        let allChannels = [];
-        let favorites = JSON.parse(localStorage.getItem('myTVfavs')) || [];
-        const hls = new Hls();
-        const video = document.getElementById('video');
-
-        function setTheme(mode) {
-            if (mode === 'normal') document.body.classList.add('normal-mode');
-            else document.body.classList.remove('normal-mode');
-            localStorage.setItem('themeChoice', mode);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            setTheme(localStorage.getItem('themeChoice') || 'dark');
-            fetch('kanallar.json?v=' + Date.now())
-                .then(res => res.json())
-                .then(data => { 
-                    allChannels = data; 
-                    renderGrid(data); 
-                    // Oneriler.js'yi tetikle
-                    if(typeof setupFeatured === 'function') setupFeatured();
-                    checkHash(); 
-                }).catch(err => console.error("Veri alınamadı:", err));
-        });
-
-        function renderGrid(data) {
-            const container = document.getElementById('grid-container');
-            if(!container) return;
-            container.innerHTML = "";
-            data.forEach(k => {
-                const isFav = favorites.includes(k.ad) ? 'active' : '';
-                // ÇÖZÜM: Direkt k.logo kullanıyoruz (logolar/ klasörünü kod eklemiyor, JSON'dan alıyor)
-                container.innerHTML += `
-                    <div class="channel-square">
-                        <i class="fas fa-star fav-star ${isFav}" onclick="toggleFav(event, '${k.ad}')"></i>
-                        <div class="w-100 h-100 d-flex align-items-center justify-content-center" onclick="playChannel('${k.url}', '${k.ad}', false, '${k.kategori || "TV"}')">
-                            <img src="${k.logo}" class="square-logo" onerror="this.onerror=null; this.src='logolar/logo.png'">
-                        </div>
-                    </div>`;
-            });
-        }
-
         function playChannel(url, ad, fromHash = false, kategori = "Canlı") {
-            if(!fromHash) window.location.hash = encodeURIComponent(ad);
+            if(!fromHash) history.pushState({page: 'player'}, ad, "#" + encodeURIComponent(ad));
             document.getElementById('player-box').style.display = "block";
             document.getElementById('main-content').style.display = "none";
             document.getElementById('now-playing').innerText = ad;
             document.getElementById('player-cat-info').innerText = "Canlı Yayın • " + kategori;
-            
-            if (Hls.isSupported()) {
-                hls.loadSource(url); hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
-            } else { video.src = url; video.play(); }
-
-            // Önerilen kanalları listele
+            window.scrollTo(0,0);
             const shuffled = [...allChannels].sort(() => 0.5 - Math.random()).slice(0, 5);
-            const sugList = document.getElementById('suggested-list');
-            if(sugList) {
-                sugList.innerHTML = "";
-                shuffled.forEach(s => {
-                    sugList.innerHTML += `<div class="list-item" onclick="playChannel('${s.url}','${s.ad}')"><img src="${s.logo}" class="list-logo"> <span>${s.ad}</span></div>`;
-                });
-            }
+            renderList(shuffled, 'suggested-list');
+            if (Hls.isSupported()) { hls.loadSource(url); hls.attachMedia(video); hls.on(Hls.Events.MANIFEST_PARSED, () => video.play()); }
+            else if (video.canPlayType('application/vnd.apple.mpegurl')) { video.src = url; }
         }
 
         function showHome() {
-            document.getElementById('player-box').style.display = "none";
-            document.getElementById('main-content').style.display = "block";
-            document.getElementById('promo-slider').classList.remove('promo-hidden');
-            renderGrid(allChannels);
+    // Önce kategorileri tekrar görünür yap
+    const catList = document.getElementById('category-list');
+    if(catList) catList.style.display = "flex";
+    
+    // Sonra ana sayfaya yönlendir veya içeriği sıfırla
+    window.location.href = "https://orjnc.github.io"; 
         }
 
         function showSearch() {
             document.getElementById('home-section').style.display = "none";
             document.getElementById('search-section').style.display = "block";
-            document.getElementById('promo-slider').classList.add('promo-hidden');
-            setTimeout(() => document.getElementById('searchInput').focus(), 200);
+            document.getElementById('player-box').style.display = "none";
+            document.getElementById('main-content').style.display = "block";
+            const promo = document.getElementById('promo-slider');
+            if (promo) promo.classList.add('promo-hidden');
+            const si = document.getElementById('searchInput');
+            if (si) setTimeout(() => si.focus(), 300);
         }
 
         function showFavorites() {
-            document.getElementById('promo-slider').classList.add('promo-hidden');
-            renderGrid(allChannels.filter(k => favorites.includes(k.ad)));
+    document.getElementById('home-section').style.display = "block";
+    document.getElementById('search-section').style.display = "none";
+    document.getElementById('player-box').style.display = "none";
+    document.getElementById('main-content').style.display = "block";
+    
+    // KATEGORİLERİ GİZLEME SATIRI:
+    document.getElementById('category-list').style.display = "none";
+    
+    const promo = document.getElementById('promo-slider');
+    if (promo) promo.classList.add('promo-hidden');
+    renderGrid(allChannels.filter(k => favorites.includes(k.ad)));
+        }
+
+        function doSearch() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            const res = allChannels.filter(k => k.ad.toLowerCase().includes(q) || k.kategori.toLowerCase().includes(q));
+            renderList(res, 'search-results');
         }
 
         function toggleFav(e, name) {
@@ -494,28 +435,26 @@
             const idx = favorites.indexOf(name);
             if (idx > -1) favorites.splice(idx, 1); else favorites.push(name);
             localStorage.setItem('myTVfavs', JSON.stringify(favorites));
-            renderGrid(allChannels);
+            if (document.getElementById('search-section').style.display === "block") doSearch();
+            else if (document.getElementById('promo-slider').classList.contains('promo-hidden')) showFavorites();
+            else renderGrid(allChannels);
         }
 
         function filterCategory(cat, btn) {
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById('promo-slider').classList.add('promo-hidden');
-            renderGrid(allChannels.filter(k => k.kategori === cat));
+            const isAlreadyActive = btn.classList.contains('active');
+            const allBtns = document.querySelectorAll('.cat-btn');
+            const promo = document.getElementById('promo-slider');
+            allBtns.forEach(b => { b.classList.remove('active'); b.classList.remove('cat-hidden'); });
+            if (isAlreadyActive) { promo.classList.remove('promo-hidden'); renderGrid(allChannels); }
+            else { btn.classList.add('active'); promo.classList.add('promo-hidden'); renderGrid(allChannels.filter(k => k.kategori === cat)); }
         }
 
-        function toggleSidebar() {
+        function toggleSidebar() { 
             document.getElementById('sidebar').classList.toggle('active');
             const ov = document.getElementById('overlay');
             ov.style.display = (ov.style.display === 'block') ? 'none' : 'block';
         }
 
         function checkHash() {
-            const h = decodeURIComponent(window.location.hash.substring(1));
-            if(h) {
-                const c = allChannels.find(k => k.ad === h);
-                if(c) playChannel(c.url, c.ad, true, c.kategori);
-            }
-        }
-    </script>
-    
+            const h = window.location.hash.substring(1);
+            if(h) { const c = allChannels.find(k => k.ad === decodeURIComponent(h)); if(c) playChannel(c.url, c.ad, true, c.kategori);
