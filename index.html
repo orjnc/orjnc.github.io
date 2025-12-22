@@ -258,7 +258,14 @@
             else if (video.canPlayType('application/vnd.apple.mpegurl')) { video.src = url; }
         }
 
-        function showHome() { window.location.href = "https://orjnc.github.io"; }
+        function showHome() {
+    // Önce kategorileri tekrar görünür yap
+    const catList = document.getElementById('category-list');
+    if(catList) catList.style.display = "flex";
+    
+    // Sonra ana sayfaya yönlendir veya içeriği sıfırla
+    window.location.href = "https://orjnc.github.io"; 
+        }
 
         function showSearch() {
             document.getElementById('home-section').style.display = "none";
@@ -272,13 +279,17 @@
         }
 
         function showFavorites() {
-            document.getElementById('home-section').style.display = "block";
-            document.getElementById('search-section').style.display = "none";
-            document.getElementById('player-box').style.display = "none";
-            document.getElementById('main-content').style.display = "block";
-            const promo = document.getElementById('promo-slider');
-            if (promo) promo.classList.add('promo-hidden');
-            renderGrid(allChannels.filter(k => favorites.includes(k.ad)));
+    document.getElementById('home-section').style.display = "block";
+    document.getElementById('search-section').style.display = "none";
+    document.getElementById('player-box').style.display = "none";
+    document.getElementById('main-content').style.display = "block";
+    
+    // KATEGORİLERİ GİZLEME SATIRI:
+    document.getElementById('category-list').style.display = "none";
+    
+    const promo = document.getElementById('promo-slider');
+    if (promo) promo.classList.add('promo-hidden');
+    renderGrid(allChannels.filter(k => favorites.includes(k.ad)));
         }
 
         function doSearch() {
