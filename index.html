@@ -148,80 +148,11 @@
         .fav-star { position: absolute; top: 10px; right: 10px; font-size: 0.8rem; color: rgba(255,255,255,0.2); z-index: 5; }
         .fav-star.active { color: #ffc107; }
 
-        /* --- PLAYER SAYFASI ANA DÜZENLEME --- */
-#player-box { 
-    display: none; 
-    background: #000; 
-    min-height: 100vh;
-    padding-bottom: 120px !important; /* Alt navigasyon çubuğu için boşluk */
-}
-
-/* NORMAL MODDA: Seçtiğin Mor Degrade Arka Plan */
-body.normal-mode #player-box {
-    background: linear-gradient(to bottom, #bd00d1 0%, #000000 100%) !important;
-    background-attachment: fixed !important;
-}
-
-/* ÖNERİLEN KANAL KUTULARI (Cam Efekti) */
-.list-item { 
-    border-radius: 15px; 
-    padding: 15px; 
-    display: flex; 
-    align-items: center; 
-    gap: 15px; 
-    margin-bottom: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-/* --- PLAYER VE ÖNERİLER ANA TASARIM --- */
-#player-box { 
-    display: none; 
-    background: #000; 
-    min-height: 100vh;
-    padding-bottom: 120px !important; /* Alt menüye çarpmaması için */
-}
-
-/* NORMAL MOD: Mor Degrade Arka Plan */
-body.normal-mode #player-box {
-    background: linear-gradient(to bottom, #bd00d1 0%, #000000 100%) !important;
-    background-attachment: fixed !important;
-}
-
-/* KANAL LİSTESİ (CAM EFEKTİ) */
-.list-item { 
-    border-radius: 15px; 
-    padding: 15px; 
-    display: flex; 
-    align-items: center; 
-    gap: 15px; 
-    margin-bottom: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-/* Normal Modda: Buzlu Cam */
-body.normal-mode .list-item {
-    background: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* Koyu Modda: Siyah Sis */
-@media (prefers-color-scheme: dark) {
-    .list-item {
-        background: rgba(0, 0, 0, 0.6) !important;
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.05) !important;
-    }
-}
-        
-/* Sadece Normal Modda Senin Arka Plan Görselin */
-body.normal-mode #player-box {
-    background: linear-gradient(to bottom, #bd00d1 0%, #000000 100%) !important;
-    background-attachment: fixed !important;
-}
+        /* Player */
+        #player-box { display: none; background: #000; }
+        .video-wrapper { position: sticky; top: 0; z-index: 1100; background: #000; }
+        video { width: 100%; aspect-ratio: 16/9; }
+        .player-info-sticky { padding: 15px 20px; border-bottom: 2px solid #222; }
 
         /* Navigasyon */
 .bottom-nav { 
@@ -267,35 +198,21 @@ body.normal-mode #player-box {
         
         #search-section { padding: 15px; display: none; }
         .search-input { background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 15px; padding: 12px 20px; width: 100%; margin-bottom: 20px; }
-        /* ÖNERİLEN KANALLAR: Normal Modda Mavi Cam */
-body.normal-mode .list-item {
-    background: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 15px;
-    padding: 15px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 12px;
-}
-
-/* ÖNERİLEN KANALLAR: Koyu Modda Siyah Cam */
-@media (prefers-color-scheme: dark) {
-    .list-item {
-        background: rgba(0, 0, 0, 0.6) !important;
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        border-radius: 15px;
-        padding: 15px;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        margin-bottom: 12px;
-    }
-}
+        .list-item { 
+    background: rgba(255, 255, 255, 0.1) !important; 
+    backdrop-filter: blur(12px); 
+    -webkit-backdrop-filter: blur(12px); 
+    border-radius: 15px; 
+    padding: 15px; 
+    display: flex; 
+    align-items: center; 
+    gap: 15px; 
+    margin-bottom: 12px; 
+    border: 1px solid rgba(255,255,255,0.1); 
+    cursor: pointer; 
+        }
+        
+        .list-logo { width: 55px; height: 55px; object-fit: contain; }
 
         /* Promo Card */
         .promo-slider { padding: 0 15px; margin-bottom: 30px; transition: 0.5s; }
@@ -551,34 +468,14 @@ body.normal-mode .list-item {
             ov.style.display = (ov.style.display === 'block') ? 'none' : 'block';
         }
 
-        function checkHash() {
+                        function checkHash() {
             const h = window.location.hash.substring(1);
-            if(h) { const c = allChannels.find(k => k.ad === decodeURIComponent(h)); if(c) playChannel(c.url, c.ad, true, c.kategori); }
-        }
-    </script>
-    <script src="oneriler.js"></script>
-
-<script>
-// Animasyonu tetikleyen sistem
-const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-        if (mutation.type === "childList" || mutation.attributeName === "style") {
-            const pCard = document.getElementById('featured-card');
-            if (pCard) {
-                pCard.classList.remove('promo-active');
-                void pCard.offsetWidth; // Reflow tetikleyici
-                pCard.classList.add('promo-active');
+            if(h) { 
+                const c = allChannels.find(k => k.ad === decodeURIComponent(h)); 
+                if(c) playChannel(c.url, c.ad, true, c.kategori); 
             }
         }
-    });
-});
-
-const targetNode = document.getElementById('featured-card');
-if (targetNode) {
-    observer.observe(targetNode, { attributes: true, childList: true, subtree: true });
-}
-</script>
-
+    </script>
 </body>
 </html>
 
