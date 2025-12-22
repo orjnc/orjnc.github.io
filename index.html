@@ -281,11 +281,19 @@
         }
 
         function showSearch() {
-            document.getElementById('home-section').style.display = "none";
-            document.getElementById('search-section').style.display = "block";
-            document.getElementById('player-box').style.display = "none";
-            document.getElementById('main-content').style.display = "block";
+    // Diğer bölümleri gizle, arama bölümünü aç
+    document.getElementById('home-section').style.display = "none";
+    document.getElementById('search-section').style.display = "block";
+    document.getElementById('player-box').style.display = "none";
+    document.getElementById('main-content').style.display = "block";
+
+    // Arama ekranında öneriler (promo) panelini gizle
+    const promo = document.getElementById('promo-slider');
+    if (promo) {
+        promo.style.display = "none"; // Kesin çözüm için display none
+    }
         }
+        
 
         function toggleFav(e, name) {
             e.stopPropagation();
