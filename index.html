@@ -277,18 +277,20 @@ body.normal-mode {
         }
 
         function renderList(data, targetId) {
-            const container = document.getElementById(targetId);
-            container.innerHTML = "";
-            data.forEach(k => {
-                container.innerHTML += `
-                    <div class="list-item" onclick="playChannel('${k.url}', '${k.ad}', false, '${k.kategori}')">
-                        <img src="${k.logo}" class="list-logo" onerror="this.src='https://via.placeholder.com/50'">
-                        <div class="list-info">
-                            <span style="font-weight:bold; font-size:0.9rem;">${k.ad}</span>
-                            <div style="color: white !important;">${k.kategori}</div>
-                        </div>
-                    </div>`;
-            });
+    const container = document.getElementById(targetId);
+    container.innerHTML = "";
+    data.forEach(k => {
+        const isFav = favorites.includes(k.ad); // Favorilerde mi kontrol et
+        container.innerHTML += `
+            <div class="list-item" onclick="playChannel('${k.url}', '${k.ad}')">
+                <img src="${k.logo}" class="list-logo" onerror="this.src='https://via.placeholder.com/150?text=TV'">
+                <div class="list-info">
+                    <span style="font-weight:bold; font-size:0.9rem;">${k.ad}</span>
+                    <div style="color: white !important;">${k.kategori}</div>
+                </div>
+                <i class="fa${isFav ? 's' : 'r'} fa-star fav-icon" onclick="toggleFav(event, '${k.ad}')" style="color: ${isFav ? 'gold' : 'white'};"></i>
+            </div>`;
+    });
         }
 
         function showHome() {
