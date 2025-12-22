@@ -66,9 +66,35 @@
         .list-item { background: var(--card); border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 12px; border: 1px solid #222; cursor: pointer; }
         .list-logo { width: 55px; height: 55px; object-fit: contain; }
 
-        .promo-slider { padding: 0 15px; margin-bottom: 25px; transition: all 0.5s ease; max-height: 300px; overflow: hidden; }
+        /* YENİ 3:4 PROMO TASARIMI */
+        .promo-slider { padding: 0 15px; margin-bottom: 30px; transition: all 0.5s ease; max-height: 500px; overflow: hidden; }
         .promo-hidden { max-height: 0; margin-bottom: 0; opacity: 0; transform: translateY(-20px); }
-        .promo-card { height: 200px; border-radius: 20px; display: flex; align-items: flex-end; padding: 20px; border: 1px solid #333; transition: opacity 0.4s ease-in-out; background-size: cover; background-position: center; position: relative; }
+        .promo-card { 
+            aspect-ratio: 3/4; /* 3:4 Oranı sağlandı */
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            border-radius: 25px; 
+            display: flex; 
+            align-items: flex-end; 
+            padding: 25px; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            transition: opacity 0.4s ease-in-out, transform 0.3s ease; 
+            background-size: cover; 
+            background-position: center; 
+            position: relative; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        /* Görselin üzerindeki yazıların okunması için gölge */
+        .promo-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 40%, transparent 100%);
+            border-radius: 25px;
+            z-index: 1;
+        }
+        .promo-card > div { position: relative; z-index: 2; width: 100%; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
@@ -136,10 +162,10 @@
         <div class="promo-slider" id="promo-slider">
             <div class="promo-card" id="featured-card" onclick="playFeatured()" style="cursor: pointer;">
                 <div>
-                    <h3 class="m-0" id="featured-title">Yükleniyor...</h3>
+                    <h3 class="m-0" id="featured-title" style="font-weight: 800;">Yükleniyor...</h3>
                     <div class="d-flex gap-2 mt-2 align-items-center">
                         <span class="badge bg-danger">LIVE</span>
-                        <span id="featured-desc" class="small">Kanal listesi hazırlanıyor...</span>
+                        <span id="featured-desc" class="small" style="opacity: 0.9;">Kanal listesi hazırlanıyor...</span>
                     </div>
                 </div>
             </div>
@@ -223,9 +249,7 @@
             setTimeout(() => {
                 title.innerText = veri.title;
                 desc.innerText = veri.desc;
-                card.style.backgroundImage = `linear-gradient(to bottom, transparent, rgba(0,0,0,0.9)), url('${veri.image}')`;
-                card.style.backgroundSize = "cover";
-                card.style.backgroundPosition = "center";
+                card.style.backgroundImage = `url('${veri.image}')`;
                 card.style.opacity = "1";
             }, 300);
 
@@ -339,19 +363,4 @@
 
         function showFavorites() { renderGrid(allChannels.filter(k => favorites.includes(k.ad))); }
 
-        function toggleSidebar() { 
-            document.getElementById('sidebar').classList.toggle('active');
-            const ov = document.getElementById('overlay');
-            ov.style.display = ov.style.display === 'block' ? 'none' : 'block';
-        }
-
-        function checkHash() {
-            const h = window.location.hash.substring(1);
-            if (h) {
-                const c = allChannels.find(k => k.ad === decodeURIComponent(h));
-                if (c) playChannel(c.url, c.ad, true, c.kategori);
-            }
-        }
-    </script>
-</body>
-</html>
+        function toggleSi
