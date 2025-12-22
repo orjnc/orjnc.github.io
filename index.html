@@ -12,85 +12,38 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --bg: #000000; --card: #121212; --accent: #ff005c; --text: #ffffff; --gray: #888888; --selected-cat: #F683BE; }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow-x: hidden; margin: 0; }
+        
+        /* MOD STİLLERİ */
+        body.normal-mode { 
+            background: linear-gradient(to bottom, #bd00d1 0%, #000000 50%) !important;
+            background-attachment: fixed !important;
+        }
+        
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow-x: hidden; margin: 0; transition: background 0.5s ease; }
         
         .sidebar { position: fixed; left: -280px; top: 0; height: 100%; width: 280px; background: rgba(18, 18, 18, 0.98); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 2000; padding: 30px 20px; border-right: 1px solid #222; display: flex; flex-direction: column; }
         .sidebar.active { left: 0; }
-        .menu-item { display: flex; align-items: center; gap: 15px; padding: 15px; color: var(--text); text-decoration: none; border-radius: 12px; transition: 0.3s; margin-bottom: 5px; }
+        .menu-item { display: flex; align-items: center; gap: 15px; padding: 15px; color: var(--text); text-decoration: none; border-radius: 12px; transition: 0.3s; margin-bottom: 5px; cursor: pointer; }
         .menu-item i { color: var(--accent); font-size: 1.2rem; width: 25px; }
         .menu-item:hover { background: rgba(255, 0, 92, 0.1); }
+        .menu-item.active-mode { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 0, 92, 0.3); }
 
         .sidebar-logo { max-height: 42px; width: auto; object-fit: contain; }
 
-        /* KATEGORİ KONTEYNER - RELATIVE YAPILDI */
-        .category-container { 
-            display: flex; 
-            gap: 10px; 
-            overflow-x: auto; 
-            padding: 15px 15px 20px 15px; 
-            white-space: nowrap; 
-            scrollbar-width: none; 
-            position: relative;
-            min-height: 75px;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .cat-btn { 
-            background: #1a1a1a; 
-            color: var(--gray); 
-            border: 1px solid #333; 
-            padding: 10px 22px !important; 
-            border-radius: 100px !important; 
-            font-size: 0.85rem; 
-            font-weight: 600; 
-            cursor: pointer; 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            min-width: 80px; 
-            gap: 8px; 
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
-            opacity: 1;
-            flex-shrink: 0;
-            position: relative;
-            left: 0;
-        }
-        
-        /* SEÇİLEN KATEGORİ: HER ZAMAN AYNI KONUMDA */
-        .cat-btn.active { 
-            background: var(--selected-cat) !important; 
-            color: white; 
-            border-color: var(--selected-cat); 
-            z-index: 100;
-            position: absolute;
-            right: 15px; /* Ekranın sağından 15px içeriye sabitlendi */
-            top: 15px;
-            min-width: 100px;
-        }
-
+        .category-container { display: flex; gap: 10px; overflow-x: auto; padding: 15px 15px 20px 15px; white-space: nowrap; scrollbar-width: none; position: relative; min-height: 75px; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .cat-btn { background: #1a1a1a; color: var(--gray); border: 1px solid #333; padding: 10px 22px !important; border-radius: 100px !important; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; min-width: 80px; gap: 8px; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); opacity: 1; flex-shrink: 0; position: relative; left: 0; }
+        .cat-btn.active { background: var(--selected-cat) !important; color: white; border-color: var(--selected-cat); z-index: 100; position: absolute; right: 15px; top: 15px; min-width: 100px; }
         .cat-btn .close-cat { display: none; font-size: 0.8rem; opacity: 0.8; }
         .cat-btn.active .close-cat { display: inline-block; animation: fadeIn 0.3s forwards; }
+        .cat-hidden { opacity: 0 !important; transform: scale(0.5); pointer-events: none; width: 0 !important; margin: 0 !important; padding: 0 !important; border: none !important; visibility: hidden; }
 
-        /* GİZLENENLER */
-        .cat-hidden { 
-            opacity: 0 !important; 
-            transform: scale(0.5); 
-            pointer-events: none; 
-            width: 0 !important; 
-            margin: 0 !important; 
-            padding: 0 !important; 
-            border: none !important; 
-            visibility: hidden;
-        }
-
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; position: sticky; top: 0; background: var(--bg); z-index: 1000; height: 70px; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; position: sticky; top: 0; background: transparent; z-index: 1000; height: 70px; }
         .logo-container { flex: 1; display: flex; justify-content: center; align-items: center; }
         .site-logo { max-height: 48px; width: auto; object-fit: contain; cursor: pointer; transition: 0.2s ease; }
         .site-logo:active { transform: scale(0.95); }
 
         .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 15px; transition: opacity 0.5s ease, transform 0.5s ease; }
         .grid-fade-out { opacity: 0; transform: translateY(20px); }
-        
         .channel-square { background: var(--card); border-radius: 18px; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; border: 1px solid #222; transition: 0.3s ease; cursor: pointer; position: relative; overflow: hidden; }
         .square-logo { width: 70%; height: 70%; object-fit: contain; }
         .fav-star { position: absolute; top: 10px; right: 10px; font-size: 0.8rem; color: rgba(255,255,255,0.2); z-index: 5; }
@@ -99,7 +52,6 @@
         #player-box { display: none; padding: 0; background: #000; }
         .video-wrapper { position: sticky; top: 0; z-index: 1100; background: #000; }
         video { width: 100%; aspect-ratio: 16/9; }
-        
         .player-info-sticky { position: sticky; top: 56.25vw; z-index: 1090; background: #000; padding: 15px 20px; border-bottom: 2px solid #222; }
 
         .bottom-nav { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 92%; background: rgba(26, 26, 26, 0.95); backdrop-filter: blur(10px); border-radius: 25px; display: flex; justify-content: space-around; padding: 12px; z-index: 1000; border: 1px solid #333; }
@@ -108,21 +60,15 @@
         .nav-btn small { font-size: 0.6rem; margin-top: 4px; font-weight: bold; }
         
         #main-content, #suggested-list { padding-bottom: 120px; }
-
         .overlay { display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1500; }
         #search-section { padding: 15px; display: none; }
         .search-input { background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 15px; padding: 12px 20px; width: 100%; margin-bottom: 20px; }
-        
         .list-item { background: var(--card); border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 12px; border: 1px solid #222; cursor: pointer; }
         .list-logo { width: 55px; height: 55px; object-fit: contain; }
 
         .promo-slider { padding: 0 15px; margin-bottom: 25px; transition: all 0.5s ease; max-height: 300px; overflow: hidden; }
         .promo-hidden { max-height: 0; margin-bottom: 0; opacity: 0; transform: translateY(-20px); }
-        
-        .promo-card { 
-            height: 200px; border-radius: 20px; display: flex; align-items: flex-end; padding: 20px; border: 1px solid #333; 
-            transition: opacity 0.4s ease-in-out; background-size: cover; background-position: center; position: relative;
-        }
+        .promo-card { height: 200px; border-radius: 20px; display: flex; align-items: flex-end; padding: 20px; border: 1px solid #333; transition: opacity 0.4s ease-in-out; background-size: cover; background-position: center; position: relative; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
@@ -138,6 +84,19 @@
         </div>
         <div class="menu-links">
             <a href="javascript:void(0)" onclick="showFavorites(); toggleSidebar();" class="menu-item"><i class="fas fa-star"></i> Favorilerim</a>
+            
+            <hr style="border-color: #333; margin: 10px 0;">
+            
+            <div id="dark-mode-btn" onclick="setTheme('dark')" class="menu-item">
+                <i class="fas fa-moon"></i> <span>Koyu Mod</span>
+            </div>
+
+            <div id="normal-mode-btn" onclick="setTheme('normal')" class="menu-item">
+                <i class="fas fa-palette"></i> <span>Normal Mod</span>
+            </div>
+
+            <hr style="border-color: #333; margin: 10px 0;">
+
             <a href="#" class="menu-item"><i class="fas fa-code-branch"></i> Version <span class="ms-auto small text-muted">1.0.8</span></a>
         </div>
     </div>
@@ -216,6 +175,31 @@
         let favorites = JSON.parse(localStorage.getItem('myTVfavs')) || [];
         const hls = new Hls();
         const video = document.getElementById('video');
+
+        // TEMA YÖNETİMİ
+        function setTheme(mode) {
+            const body = document.body;
+            const darkBtn = document.getElementById('dark-mode-btn');
+            const normalBtn = document.getElementById('normal-mode-btn');
+
+            if (mode === 'normal') {
+                body.classList.add('normal-mode');
+                normalBtn.classList.add('active-mode');
+                darkBtn.classList.remove('active-mode');
+                localStorage.setItem('themeChoice', 'normal');
+            } else {
+                body.classList.remove('normal-mode');
+                darkBtn.classList.add('active-mode');
+                normalBtn.classList.remove('active-mode');
+                localStorage.setItem('themeChoice', 'dark');
+            }
+        }
+
+        // Sayfa açıldığında tema kontrolü
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('themeChoice') || 'dark';
+            setTheme(savedTheme);
+        });
 
         fetch('kanallar.json?v=' + Date.now())
             .then(res => res.json())
@@ -315,41 +299,24 @@
         function showHome() { 
             if(video) video.pause(); 
             const container = document.getElementById('category-list');
-            
-            document.querySelectorAll('.cat-btn').forEach(b => {
-                b.classList.remove('active');
-                b.classList.remove('cat-hidden');
-            });
+            document.querySelectorAll('.cat-btn').forEach(b => { b.classList.remove('active'); b.classList.remove('cat-hidden'); });
             document.getElementById('promo-slider').classList.remove('promo-hidden');
             renderGrid(allChannels);
             window.location.href = "https://orjnc.github.io"; 
         }
 
-        /* TAM OLARAK AYNI KONUMA SABİTLEME MANTIĞI */
         function filterCategory(cat, btn) {
             const isAlreadyActive = btn.classList.contains('active');
             const allBtns = document.querySelectorAll('.cat-btn');
             const promo = document.getElementById('promo-slider');
 
             if (isAlreadyActive) {
-                allBtns.forEach(b => {
-                    b.classList.remove('active');
-                    b.classList.remove('cat-hidden');
-                });
+                allBtns.forEach(b => { b.classList.remove('active'); b.classList.remove('cat-hidden'); });
                 promo.classList.remove('promo-hidden');
                 renderGrid(allChannels);
             } else {
-                allBtns.forEach(b => {
-                    if (b !== btn) {
-                        b.classList.add('cat-hidden'); 
-                    } else {
-                        b.classList.remove('cat-hidden');
-                        b.classList.add('active'); 
-                    }
-                });
-
+                allBtns.forEach(b => { if (b !== btn) { b.classList.add('cat-hidden'); } else { b.classList.remove('cat-hidden'); b.classList.add('active'); } });
                 promo.classList.add('promo-hidden'); 
-                
                 const filtered = allChannels.filter(k => k.kategori === cat);
                 renderGrid(filtered);
             }
