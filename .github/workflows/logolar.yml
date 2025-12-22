@@ -1,7 +1,10 @@
 name: logolar
 
 on:
-  workflow_dispatch: # Actions sekmesinden manuel başlatmak için
+  workflow_dispatch:
+
+permissions:
+  contents: write # Botun dosya yükleyebilmesi için şart
 
 jobs:
   tasi-ve-temizle:
@@ -12,17 +15,10 @@ jobs:
 
       - name: Klasör Kontrol ve Taşıma
         run: |
-          # logolar klasörü yoksa oluştur
           mkdir -p logolar
-          
-          # Ana dizindeki png dosyalarını bul ve klasöre taşı
-          # Eğer dosya yoksa hata vermemesi için "if" kontrolü ekledim
           if ls *.png 1> /dev/null 2>&1 || ls *.PNG 1> /dev/null 2>&1; then
             mv *.png logolar/ 2>/dev/null || true
             mv *.PNG logolar/ 2>/dev/null || true
-            echo "PNG dosyaları taşındı."
-          else
-            echo "Taşınacak PNG dosyası bulunamadı."
           fi
 
       - name: Değişiklikleri Commit Et
@@ -30,7 +26,6 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add .
-          # Sadece değişiklik varsa commit yap (hata almamak için)
           git diff --quiet && git diff --staged --quiet || git commit -m "Logolar klasöre taşındı"
           git push
           
