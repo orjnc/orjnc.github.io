@@ -11,46 +11,32 @@
         :root { --bg: #000000; --card: #121212; --accent: #ff005c; --text: #ffffff; --gray: #888888; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow-x: hidden; margin: 0; }
         
-        /* Sidebar */
         .sidebar { position: fixed; left: -280px; top: 0; height: 100%; width: 280px; background: rgba(18, 18, 18, 0.98); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 2000; padding: 30px 20px; border-right: 1px solid #222; display: flex; flex-direction: column; }
         .sidebar.active { left: 0; }
         .menu-item { display: flex; align-items: center; gap: 15px; padding: 15px; color: var(--text); text-decoration: none; border-radius: 12px; transition: 0.3s; margin-bottom: 5px; }
         .menu-item i { color: var(--accent); font-size: 1.2rem; width: 25px; }
         .menu-item:hover { background: rgba(255, 0, 92, 0.1); }
 
-        /* Kategori Barı */
         .category-container { display: flex; gap: 10px; overflow-x: auto; padding: 0 15px 20px 15px; white-space: nowrap; scrollbar-width: none; }
-        .category-container::-webkit-scrollbar { display: none; }
         .cat-btn { background: #1a1a1a; color: var(--gray); border: 1px solid #333; padding: 10px 22px !important; border-radius: 100px !important; font-size: 0.85rem; font-weight: 600; transition: 0.3s; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; min-width: 80px; }
         .cat-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-        /* Grid */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; position: sticky; top: 0; background: var(--bg); z-index: 1000; }
         .logo { font-weight: 800; font-size: 1.5rem; color: var(--accent); }
         .logo span { color: white; }
         .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 15px; }
         
         .channel-square { background: var(--card); border-radius: 18px; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; border: 1px solid #222; transition: 0.3s ease; cursor: pointer; position: relative; overflow: hidden; }
-        .square-logo { width: 70%; height: 70%; object-fit: contain; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5)); transition: transform 0.3s ease; }
-        .channel-square:hover .square-logo { transform: scale(1.15); }
-        .fav-star { position: absolute; top: 10px; right: 10px; font-size: 0.8rem; color: rgba(255,255,255,0.2); z-index: 5; transition: 0.3s; }
+        .square-logo { width: 70%; height: 70%; object-fit: contain; }
+        .fav-star { position: absolute; top: 10px; right: 10px; font-size: 0.8rem; color: rgba(255,255,255,0.2); z-index: 5; }
         .fav-star.active { color: #ffc107; }
 
-        /* Player & Sabit Başlık */
         #player-box { display: none; padding: 0; background: #000; }
         .video-wrapper { position: sticky; top: 0; z-index: 1100; background: #000; }
         video { width: 100%; aspect-ratio: 16/9; }
         
-        .player-info-sticky { 
-            position: sticky; 
-            top: 56.25vw; 
-            z-index: 1090; 
-            background: #000; 
-            padding: 15px 20px; 
-            border-bottom: 2px solid #222; 
-        }
+        .player-info-sticky { position: sticky; top: 56.25vw; z-index: 1090; background: #000; padding: 15px 20px; border-bottom: 2px solid #222; }
 
-        /* Nav & Sections */
         .bottom-nav { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 92%; background: rgba(26, 26, 26, 0.95); backdrop-filter: blur(10px); border-radius: 25px; display: flex; justify-content: space-around; padding: 12px; z-index: 1000; border: 1px solid #333; }
         .nav-btn { color: #666; font-size: 1.2rem; display: flex; flex-direction: column; align-items: center; text-decoration: none; }
         .nav-btn.active { color: var(--accent); }
@@ -63,20 +49,13 @@
         .search-input { background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 15px; padding: 12px 20px; width: 100%; margin-bottom: 20px; }
         
         .list-item { background: var(--card); border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 12px; border: 1px solid #222; cursor: pointer; }
-        .list-logo { width: 55px; height: 55px; object-fit: contain; background: var(--card); border-radius: 12px; padding: 5px; }
+        .list-logo { width: 55px; height: 55px; object-fit: contain; }
 
+        /* Öneriler (Promo) Kartı */
         .promo-slider { padding: 0 15px; margin-bottom: 25px; }
         .promo-card { 
-            background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.9)), url('https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?q=80&w=1000&auto=format&fit=crop'); 
-            background-size: cover;
-            background-position: center;
-            height: 180px; 
-            border-radius: 20px; 
-            display: flex; 
-            align-items: flex-end; 
-            padding: 20px; 
-            border: 1px solid #333; 
-            transition: 0.3s; 
+            height: 200px; border-radius: 20px; display: flex; align-items: flex-end; padding: 20px; border: 1px solid #333; 
+            transition: opacity 0.4s ease-in-out; background-size: cover; background-position: center; position: relative;
         }
     </style>
 </head>
@@ -116,12 +95,12 @@
 
     <div id="main-content">
         <div class="promo-slider">
-            <div class="promo-card" id="featured-card" style="cursor: pointer;">
+            <div class="promo-card" id="featured-card" onclick="playFeatured()" style="cursor: pointer;">
                 <div>
                     <h3 class="m-0" id="featured-title">Yükleniyor...</h3>
-                    <div class="d-flex gap-2 mt-2">
+                    <div class="d-flex gap-2 mt-2 align-items-center">
                         <span class="badge bg-danger">LIVE</span>
-                        <span id="featured-desc" class="small">Popüler Kanallar</span>
+                        <span id="featured-desc" class="small">Kanal listesi hazırlanıyor...</span>
                     </div>
                 </div>
             </div>
@@ -142,9 +121,7 @@
         </div>
 
         <div id="home-section">
-            <div class="px-3 mb-3 d-flex justify-content-between">
-                <span id="list-title" style="font-weight:bold;">TV Channels</span>
-            </div>
+            <div class="px-3 mb-3 d-flex justify-content-between"><span style="font-weight:bold;">TV Channels</span></div>
             <div id="grid-container" class="grid-container"></div>
         </div>
     </div>
@@ -157,6 +134,14 @@
     </div>
 
     <script>
+        // SENİN HAZIRLADIĞIN ÖNERİ LİSTESİ SİSTEMİ
+        const oneriListesi = [
+            { title: "UZAK ŞEHİR", desc: "Bu Akşam 20:00'da Kanal D'de!", image: "https://i.imgur.com/NKiF8WO.jpeg", targetChannel: "Kanal D" },
+            { title: "BERGEN", desc: "Bu Akşam 20:00'da ATV'de!", image: "https://i.imgur.com/LNW86ek.jpeg", targetChannel: "ATV" },
+            { title: "MASTERCHEF", desc: "20:00'da Yeni Bölüm Heyecanı Başlıyor!", image: "https://i.imgur.com/wAX4TER.jpeg", targetChannel: "TV8" }
+        ];
+
+        let aktifSira = 0;
         let allChannels = [];
         let favorites = JSON.parse(localStorage.getItem('myTVfavs')) || [];
         const hls = new Hls();
@@ -167,21 +152,37 @@
             .then(data => {
                 allChannels = data;
                 renderGrid(data);
-                setupPromo(data); // Önerilen kanal kısmını kur
                 checkHash();
+                setupFeatured(); // İlk öneriyi yükle
+                setInterval(setupFeatured, 5000); // 5 saniyede bir değiştir
             });
 
-        // Üst taraftaki "Yükleniyor..." kısmını güncelleyen fonksiyon
-        function setupPromo(data) {
-            if (data.length > 0) {
-                const random = data[Math.floor(Math.random() * data.length)];
-                document.getElementById('featured-title').innerText = random.ad;
-                document.getElementById('featured-desc').innerText = random.kategori + " Kanalı";
-                // Karta tıklama işlevi ekle
-                document.getElementById('featured-card').onclick = () => {
-                    playChannel(random.url, random.ad, false, random.kategori);
-                };
-            }
+        function setupFeatured() {
+            const card = document.getElementById('featured-card');
+            const title = document.getElementById('featured-title');
+            const desc = document.getElementById('featured-desc');
+            if (!card || oneriListesi.length === 0) return;
+
+            const veri = oneriListesi[aktifSira];
+            card.style.opacity = "0.5"; // Fade out efekti başlangıcı
+
+            setTimeout(() => {
+                title.innerText = veri.title;
+                desc.innerText = veri.desc;
+                card.style.backgroundImage = `linear-gradient(to bottom, transparent, rgba(0,0,0,0.9)), url('${veri.image}')`;
+                card.style.backgroundSize = "cover";
+                card.style.backgroundPosition = "center";
+                card.style.opacity = "1"; // Fade in
+            }, 300);
+
+            aktifSira = (aktifSira + 1) % oneriListesi.length;
+        }
+
+        function playFeatured() {
+            let suAnkiIndex = (aktifSira === 0) ? oneriListesi.length - 1 : aktifSira - 1;
+            const veri = oneriListesi[suAnkiIndex];
+            const channel = allChannels.find(k => k.ad === veri.targetChannel);
+            if (channel) playChannel(channel.url, channel.ad, false, channel.kategori);
         }
 
         function renderGrid(data) {
@@ -199,43 +200,12 @@
             });
         }
 
-        function doSearch() {
-            const val = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allChannels.filter(k => k.ad.toLowerCase().includes(val));
-            const container = document.getElementById('search-results');
-            container.innerHTML = "";
-            filtered.forEach(k => {
-                container.innerHTML += `
-                    <div class="list-item" onclick="playChannel('${k.url}','${k.ad}')">
-                        <img src="${k.logo}" class="list-logo" onerror="this.src='https://via.placeholder.com/50'">
-                        <span>${k.ad}</span>
-                    </div>`;
-            });
-        }
-
-        function renderList(data, targetId) {
-            const container = document.getElementById(targetId);
-            container.innerHTML = "";
-            data.forEach(k => {
-                container.innerHTML += `
-                    <div class="list-item" onclick="playChannel('${k.url}', '${k.ad}', false, '${k.kategori}')">
-                        <img src="${k.logo}" class="list-logo" onerror="this.src='https://via.placeholder.com/50'">
-                        <div class="list-info">
-                            <span style="font-weight:bold; font-size:0.9rem;">${k.ad}</span>
-                            <div style="color: white !important;" class="list-prog">${k.kategori}</div>
-                        </div>
-                    </div>`;
-            });
-        }
-
         function playChannel(url, ad, fromHash = false, kategori = "Canlı") {
             if(!fromHash) history.pushState({page: 'player'}, ad, "#" + encodeURIComponent(ad));
-            
             document.getElementById('player-box').style.display = "block";
             document.getElementById('main-content').style.display = "none";
             document.getElementById('now-playing').innerText = ad;
             document.getElementById('player-cat-info').innerText = "Canlı Yayın • " + kategori;
-            
             window.scrollTo(0,0);
             
             const shuffled = [...allChannels].sort(() => 0.5 - Math.random()).slice(0, 5);
@@ -250,49 +220,48 @@
             }
         }
 
-        window.onpopstate = function(event) {
-            window.location.href = "https://orjnc.github.io";
-        };
-
-        function showHome() {
-            if(video) video.pause();
-            window.location.href = "https://orjnc.github.io";
+        function renderList(data, targetId) {
+            const container = document.getElementById(targetId);
+            container.innerHTML = "";
+            data.forEach(k => {
+                container.innerHTML += `
+                    <div class="list-item" onclick="playChannel('${k.url}', '${k.ad}', false, '${k.kategori}')">
+                        <img src="${k.logo}" class="list-logo" onerror="this.src='https://via.placeholder.com/50'">
+                        <div class="list-info">
+                            <span style="font-weight:bold; font-size:0.9rem;">${k.ad}</span>
+                            <div style="color: white !important;">${k.kategori}</div>
+                        </div>
+                    </div>`;
+            });
         }
 
+        window.onpopstate = function() { window.location.href = "https://orjnc.github.io"; };
+        function showHome() { if(video) video.pause(); window.location.href = "https://orjnc.github.io"; }
         function filterCategory(cat, btn) {
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             const filtered = (cat === 'Hepsi') ? allChannels : allChannels.filter(k => k.kategori === cat);
             renderGrid(filtered);
         }
-
         function toggleFav(e, name) {
             e.stopPropagation();
             const idx = favorites.indexOf(name);
-            if (idx > -1) favorites.splice(idx, 1);
-            else favorites.push(name);
+            if (idx > -1) favorites.splice(idx, 1); else favorites.push(name);
             localStorage.setItem('myTVfavs', JSON.stringify(favorites));
             renderGrid(allChannels);
         }
-
-        function showSearch() {
-            document.getElementById('home-section').style.display = "none";
+        function showSearch() { 
+            document.getElementById('home-section').style.display = "none"; 
             document.getElementById('search-section').style.display = "block";
             document.getElementById('player-box').style.display = "none";
             document.getElementById('main-content').style.display = "block";
         }
-
-        function showFavorites() {
-            const favs = allChannels.filter(k => favorites.includes(k.ad));
-            renderGrid(favs);
-        }
-
-        function toggleSidebar() {
+        function showFavorites() { renderGrid(allChannels.filter(k => favorites.includes(k.ad))); }
+        function toggleSidebar() { 
             document.getElementById('sidebar').classList.toggle('active');
             const ov = document.getElementById('overlay');
             ov.style.display = ov.style.display === 'block' ? 'none' : 'block';
         }
-
         function checkHash() {
             const h = window.location.hash.substring(1);
             if (h) {
