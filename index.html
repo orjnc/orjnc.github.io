@@ -320,26 +320,26 @@
     <script src="oneriler.js"></script>
 
 <script>
-// Öneriler değiştikçe animasyonu tetikleyen sistem
+// Animasyonu tetikleyen sistem
 const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
-        // Sadece içerik veya resim değiştiğinde çalış, sınıf (class) değişimini görmezden gel
-        if (mutation.type === "childList" || (mutation.type === "attributes" && mutation.attributeName === "style")) {
+        if (mutation.type === "childList" || mutation.attributeName === "style") {
             const pCard = document.getElementById('featured-card');
-            if (pCard && !pCard.classList.contains('promo-active')) {
+            if (pCard) {
+                pCard.classList.remove('promo-active');
+                void pCard.offsetWidth; // Reflow tetikleyici
                 pCard.classList.add('promo-active');
-                setTimeout(() => pCard.classList.remove('promo-active'), 700);
             }
         }
     });
 });
-    
 
 const targetNode = document.getElementById('featured-card');
 if (targetNode) {
     observer.observe(targetNode, { attributes: true, childList: true, subtree: true });
 }
 </script>
-    
+
 </body>
 </html>
+
