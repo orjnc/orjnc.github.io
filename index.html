@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyTV+ PRO</title>
+    <title>orjnc tv+</title>
+    <link rel="icon" type="image/png" href="logolar/logo.png">
+    <link rel="apple-touch-icon" href="logolar/logo.png">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -21,9 +24,12 @@
         .cat-btn { background: #1a1a1a; color: var(--gray); border: 1px solid #333; padding: 10px 22px !important; border-radius: 100px !important; font-size: 0.85rem; font-weight: 600; transition: 0.3s; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; min-width: 80px; }
         .cat-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; position: sticky; top: 0; background: var(--bg); z-index: 1000; }
-        .logo { font-weight: 800; font-size: 1.5rem; color: var(--accent); }
-        .logo span { color: white; }
+        /* HEADER & LOGO DÜZENLEMESİ */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; position: sticky; top: 0; background: var(--bg); z-index: 1000; height: 65px; }
+        .logo-container { flex: 1; display: flex; justify-content: center; align-items: center; }
+        .site-logo { max-height: 42px; width: auto; object-fit: contain; cursor: pointer; transition: transform 0.2s; }
+        .site-logo:active { transform: scale(0.95); }
+
         .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 15px; }
         
         .channel-square { background: var(--card); border-radius: 18px; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; border: 1px solid #222; transition: 0.3s ease; cursor: pointer; position: relative; overflow: hidden; }
@@ -51,7 +57,6 @@
         .list-item { background: var(--card); border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 12px; border: 1px solid #222; cursor: pointer; }
         .list-logo { width: 55px; height: 55px; object-fit: contain; }
 
-        /* Öneriler (Promo) Kartı */
         .promo-slider { padding: 0 15px; margin-bottom: 25px; }
         .promo-card { 
             height: 200px; border-radius: 20px; display: flex; align-items: flex-end; padding: 20px; border: 1px solid #333; 
@@ -69,15 +74,19 @@
             <i class="fas fa-times fs-4" onclick="toggleSidebar()"></i>
         </div>
         <div class="menu-links">
-            <a href="javascript:void(0)" onclick="showFavorites(); toggleSidebar();" class="menu-item"><i class="fas fa-star"></i> My Favorites</a>
+            <a href="javascript:void(0)" onclick="showFavorites(); toggleSidebar();" class="menu-item"><i class="fas fa-star"></i> Favorilerim</a>
             <a href="#" class="menu-item"><i class="fas fa-code-branch"></i> Version <span class="ms-auto small text-muted">1.0.8</span></a>
         </div>
     </div>
 
     <div class="header">
         <i class="fas fa-bars fs-4" onclick="toggleSidebar()"></i>
-        <div class="logo">my<span>TV+</span></div>
-        <i class="fas fa-tv fs-4"></i>
+        <div class="logo-container">
+            <a href="https://orjnc.github.io">
+                <img src="logolar/logo.png" alt="orjnc tv+" class="site-logo">
+            </a>
+        </div>
+        <i class="fas fa-tv fs-4" style="color: var(--accent);"></i>
     </div>
 
     <div id="player-box">
@@ -134,7 +143,6 @@
     </div>
 
     <script>
-        // SENİN HAZIRLADIĞIN ÖNERİ LİSTESİ SİSTEMİ
         const oneriListesi = [
             { title: "UZAK ŞEHİR", desc: "Bu Akşam 20:00'da Kanal D'de!", image: "https://i.imgur.com/NKiF8WO.jpeg", targetChannel: "Kanal D" },
             { title: "BERGEN", desc: "Bu Akşam 20:00'da ATV'de!", image: "https://i.imgur.com/LNW86ek.jpeg", targetChannel: "ATV" },
@@ -153,8 +161,8 @@
                 allChannels = data;
                 renderGrid(data);
                 checkHash();
-                setupFeatured(); // İlk öneriyi yükle
-                setInterval(setupFeatured, 5000); // 5 saniyede bir değiştir
+                setupFeatured();
+                setInterval(setupFeatured, 5000);
             });
 
         function setupFeatured() {
@@ -164,7 +172,7 @@
             if (!card || oneriListesi.length === 0) return;
 
             const veri = oneriListesi[aktifSira];
-            card.style.opacity = "0.5"; // Fade out efekti başlangıcı
+            card.style.opacity = "0.5";
 
             setTimeout(() => {
                 title.innerText = veri.title;
@@ -172,7 +180,7 @@
                 card.style.backgroundImage = `linear-gradient(to bottom, transparent, rgba(0,0,0,0.9)), url('${veri.image}')`;
                 card.style.backgroundSize = "cover";
                 card.style.backgroundPosition = "center";
-                card.style.opacity = "1"; // Fade in
+                card.style.opacity = "1";
             }, 300);
 
             aktifSira = (aktifSira + 1) % oneriListesi.length;
