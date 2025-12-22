@@ -11,35 +11,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- ESCAPE HTML FONKSİYONU -->
-    <script>
-    function escapeHTML(str) {
-        if (!str) return '';
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-    }
-    </script>
-    
     <style>
-        :root { 
-            --bg: #000000; 
-            --card: #121212; 
-            --accent: #ff005c; 
-            --text: #ffffff; 
-            --gray: #888888; 
-            --selected-cat: #F683BE;
-            
-            /* YENİ: Player için renkler */
-            --normal-bg-top: #8b00ff;
-            --normal-bg-bottom: #000000;
-            --normal-glass: rgba(33, 150, 243, 0.15);
-            --normal-glass-border: rgba(33, 150, 243, 0.3);
-            --normal-accent: #00e5ff;
-            --dark-glass: rgba(30, 30, 30, 0.85);
-            --dark-glass-border: rgba(255, 255, 255, 0.1);
-        }
+        :root { --bg: #000000; --card: #121212; --accent: #ff005c; --text: #ffffff; --gray: #888888; --selected-cat: #F683BE; }
         
         /* Genel Arka Plan Ayarları */
         html { background-color: #000000 !important; }
@@ -61,18 +34,22 @@
 
         /* Sidebar & Menu */
         .sidebar { 
-            position: fixed; 
-            left: -280px; 
-            top: 0; 
-            height: 100%; 
-            width: 280px; 
-            background: rgba(18, 18, 18, 0.98) !important; 
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-            z-index: 3000 !important; 
-            padding: 30px 20px; 
-            border-right: 1px solid #222; 
-            display: flex; 
-            flex-direction: column; 
+    position: fixed; 
+    left: -280px; 
+    top: 0; 
+    height: 100%; 
+    width: 280px; 
+    /* ARKA PLANI BİRAZ DAHA SIK YAPALIM Kİ ARKASI GÖZÜKMESİN */
+    background: rgba(18, 18, 18, 0.98) !important; 
+    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+    
+    /* EN ÖNEMLİ SATIR: Header 2000 ise bu 3000 olmalı */
+    z-index: 3000 !important; 
+    
+    padding: 30px 20px; 
+    border-right: 1px solid #222; 
+    display: flex; 
+    flex-direction: column; 
         }
         .sidebar.active { left: 0; }
         .menu-item { display: flex; align-items: center; gap: 15px; padding: 15px; color: var(--text); text-decoration: none; border-radius: 12px; transition: 0.3s; margin-bottom: 5px; cursor: pointer; }
@@ -82,357 +59,141 @@
 
         /* Kategori Butonları */
         .category-container { display: flex; gap: 10px; overflow-x: auto; padding: 15px 15px 20px 15px; white-space: nowrap; scrollbar-width: none; min-height: 75px; transition: all 0.6s ease; }
-        
-        .cat-btn { 
-            background: rgba(255, 255, 255, 0.1) !important;
-            color: #ffffff; 
-            border: 1px solid rgba(255, 255, 255, 0.15); 
-            padding: 10px 22px !important; 
-            border-radius: 100px !important; 
-            font-size: 0.85rem; 
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: all 0.5s ease; 
-            flex-shrink: 0; 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
+        /* Kategori Butonları */
+.cat-btn { 
+    background: rgba(255, 255, 255, 0.1) !important; /* Normal Mod: Şeffaf beyaz */
+    color: #ffffff; 
+    border: 1px solid rgba(255, 255, 255, 0.15); 
+    padding: 10px 22px !important; 
+    border-radius: 100px !important; 
+    font-size: 0.85rem; 
+    font-weight: 600; 
+    cursor: pointer; 
+    transition: all 0.5s ease; 
+    flex-shrink: 0; 
+    backdrop-filter: blur(10px); /* Toz bulutu efekti */
+    -webkit-backdrop-filter: blur(10px);
+}
 
-        @media (prefers-color-scheme: dark) {
-            .cat-btn { 
-                background: #1a1a1a !important; 
-                backdrop-filter: none; 
-                border: 1px solid #333; 
-            }
-        }
+/* Koyu Modda Butonları Eski Haline Döndür */
+@media (prefers-color-scheme: dark) {
+    .cat-btn { 
+        background: #1a1a1a !important; 
+        backdrop-filter: none; 
+        border: 1px solid #333; 
+    }
+}
         
         .cat-btn.active { background: var(--selected-cat) !important; color: white; border-color: var(--selected-cat); }
         .cat-hidden { display: none; }
 
         /* Header & Grid */
         .header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 10px 20px; 
-            position: sticky; 
-            top: 0; 
-            height: 70px; 
-            z-index: 2000;
-            backdrop-filter: blur(15px); 
-            -webkit-backdrop-filter: blur(15px); 
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(181, 0, 200, 0.5) !important; 
-        }
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 10px 20px; 
+    position: sticky; 
+    top: 0; 
+    height: 70px; 
+    z-index: 2000; /* Sidebar'ın arkasında kalması için */
+    
+    /* TOZ BULUTU (BLUR) HER İKİ MODDA DA SABİT */
+    backdrop-filter: blur(15px); 
+    -webkit-backdrop-filter: blur(15px); 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
-        @media (prefers-color-scheme: dark) {
-            .header {
-                background: rgba(0, 0, 0, 0.7) !important;
-            }
-        }
+    /* 1. NORMAL MOD: Senin Mor Rengin */
+    background: rgba(181, 0, 200, 0.5) !important; 
+}
+
+/* 2. KOYU MOD: Otomatik Siyah Cam Efekti */
+@media (prefers-color-scheme: dark) {
+    .header {
+        background: rgba(0, 0, 0, 0.7) !important; /* Moru tamamen öldürüp siyah sis yapar */
+    }
+}
         
         .logo-container { flex: 1; display: flex; justify-content: center; align-items: center; }
         .site-logo { max-height: 48px; width: auto; object-fit: contain; cursor: pointer; }
         .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 15px; }
         .channel-square { 
-            border-radius: 18px; 
-            aspect-ratio: 1/1; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            position: relative; 
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.1) !important; 
-            backdrop-filter: blur(10px); 
-            -webkit-backdrop-filter: blur(10px);
-        }
+    /* SENİN ORİJİNAL YAPIN */
+    border-radius: 18px; 
+    aspect-ratio: 1/1; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    position: relative; 
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: all 0.3s ease;
 
-        @media (prefers-color-scheme: dark) {
-            .channel-square {
-                background: var(--card) !important; 
-                backdrop-filter: none; 
-                border: 1px solid #222; 
-            }
-        }
+    /* NORMAL MOD: TOZ BULUTU / CAM EFEKTİ */
+    background: rgba(255, 255, 255, 0.1) !important; 
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* KOYU MOD: SİSTEM KOYU MODDA İSE SİYAH KALIR */
+@media (prefers-color-scheme: dark) {
+    .channel-square {
+        background: var(--card) !important; 
+        backdrop-filter: none; 
+        border: 1px solid #222; 
+    }
+}
         
         .square-logo { width: 70%; height: 70%; object-fit: contain; }
         .fav-star { position: absolute; top: 10px; right: 10px; font-size: 0.8rem; color: rgba(255,255,255,0.2); z-index: 5; }
         .fav-star.active { color: #ffc107; }
 
-        /* YENİ: PLAYER SAYFASI TASARIMI */
-        #player-box { 
-            display: none; 
-            background: linear-gradient(to bottom, var(--normal-bg-top) 0%, var(--normal-bg-bottom) 100%) !important;
-            min-height: 100vh;
-            padding-bottom: 120px !important;
-        }
-
-        body.dark-mode #player-box {
-            background: #000000 !important;
-        }
-
-        .video-wrapper {
-            position: relative;
-            background: #000;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            border-radius: 0 0 25px 25px;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-
+        /* Player */
+        #player-box { display: none; background: #000; }
+        .video-wrapper { position: sticky; top: 0; z-index: 1100; background: #000; }
         video { width: 100%; aspect-ratio: 16/9; }
-
-        .player-info-sticky {
-            padding: 20px;
-            background: var(--normal-glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--normal-glass-border);
-            border-radius: 20px;
-            margin: 0 15px 25px 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            position: relative;
-        }
-
-        body.dark-mode .player-info-sticky {
-            background: var(--dark-glass);
-            border: 1px solid var(--dark-glass-border);
-        }
-
-        .player-info-sticky::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--normal-accent), transparent);
-        }
-
-        #now-playing {
-            font-size: 1.4rem;
-            font-weight: 800;
-            margin-bottom: 8px;
-            color: var(--normal-text);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        #now-playing::before {
-            content: '▶️';
-            font-size: 1rem;
-        }
-
-        #player-cat-info {
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.8);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* YENİ: KONTROL BUTONLARI */
-        .player-controls {
-            display: flex;
-            justify-content: space-around;
-            padding: 15px;
-            background: var(--normal-glass);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            margin: 0 15px 20px 15px;
-            border: 1px solid var(--normal-glass-border);
-        }
-
-        body.dark-mode .player-controls {
-            background: var(--dark-glass);
-            border: 1px solid var(--dark-glass-border);
-        }
-
-        .control-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            color: var(--normal-text);
-            cursor: pointer;
-            transition: all 0.3s;
-            padding: 10px 15px;
-            border-radius: 15px;
-            min-width: 70px;
-        }
-
-        .control-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: scale(1.05);
-        }
-
-        .control-btn i {
-            font-size: 1.3rem;
-            color: var(--normal-accent);
-        }
-
-        .control-btn span {
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        /* YENİ: ÖNERİLEN KANALLAR BÖLÜMÜ */
-        #suggested-list {
-            padding: 0 15px;
-        }
-
-        .suggested-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: var(--normal-text);
-            padding-left: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .suggested-title::before {
-            content: '🔥';
-            font-size: 0.9rem;
-        }
-
-        .suggested-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 30px;
-        }
-
-        .suggested-item {
-            background: var(--normal-glass);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid var(--normal-glass-border);
-            border-radius: 18px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-        }
-
-        body.dark-mode .suggested-item {
-            background: var(--dark-glass);
-            border: 1px solid var(--dark-glass-border);
-        }
-
-        .suggested-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            border-color: var(--normal-accent);
-        }
-
-        .suggested-logo {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            object-fit: contain;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 5px;
-            flex-shrink: 0;
-        }
-
-        .suggested-info {
-            flex: 1;
-        }
-
-        .suggested-channel-name {
-            font-weight: 700;
-            font-size: 0.9rem;
-            margin-bottom: 4px;
-            color: var(--normal-text);
-        }
-
-        .suggested-category {
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.7);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        /* YENİ: KANAL AÇIKLAMA BÖLÜMÜ */
-        .player-description {
-            background: var(--normal-glass);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            padding: 20px;
-            margin: 0 15px 30px 15px;
-            border: 1px solid var(--normal-glass-border);
-        }
-
-        body.dark-mode .player-description {
-            background: var(--dark-glass);
-            border: 1px solid var(--dark-glass-border);
-        }
-
-        .player-description h6 {
-            color: var(--normal-accent);
-            margin-bottom: 10px;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .player-description h6::before {
-            content: '📝';
-            font-size: 0.9rem;
-        }
-
-        .player-description p {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 0.85rem;
-            line-height: 1.5;
-        }
+        .player-info-sticky { padding: 15px 20px; border-bottom: 2px solid #222; }
 
         /* Navigasyon */
-        .bottom-nav { 
-            position: fixed; 
-            bottom: 15px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            width: 92%; 
-            border-radius: 25px; 
-            display: flex; 
-            justify-content: space-around; 
-            padding: 12px; 
-            z-index: 2500;
-            transition: all 0.4s ease;
-            background: rgba(255, 255, 255, 0.1) !important; 
-            backdrop-filter: blur(15px); 
-            -webkit-backdrop-filter: blur(15px); 
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
+.bottom-nav { 
+    position: fixed; 
+    bottom: 15px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    width: 92%; 
+    border-radius: 25px; 
+    display: flex; 
+    justify-content: space-around; 
+    padding: 12px; 
+    z-index: 2500; /* Sidebar'ın altında kalsın */
+    transition: all 0.4s ease;
 
-        @media (prefers-color-scheme: dark) {
-            .bottom-nav { 
-                background: rgba(26, 26, 26, 0.8) !important;
-                border: 1px solid #333;
-            }
-        }
-        
+    /* NORMAL MOD: Buzlu Cam Efekti */
+    background: rgba(255, 255, 255, 0.1) !important; 
+    backdrop-filter: blur(15px); 
+    -webkit-backdrop-filter: blur(15px); 
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* KOYU MOD: Siyah Cam Efekti */
+@media (prefers-color-scheme: dark) {
+    .bottom-nav { 
+        background: rgba(26, 26, 26, 0.8) !important; /* Koyu modda siyah sis */
+        border: 1px solid #333;
+    }
+}
         .nav-btn { color: #666; font-size: 1.2rem; display: flex; flex-direction: column; align-items: center; text-decoration: none; cursor: pointer; }
         .nav-btn.active { color: var(--accent); }
         .nav-btn small { font-size: 0.6rem; margin-top: 4px; font-weight: bold; }
         
         #main-content { padding-bottom: 120px; }
         .overlay { 
-            display:none; 
-            position: fixed; 
-            inset: 0; 
-            background: rgba(0,0,0,0.8); 
-            z-index: 2500 !important; 
+    display:none; 
+    position: fixed; 
+    inset: 0; 
+    background: rgba(0,0,0,0.8); 
+    /* Header (2000) ile Sidebar (3000) arasında kalmalı */
+    z-index: 2500 !important; 
         }
         
         #search-section { padding: 15px; display: none; }
@@ -443,164 +204,53 @@
         /* Promo Card */
         .promo-slider { padding: 0 15px; margin-bottom: 30px; transition: 0.5s; }
         .promo-card { 
-            aspect-ratio: 3/4; 
-            width: 100%; 
-            max-width: 400px; 
-            margin: 0 auto; 
-            border-radius: 25px; 
-            display: flex; 
-            align-items: flex-end; 
-            padding: 25px; 
-            border: 1px solid rgba(255,255,255,0.1); 
-            background-size: cover; 
-            background-position: center; 
-            position: relative; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s ease;
-            overflow: hidden;
-        }
+    aspect-ratio: 3/4; 
+    width: 100%; 
+    max-width: 400px; 
+    margin: 0 auto; 
+    border-radius: 25px; 
+    display: flex; 
+    align-items: flex-end; 
+    padding: 25px; 
+    border: 1px solid rgba(255,255,255,0.1); 
+    background-size: cover; 
+    background-position: center; 
+    position: relative; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    /* EKLEDİĞİMİZ KISIM: */
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s ease;
+    overflow: hidden;
+}
 
-        .promo-active {
-            animation: promoSwift 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-        }
-        
+/* Geçiş anında devreye girecek yeni sınıf */
+/* Mevcut olanı bununla değiştir veya kontrol et */
+.promo-active {
+    animation: promoSwift 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
         @keyframes promoSwift {
-            0% { 
-                opacity: 0; 
-                transform: scale(0.95) translateY(5px); 
-                filter: blur(5px); 
-            }
-            100% { 
-                opacity: 1; 
-                transform: scale(1) translateY(0); 
-                filter: blur(0); 
-            }
+    0% { 
+        opacity: 0; 
+        transform: scale(0.95) translateY(5px); 
+        filter: blur(5px); 
+    }
+    100% { 
+        opacity: 1; 
+        transform: scale(1) translateY(0); 
+        filter: blur(0); 
+    }
         }
          
         .promo-card > div { position: relative; z-index: 2; width: 100%; }
         .promo-hidden { display: none !important; }
+        /* Player açıkken en alttaki kanalın rahat görünmesi için boşluk */
+#player-box {
+    padding-bottom: 120px !important;
+    min-height: 100vh;
+}
         
-        /* YENİ: ANİMASYONLAR */
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .player-info-sticky,
-        .suggested-grid,
-        .player-controls,
-        .player-description {
-            animation: slideInUp 0.5s ease-out forwards;
-        }
-
-        .suggested-grid {
-            animation-delay: 0.1s;
-        }
-
-        .player-controls {
-            animation-delay: 0.2s;
-        }
-
-        .player-description {
-            animation-delay: 0.3s;
-        }
-        
-        /* ========== MOBİL CSS ========== */
-        @media (max-width: 768px) {
-            .grid-container {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 10px !important;
-                padding: 0 10px !important;
-            }
-            
-            .channel-square {
-                border-radius: 12px !important;
-            }
-            
-            .site-logo {
-                max-height: 40px !important;
-            }
-            
-            .header {
-                padding: 10px 15px !important;
-            }
-            
-            .category-container {
-                padding: 10px !important;
-                gap: 8px !important;
-            }
-            
-            .cat-btn {
-                padding: 8px 16px !important;
-                font-size: 0.8rem !important;
-            }
-            
-            .bottom-nav {
-                width: 95% !important;
-                bottom: 10px !important;
-                padding: 10px !important;
-                border-radius: 20px !important;
-            }
-            
-            .nav-btn {
-                font-size: 1rem !important;
-            }
-            
-            .nav-btn small {
-                font-size: 0.55rem !important;
-            }
-            
-            /* YENİ: MOBİL PLAYER */
-            .player-info-sticky {
-                margin: 0 10px 20px 10px;
-                padding: 15px;
-            }
-            
-            #now-playing {
-                font-size: 1.2rem;
-            }
-            
-            .suggested-grid {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-            
-            .player-controls {
-                margin: 0 10px 15px 10px;
-                padding: 12px;
-            }
-            
-            .control-btn {
-                min-width: 60px;
-                padding: 8px 10px;
-            }
-            
-            .player-description {
-                margin: 0 10px 25px 10px;
-                padding: 15px;
-            }
-        }
-
-        /* TABLET */
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .grid-container {
-                grid-template-columns: repeat(4, 1fr) !important;
-            }
-            
-            /* YENİ: TABLET PLAYER */
-            .suggested-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
     </style>
 </head>
-    <body>
+<body>
 
     <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
@@ -614,9 +264,6 @@
             <hr style="border-color: #333; margin: 10px 0;">
             <div onclick="setTheme('dark')" class="menu-item"><i class="fas fa-moon"></i> <span>Koyu Mod</span></div>
             <div onclick="setTheme('normal')" class="menu-item"><i class="fas fa-palette"></i> <span>Normal Mod</span></div>
-            <div onclick="showDonation()" class="menu-item" style="color: #FF6B35;">
-                <i class="fas fa-coffee"></i> <span>Kahve Ismarla ☕</span>
-            </div>
             <hr style="border-color: #333; margin: 10px 0;">
             <div class="menu-item"><i class="fas fa-code-branch"></i> Version <span class="ms-auto small text-muted">1.0.8</span></div>
         </div>
@@ -630,38 +277,13 @@
         <i class="fas fa-tv fs-4" style="color: var(--accent);"></i>
     </div>
 
-    <!-- YENİ: GÜNCELLENMİŞ PLAYER BOX -->
     <div id="player-box">
         <div class="video-wrapper"><video id="video" controls autoplay playsinline></video></div>
         <div class="player-info-sticky">
             <h5 id="now-playing" class="m-0 text-truncate">Kanal Adı</h5>
             <p class="small mt-1 mb-0" id="player-cat-info">Canlı Yayın</p>
         </div>
-        
-        <!-- YENİ: KONTROL BUTONLARI -->
-        <div class="player-controls">
-            <div class="control-btn" id="fav-control">
-                <i class="far fa-heart"></i>
-                <span>Favori Ekle</span>
-            </div>
-            <div class="control-btn" id="share-control">
-                <i class="fas fa-share-alt"></i>
-                <span>Paylaş</span>
-            </div>
-            <div class="control-btn" id="volume-control">
-                <i class="fas fa-volume-up"></i>
-                <span>Ses Kapat</span>
-            </div>
-        </div>
-        
-        <!-- YENİ: KANAL AÇIKLAMASI -->
-        <div class="player-description">
-            <h6>Kanal Hakkında</h6>
-            <p id="channel-description">Bu kanal canlı yayın yapmaktadır. Daha fazla bilgi için lütfen bekleyin...</p>
-        </div>
-        
-        <!-- YENİ: ÖNERİLEN KANALLAR -->
-        <div id="suggested-list"></div>
+        <div class="p-3"><div id="suggested-list"></div></div>
     </div>
 
     <div id="main-content">
@@ -703,60 +325,7 @@
         <div onclick="toggleSidebar()" class="nav-btn"><i class="fas fa-bars"></i><small>MORE</small></div>
     </div>
 
-    <!-- Kahve Bağış Modal'ı -->
-    <div id="donationModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center;">
-        <div style="background: var(--card); border-radius:20px; padding:30px; max-width:500px; width:90%; border:2px solid var(--accent);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <h4 style="color:#FF6B35; margin:0;"><i class="fas fa-coffee"></i> Bana Kahve Ismarla</h4>
-                <i class="fas fa-times" onclick="closeDonation()" style="cursor:pointer; font-size:1.2rem;"></i>
-            </div>
-            
-            <p style="color:var(--text); margin-bottom:25px;">Bu ücretsiz TV servisini geliştirmeye ve sunmaya devam edebilmem için desteğine ihtiyacım var! 🚀</p>
-            
-            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-bottom:30px;">
-                <button onclick="donate(20)" class="donate-btn" style="background:#2a2a2a; border:2px solid #444; border-radius:12px; padding:15px; color:white; cursor:pointer; transition:0.3s;">
-                    <div style="font-size:1.5rem;">☕</div>
-                    <div style="font-weight:bold;">20₺</div>
-                    <small>1 Kahve</small>
-                </button>
-                
-                <button onclick="donate(50)" class="donate-btn" style="background:#2a2a2a; border:2px solid #FF6B35; border-radius:12px; padding:15px; color:white; cursor:pointer; transition:0.3s;">
-                    <div style="font-size:1.5rem;">☕☕☕</div>
-                    <div style="font-weight:bold;">50₺</div>
-                    <small>3 Kahve</small>
-                </button>
-                
-                <button onclick="donate(100)" class="donate-btn" style="background:#2a2a2a; border:2px solid #00d4ff; border-radius:12px; padding:15px; color:white; cursor:pointer; transition:0.3s;">
-                    <div style="font-size:1.5rem;">🍔</div>
-                    <div style="font-weight:bold;">100₺</div>
-                    <small>Akşam Yemeği</small>
-                </button>
-            </div>
-            
-            <div style="background:#1a1a1a; border-radius:12px; padding:20px; margin-top:20px;">
-                <h6 style="color:var(--accent); margin-top:0;">Manuel Ödeme Seçenekleri:</h6>
-                <div style="display:flex; flex-direction:column; gap:10px;">
-                    <div>
-                        <strong style="color:#FF6B35;">Papara:</strong>
-                        <input type="text" value="1234567890" readonly style="width:100%; background:#000; border:1px solid #333; color:white; padding:8px; border-radius:8px; margin-top:5px; cursor:pointer;" onclick="this.select()">
-                    </div>
-                    <div>
-                        <strong style="color:#00d4ff;">İş Bankası:</strong>
-                        <input type="text" value="TRXX XXXX XXXX XXXX XXXX XXXX" readonly style="width:100%; background:#000; border:1px solid #333; color:white; padding:8px; border-radius:8px; margin-top:5px; cursor:pointer;" onclick="this.select()">
-                    </div>
-                    <div>
-                        <strong style="color:#FFD700;">Bitcoin (BTC):</strong>
-                        <input type="text" value="bc1qxxxxxxxxxxxxxxxxxxxxxxxxxx" readonly style="width:100%; background:#000; border:1px solid #333; color:white; padding:8px; border-radius:8px; margin-top:5px; cursor:pointer;" onclick="this.select()">
-                    </div>
-                </div>
-            </div>
-            
-            <p style="font-size:0.8rem; color:var(--gray); margin-top:20px; text-align:center;">
-                Her destek benim için çok değerli. Teşekkür ederim! ❤️
-            </p>
-        </div>
-                </div>
-                    <script>
+    <script>
         let allChannels = [];
         let favorites = JSON.parse(localStorage.getItem('myTVfavs')) || [];
         const hls = new Hls();
@@ -764,195 +333,30 @@
 
         function setTheme(mode) {
             const body = document.body;
-            if (mode === 'normal') { 
-                body.classList.add('normal-mode'); 
-                body.classList.remove('dark-mode');
-                localStorage.setItem('themeChoice', 'normal'); 
-            }
-            else { 
-                body.classList.remove('normal-mode'); 
-                body.classList.add('dark-mode');
-                localStorage.setItem('themeChoice', 'dark'); 
-            }
+            if (mode === 'normal') { body.classList.add('normal-mode'); localStorage.setItem('themeChoice', 'normal'); }
+            else { body.classList.remove('normal-mode'); localStorage.setItem('themeChoice', 'dark'); }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('themeChoice') || 'dark';
-            setTheme(savedTheme);
+            setTheme(localStorage.getItem('themeChoice') || 'dark');
             fetch('kanallar.json?v=' + Date.now())
                 .then(res => res.json())
-                .then(data => { 
-                    allChannels = data; 
-                    renderGrid(data); 
-                    checkHash(); 
-                });
+                .then(data => { allChannels = data; renderGrid(data); checkHash(); });
         });
 
         function renderGrid(data) {
             const container = document.getElementById('grid-container');
-            if(!container) return;
             container.innerHTML = "";
-            
             data.forEach(k => {
                 const isFav = favorites.includes(k.ad) ? 'active' : '';
-                const logoName = k.logo.split('/').pop().replace('.jpg', '.png'); 
-                const kategori = getKategori(k);
-                
-                // GÜVENLİ VERSİYON
-                const div = document.createElement('div');
-                div.className = 'channel-square';
-                div.innerHTML = `
-                    <i class="fas fa-star fav-star ${isFav}" onclick="toggleFav(event, '${escapeHTML(k.ad)}')"></i>
-                    <div class="w-100 h-100 d-flex align-items-center justify-content-center">
-                        <img src="logolar/${escapeHTML(logoName)}" class="square-logo" 
-                             onerror="this.onerror=null; this.src='logolar/logo.png'">
-                    </div>`;
-                
-                // Tıklama event'ini güvenli şekilde ekle
-                div.querySelector('div').addEventListener('click', () => {
-                    playChannel(
-                        escapeHTML(k.url), 
-                        escapeHTML(k.ad), 
-                        false, 
-                        escapeHTML(kategori)
-                    );
-                });
-                
-                container.appendChild(div);
-            });
-        }
-
-        // YENİ: GÜNCELLENMİŞ PLAYCHANNEL FONKSİYONU
-        function playChannel(url, ad, fromHash = false, kategori = "Genel") {
-            if(!fromHash) window.location.hash = encodeURIComponent(ad);
-            
-            // Player ve ana içeriği göster/gizle
-            document.getElementById('player-box').style.display = "block";
-            document.getElementById('main-content').style.display = "none";
-            
-            // Tema kontrolü - dark mode class'ını ekle/çıkar
-            const isDarkMode = !document.body.classList.contains('normal-mode');
-            if (isDarkMode) {
-                document.body.classList.add('dark-mode');
-            } else {
-                document.body.classList.remove('dark-mode');
-            }
-            
-            // Video bilgilerini güncelle
-            document.getElementById('now-playing').innerText = ad;
-            document.getElementById('player-cat-info').innerText = "Canlı Yayın • " + kategori;
-            
-            // Video oynat
-            if (Hls.isSupported()) {
-                hls.loadSource(url);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
-            } else {
-                video.src = url;
-                video.play();
-            }
-
-            // ÖNERİLEN KANALLARI YENİ TASARIMA GÖRE OLUŞTUR
-            renderSuggestedChannels(ad);
-            
-            // Kontrol butonları için event listener'ları ekle
-            setupPlayerControls();
-        }
-
-        // YENİ: ÖNERİLEN KANALLARI RENDER EDEN FONKSİYON
-        function renderSuggestedChannels(currentChannelName) {
-            const shuffled = [...allChannels]
-                .filter(ch => ch.ad !== currentChannelName)
-                .sort(() => 0.5 - Math.random())
-                .slice(0, 6);
-            
-            const sugList = document.getElementById('suggested-list');
-            if(!sugList) return;
-            
-            sugList.innerHTML = `
-                <div class="suggested-title">Önerilen Kanallar</div>
-                <div class="suggested-grid" id="suggested-grid"></div>
-            `;
-            
-            const grid = document.getElementById('suggested-grid');
-            
-            shuffled.forEach(channel => {
-                const sugLogo = channel.logo.split('/').pop().replace('.jpg', '.png');
-                const sugCat = getKategori(channel);
-                
-                const item = document.createElement('div');
-                item.className = 'suggested-item';
-                item.innerHTML = `
-                    <img src="logolar/${escapeHTML(sugLogo)}" class="suggested-logo" 
-                         onerror="this.onerror=null; this.src='logolar/logo.png'">
-                    <div class="suggested-info">
-                        <div class="suggested-channel-name">${escapeHTML(channel.ad)}</div>
-                        <div class="suggested-category">
-                            <i class="fas fa-tag"></i> ${escapeHTML(sugCat)}
+                container.innerHTML += `
+                    <div class="channel-square">
+                        <i class="fas fa-star fav-star ${isFav}" onclick="toggleFav(event, '${k.ad}')"></i>
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center" onclick="playChannel('${k.url}', '${k.ad}', false, '${k.kategori}')">
+                            <img src="${k.logo}" class="square-logo" onerror="this.src='https://via.placeholder.com/150?text=TV'">
                         </div>
-                    </div>
-                `;
-                
-                item.addEventListener('click', () => {
-                    playChannel(
-                        escapeHTML(channel.url),
-                        escapeHTML(channel.ad),
-                        false,
-                        escapeHTML(sugCat)
-                    );
-                });
-                
-                grid.appendChild(item);
+                    </div>`;
             });
-        }
-
-        // YENİ: PLAYER KONTROL BUTONLARINI KURAN FONKSİYON
-        function setupPlayerControls() {
-            // Favori butonu
-            const favBtn = document.getElementById('fav-control');
-            if(favBtn) {
-                const channelName = document.getElementById('now-playing').innerText;
-                const isFav = favorites.includes(channelName);
-                favBtn.innerHTML = `<i class="fas ${isFav ? 'fa-heart' : 'fa-heart-o'}"></i><span>${isFav ? 'Favori' : 'Favori Ekle'}</span>`;
-                
-                favBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    toggleFav(e, channelName);
-                    setupPlayerControls(); // Butonu güncelle
-                };
-            }
-            
-            // Paylaş butonu
-            const shareBtn = document.getElementById('share-control');
-            if(shareBtn) {
-                shareBtn.onclick = () => {
-                    const channelName = document.getElementById('now-playing').innerText;
-                    const shareText = `${channelName} kanalını orjnc tv+'de izliyorum!`;
-                    if(navigator.share) {
-                        navigator.share({
-                            title: channelName,
-                            text: shareText,
-                            url: window.location.href
-                        });
-                    } else {
-                        navigator.clipboard.writeText(window.location.href);
-                        alert('Link kopyalandı!');
-                    }
-                };
-            }
-            
-            // Ses kontrolü butonu
-            const volumeBtn = document.getElementById('volume-control');
-            if(volumeBtn) {
-                const video = document.getElementById('video');
-                const isMuted = video.muted;
-                volumeBtn.innerHTML = `<i class="fas ${isMuted ? 'fa-volume-mute' : 'fa-volume-up'}"></i><span>${isMuted ? 'Ses Aç' : 'Ses Kapat'}</span>`;
-                
-                volumeBtn.onclick = () => {
-                    video.muted = !video.muted;
-                    setupPlayerControls(); // Butonu güncelle
-                };
-            }
         }
 
         function renderList(data, targetId) {
@@ -962,37 +366,37 @@
             data.forEach(k => {
                 const isFav = favorites.includes(k.ad);
                 container.innerHTML += `
-                    <div class="list-item" onclick="playChannel('${escapeHTML(k.url)}', '${escapeHTML(k.ad)}')">
-                        <img src="${escapeHTML(k.logo)}" class="list-logo" onerror="this.src='https://via.placeholder.com/150?text=TV'">
+                    <div class="list-item" onclick="playChannel('${k.url}', '${k.ad}')">
+                        <img src="${k.logo}" class="list-logo" onerror="this.src='https://via.placeholder.com/150?text=TV'">
                         <div class="list-info">
-                            <span style="font-weight:bold; font-size:0.9rem;">${escapeHTML(k.ad)}</span>
-                            <div class="small">${escapeHTML(k.kategori)}</div>
+                            <span style="font-weight:bold; font-size:0.9rem;">${k.ad}</span>
+                            <div class="small">${k.kategori}</div>
                         </div>
-                        <i class="fa${isFav ? 's' : 'r'} fa-star" onclick="toggleFav(event, '${escapeHTML(k.ad)}')" style="color: ${isFav ? 'gold' : 'white'}; margin-left: auto; padding: 10px;"></i>
+                        <i class="fa${isFav ? 's' : 'r'} fa-star" onclick="toggleFav(event, '${k.ad}')" style="color: ${isFav ? 'gold' : 'white'}; margin-left: auto; padding: 10px;"></i>
                     </div>`;
             });
         }
 
+        function playChannel(url, ad, fromHash = false, kategori = "Canlı") {
+            if(!fromHash) history.pushState({page: 'player'}, ad, "#" + encodeURIComponent(ad));
+            document.getElementById('player-box').style.display = "block";
+            document.getElementById('main-content').style.display = "none";
+            document.getElementById('now-playing').innerText = ad;
+            document.getElementById('player-cat-info').innerText = "Canlı Yayın • " + kategori;
+            window.scrollTo(0,0);
+            const shuffled = [...allChannels].sort(() => 0.5 - Math.random()).slice(0, 5);
+            renderList(shuffled, 'suggested-list');
+            if (Hls.isSupported()) { hls.loadSource(url); hls.attachMedia(video); hls.on(Hls.Events.MANIFEST_PARSED, () => video.play()); }
+            else if (video.canPlayType('application/vnd.apple.mpegurl')) { video.src = url; }
+        }
+
         function showHome() {
-            const catList = document.getElementById('category-list');
-            if(catList) catList.style.display = "flex";
-            
-            document.getElementById('player-box').style.display = "none";
-            document.getElementById('main-content').style.display = "block";
-            document.getElementById('home-section').style.display = "block";
-            document.getElementById('search-section').style.display = "none";
-            
-            const promo = document.getElementById('promo-slider');
-            if (promo) promo.classList.remove('promo-hidden');
-            
-            // Tema class'ını temizle
-            document.body.classList.remove('dark-mode');
-            
-            renderGrid(allChannels);
-            
-            // Nav butonlarını güncelle
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('btn-home').classList.add('active');
+    // Önce kategorileri tekrar görünür yap
+    const catList = document.getElementById('category-list');
+    if(catList) catList.style.display = "flex";
+    
+    // Sonra ana sayfaya yönlendir veya içeriği sıfırla
+    window.location.href = "https://orjnc.github.io"; 
         }
 
         function showSearch() {
@@ -1000,37 +404,24 @@
             document.getElementById('search-section').style.display = "block";
             document.getElementById('player-box').style.display = "none";
             document.getElementById('main-content').style.display = "block";
-            
-            // Tema class'ını temizle
-            document.body.classList.remove('dark-mode');
-            
             const promo = document.getElementById('promo-slider');
             if (promo) promo.classList.add('promo-hidden');
             const si = document.getElementById('searchInput');
             if (si) setTimeout(() => si.focus(), 300);
-            
-            // Nav butonlarını güncelle
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('btn-search').classList.add('active');
         }
 
         function showFavorites() {
-            document.getElementById('home-section').style.display = "block";
-            document.getElementById('search-section').style.display = "none";
-            document.getElementById('player-box').style.display = "none";
-            document.getElementById('main-content').style.display = "block";
-            document.getElementById('category-list').style.display = "none";
-            
-            // Tema class'ını temizle
-            document.body.classList.remove('dark-mode');
-            
-            const promo = document.getElementById('promo-slider');
-            if (promo) promo.classList.add('promo-hidden');
-            renderGrid(allChannels.filter(k => favorites.includes(k.ad)));
-            
-            // Nav butonlarını güncelle
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('btn-fav').classList.add('active');
+    document.getElementById('home-section').style.display = "block";
+    document.getElementById('search-section').style.display = "none";
+    document.getElementById('player-box').style.display = "none";
+    document.getElementById('main-content').style.display = "block";
+    
+    // KATEGORİLERİ GİZLEME SATIRI:
+    document.getElementById('category-list').style.display = "none";
+    
+    const promo = document.getElementById('promo-slider');
+    if (promo) promo.classList.add('promo-hidden');
+    renderGrid(allChannels.filter(k => favorites.includes(k.ad)));
         }
 
         function doSearch() {
@@ -1042,26 +433,11 @@
         function toggleFav(e, name) {
             e.stopPropagation();
             const idx = favorites.indexOf(name);
-            if (idx > -1) favorites.splice(idx, 1); 
-            else favorites.push(name);
-            
+            if (idx > -1) favorites.splice(idx, 1); else favorites.push(name);
             localStorage.setItem('myTVfavs', JSON.stringify(favorites));
-            
-            if (document.getElementById('search-section').style.display === "block") {
-                doSearch();
-            } else if (document.getElementById('player-box').style.display === "block") {
-                setupPlayerControls(); // Player'da ise kontrolleri güncelle
-            } else if (document.getElementById('promo-slider').classList.contains('promo-hidden')) {
-                showFavorites();
-            } else {
-                renderGrid(allChannels);
-            }
-        }
-
-        function getKategori(kanal) {
-            return (kanal.kategori && kanal.kategori.trim() !== "" && kanal.kategori !== "undefined") 
-                   ? kanal.kategori 
-                   : "Genel";
+            if (document.getElementById('search-section').style.display === "block") doSearch();
+            else if (document.getElementById('promo-slider').classList.contains('promo-hidden')) showFavorites();
+            else renderGrid(allChannels);
         }
 
         function filterCategory(cat, btn) {
@@ -1069,15 +445,8 @@
             const allBtns = document.querySelectorAll('.cat-btn');
             const promo = document.getElementById('promo-slider');
             allBtns.forEach(b => { b.classList.remove('active'); b.classList.remove('cat-hidden'); });
-            if (isAlreadyActive) { 
-                promo.classList.remove('promo-hidden'); 
-                renderGrid(allChannels); 
-            }
-            else { 
-                btn.classList.add('active'); 
-                promo.classList.add('promo-hidden'); 
-                renderGrid(allChannels.filter(k => k.kategori === cat)); 
-            }
+            if (isAlreadyActive) { promo.classList.remove('promo-hidden'); renderGrid(allChannels); }
+            else { btn.classList.add('active'); promo.classList.add('promo-hidden'); renderGrid(allChannels.filter(k => k.kategori === cat)); }
         }
 
         function toggleSidebar() { 
@@ -1085,83 +454,33 @@
             const ov = document.getElementById('overlay');
             ov.style.display = (ov.style.display === 'block') ? 'none' : 'block';
         }
-
         function checkHash() {
             const h = window.location.hash.substring(1);
-            if(h) { 
-                const c = allChannels.find(k => k.ad === decodeURIComponent(h)); 
-                if(c) playChannel(c.url, c.ad, true, c.kategori); 
-            }
-        }
-
-        // Kahve bağış fonksiyonları
-        function showDonation() {
-            toggleSidebar();
-            document.getElementById('donationModal').style.display = 'flex';
-        }
-
-        function closeDonation() {
-            document.getElementById('donationModal').style.display = 'none';
-        }
-
-        function donate(amount) {
-            const amounts = {
-                20: { message: "Bir kahve için teşekkürler! ☕", color: "#FF6B35" },
-                50: { message: "3 kahve mükemmel! Sen harikasın! 🚀", color: "#00d4ff" },
-                100: { message: "Akşam yemeği ısmarladığın için çok teşekkürler! 🍔", color: "#FFD700" }
-            };
-            
-            const selected = amounts[amount];
-            alert(`${selected.message}\n\nÖdeme yapmak için yukarıdaki IBAN veya cüzdan adreslerini kullanabilirsin.`);
-            console.log(`Bağış yapıldı: ${amount}₺`);
-            closeDonation();
-        }
-
-        // Modal dışına tıklayınca kapat
-        document.addEventListener('DOMContentLoaded', function() {
-            const modal = document.getElementById('donationModal');
-            if (modal) {
-                modal.addEventListener('click', function(e) {
-                    if (e.target.id === 'donationModal') {
-                        closeDonation();
-                    }
-                });
-            }
-            
-            // Buton hover efektleri
-            document.querySelectorAll('.donate-btn').forEach(btn => {
-                btn.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-5px)';
-                    this.style.boxShadow = '0 10px 20px rgba(0,0,0,0.3)';
-                });
-                btn.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0)';
-                    this.style.boxShadow = 'none';
-                });
-            });
-        });
-    </script>
-    
-    <script>
-        // Animasyonu tetikleyen sistem
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.type === "childList" || mutation.attributeName === "style") {
-                    const pCard = document.getElementById('featured-card');
-                    if (pCard) {
-                        pCard.classList.remove('promo-active');
-                        void pCard.offsetWidth;
-                        pCard.classList.add('promo-active');
-                    }
-                }
-            });
-        });
-
-        const targetNode = document.getElementById('featured-card');
-        if (targetNode) {
-            observer.observe(targetNode, { attributes: true, childList: true, subtree: true });
+            if(h) { const c = allChannels.find(k => k.ad === decodeURIComponent(h)); if(c) playChannel(c.url, c.ad, true, c.kategori); }
         }
     </script>
-    
+    <script src="oneriler.js"></script>
+
+<script>
+// Animasyonu tetikleyen sistem
+const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        if (mutation.type === "childList" || mutation.attributeName === "style") {
+            const pCard = document.getElementById('featured-card');
+            if (pCard) {
+                pCard.classList.remove('promo-active');
+                void pCard.offsetWidth; // Reflow tetikleyici
+                pCard.classList.add('promo-active');
+            }
+        }
+    });
+});
+const targetNode = document.getElementById('featured-card');
+if (targetNode) {
+    observer.observe(targetNode, { attributes: true, childList: true, subtree: true });
+}
+</script>
+
 </body>
 </html>
+        
