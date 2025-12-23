@@ -164,19 +164,25 @@
         .player-info-sticky { padding: 15px 20px; border-bottom: 2px solid #222; }
 
         /* Navigasyon */
-         Bottom-nav { 
-    position: fixed; 
-    bottom: 15px; 
-    left: 50%; 
-    transform: translateX(-50%); 
-    width: 92%; 
-    border-radius: 25px; 
-    display: flex; 
-    justify-content: space-around; 
-    padding: 12px; 
-    z-index: 2500; /* Sidebar'ın altında kalsın */
-    transition: all 0.4s ease;
-}
+       <div class="bottom-nav">
+    <a href="https://orjnc.github.io/" class="nav-btn active" id="btn-home">
+        <i class="fas fa-house"></i>
+        <small>ANASAYFA</small>
+    </a>
+    <div onclick="showSearch()" class="nav-btn" id="btn-search">
+        <i class="fas fa-search"></i>
+        <small>ARA</small>
+    </div>
+    <div onclick="showFavorites()" class="nav-btn" id="btn-fav">
+        <i class="fas fa-heart"></i>
+        <small>FAVORİLER</small>
+    </div>
+    <div onclick="toggleSidebar()" class="nav-btn">
+        <i class="fas fa-bars"></i>
+        <small>DAHA FAZLA</small>
+    </div>
+</div>
+        
 
     /* NORMAL MOD: Buzlu Cam Efekti */
     background: rgba(255, 255, 255, 0.1) !important; 
@@ -257,14 +263,6 @@
     padding-bottom: 120px !important;
     min-height: 100vh;
 }
-
-        /* Aktif menü butonunu ve ikonunu beyaz yapar */
-.nav-btn.active { 
-    color: #ffffff !important; 
-}
-.nav-btn.active i, .nav-btn.active small { 
-    color: #ffffff !important; 
-}
         
     </style>
 </head>
@@ -330,64 +328,13 @@
     </div>
 
     <div class="bottom-nav">
-    <a href="https://orjnc.github.io/" class="nav-btn active" id="btn-home" style="text-decoration: none;">
-        <i class="fas fa-house"></i>
-        <small>ANASAYFA</small>
-    </a>
-    <div onclick="showSearch()" class="nav-btn" id="btn-search">
-        <i class="fas fa-search"></i>
-        <small>ARA</small>
+        <div onclick="showHome()" class="nav-btn active" id="btn-home"><i class="fas fa-house"></i><small>HOME</small></div>
+        <div onclick="showSearch()" class="nav-btn" id="btn-search"><i class="fas fa-search"></i><small>SEARCH</small></div>
+        <div onclick="showFavorites()" class="nav-btn" id="btn-fav"><i class="fas fa-heart"></i><small>FAV</small></div>
+        <div onclick="toggleSidebar()" class="nav-btn"><i class="fas fa-bars"></i><small>MORE</small></div>
     </div>
-    <div onclick="showFavorites()" class="nav-btn" id="btn-fav">
-        <i class="fas fa-heart"></i>
-        <small>FAVORİLER</small>
-    </div>
-    <div onclick="toggleSidebar()" class="nav-btn">
-        <i class="fas fa-bars"></i>
-        <small>DAHA FAZLA</small>
-    </div>
-    </div>
-    
-    
+
          <script>
-             // Arama ekranını gösterir ve butonu beyaz yapar
-function showSearch() {
-    document.getElementById('player-box').style.display = "none";
-    document.getElementById('home-section').style.display = "none";
-    document.getElementById('category-list').style.display = "none";
-    document.getElementById('promo-slider').style.display = "none";
-    document.getElementById('search-section').style.display = "block";
-    updateNavActive('btn-search');
-}
-
-// Favoriler ekranını gösterir ve butonu beyaz yapar
-function showFavorites() {
-    const favChannels = allChannels.filter(k => favorites.includes(k.ad));
-    document.getElementById('player-box').style.display = "none";
-    document.getElementById('search-section').style.display = "none";
-    document.getElementById('home-section').style.display = "block";
-    document.getElementById('category-list').style.display = "none";
-    document.getElementById('promo-slider').style.display = "none";
-    renderGrid(favChannels); 
-    updateNavActive('btn-fav');
-}
-
-// Alt menüdeki beyaz ışığı yönetir
-function updateNavActive(id) {
-    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-    const target = document.getElementById(id);
-    if(target) target.classList.add('active');
-}
-
-// Arama yapmanı sağlar
-function doSearch() {
-    const q = document.getElementById('searchInput').value.toLowerCase();
-    const res = allChannels.filter(k => k.ad.toLowerCase().includes(q));
-    renderList(res, 'search-results');
-}
-             
-
-             
             // Arama ekranını açar ve butonu beyaz yapar
 function showSearch() {
     document.getElementById('player-box').style.display = "none";
@@ -522,86 +469,4 @@ function doSearch() {
                             <div class="small text-muted">${getSafeCategory(k)}</div>
                         </div>
                         <i class="fa${isFav ? 's' : 'r'} fa-star" onclick="toggleFav(event, '${k.ad}')" style="color: ${isFav ? 'gold' : 'white'}; margin-left: auto; padding: 10px;"></i>
-                    </div>`;
-            });
-        }
-
-        function playChannel(url, ad, fromHash = false, kategori = "Genel") {
-            if(!fromHash) history.pushState({page: 'player'}, ad, "#" + encodeURIComponent(ad));
-            document.getElementById('player-box').style.display = "block";
-            document.getElementById('main-content').style.display = "none";
-            document.getElementById('now-playing').innerText = ad;
-            document.getElementById('player-cat-info').innerText = "Canlı Yayın • " + kategori;
-            window.scrollTo(0,0);
-            const shuffled = [...allChannels].sort(() => 0.5 - Math.random()).slice(0, 5);
-            renderList(shuffled, 'suggested-list');
-            if (Hls.isSupported()) { hls.loadSource(url); hls.attachMedia(video); hls.on(Hls.Events.MANIFEST_PARSED, () => video.play()); }
-            else if (video.canPlayType('application/vnd.apple.mpegurl')) { video.src = url; video.play(); }
-        }
-
-        function showHome() {
-            document.getElementById('player-box').style.display = "none";
-            document.getElementById('main-content').style.display = "block";
-            document.getElementById('home-section').style.display = "block";
-            document.getElementById('search-section').style.display = "none";
-            document.getElementById('category-list').style.display = "flex";
-            video.pause();
-            history.pushState("", document.title, window.location.pathname);
-        }
-
-        function filterCategory(cat, btn) {
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById('promo-slider').classList.add('promo-hidden');
-            renderGrid(allChannels.filter(k => getSafeCategory(k) === cat));
-        }
-
-        function toggleFav(e, name) {
-            e.stopPropagation();
-            const idx = favorites.indexOf(name);
-            if (idx > -1) favorites.splice(idx, 1); else favorites.push(name);
-            localStorage.setItem('myTVfavs', JSON.stringify(favorites));
-            renderGrid(allChannels);
-        }
-
-        function toggleSidebar() { 
-            document.getElementById('sidebar').classList.toggle('active');
-            const ov = document.getElementById('overlay');
-            ov.style.display = (ov.style.display === 'block') ? 'none' : 'block';
-        }
-
-        function checkHash() {
-            const h = window.location.hash.substring(1);
-            if(h) { 
-                const decodedName = decodeURIComponent(h);
-                const c = allChannels.find(k => k.ad === decodedName); 
-                if(c) playChannel(c.url, c.ad, true, getSafeCategory(c)); 
-            }
-        }
-        
-    </script>
-    <script src="oneriler.js"></script>
-
-<script>
-// Animasyonu tetikleyen sistem
-const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-        if (mutation.type === "childList" || mutation.attributeName === "style") {
-            const pCard = document.getElementById('featured-card');
-            if (pCard) {
-                pCard.classList.remove('promo-active');
-                void pCard.offsetWidth; // Reflow tetikleyici
-                pCard.classList.add('promo-active');
-            }
-        }
-    });
-});
-const targetNode = document.getElementById('featured-card');
-if (targetNode) {
-    observer.observe(targetNode, { attributes: true, childList: true, subtree: true });
-}
-</script>
-
-</body>
-</html>
-        
+            
