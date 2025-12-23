@@ -504,7 +504,7 @@ function doSearch() {
             return "Genel";
         }
 
-        function setTheme(mode) {
+        function setTheme(mode) { // 'f' harfi küçük olmalı
     const body = document.body;
     const themeMeta = document.getElementById('theme-meta');
 
@@ -512,13 +512,16 @@ function doSearch() {
         body.classList.add('normal-mode'); 
         localStorage.setItem('themeChoice', 'normal');
         if(themeMeta) themeMeta.setAttribute('content', '#B900CA'); 
-    }
+        body.style.color = '#ffffff';
+    } 
     else { 
         body.classList.remove('normal-mode'); 
         localStorage.setItem('themeChoice', 'dark');
         if(themeMeta) themeMeta.setAttribute('content', '#000000'); 
+        body.style.color = '#ffffff';
     }
-}
+} // Bu süslü parantez fonksiyonu bitirir, doğru yerde.
+             
              // 1. Telefonun modu uygulama açıkken değişirse anında tepki verir
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
     if (!localStorage.getItem('themeChoice')) {
