@@ -348,7 +348,42 @@
     </div>
 
          <script>
-        // --- KANAL YÖNETİM MASASI ---
+             // Tıklanan butonu beyaz (aktif) yapma fonksiyonu
+function updateNavActive(id) {
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+    const target = document.getElementById(id);
+    if(target) target.classList.add('active');
+}
+
+// Arama ekranını açan fonksiyon
+function showSearch() {
+    document.getElementById('player-box').style.display = "none";
+    document.getElementById('home-section').style.display = "none";
+    document.getElementById('category-list').style.display = "none";
+    document.getElementById('promo-slider').style.display = "none";
+    document.getElementById('search-section').style.display = "block";
+    updateNavActive('btn-search'); // Butonu beyaz yapar
+    if(typeof video !== 'undefined') video.pause();
+}
+
+// Favoriler ekranını açan fonksiyon
+function showFavorites() {
+    // Sadece favorilere eklenen kanalları filtrele
+    const favChannels = allChannels.filter(k => favorites.includes(k.ad));
+    
+    document.getElementById('player-box').style.display = "none";
+    document.getElementById('search-section').style.display = "none";
+    document.getElementById('home-section').style.display = "block";
+    document.getElementById('category-list').style.display = "none";
+    document.getElementById('promo-slider').style.display = "none";
+    
+    renderGrid(favChannels); // Sadece favorileri ekrana basar
+    updateNavActive('btn-fav'); // Butonu beyaz yapar
+    if(typeof video !== 'undefined') video.pause();
+}
+             
+             
+             // --- KANAL YÖNETİM MASASI ---
         const KATEGORI_HARITASI = {
             "Ulusal": ["TRT 1", "ATV", "KANAL D", "STAR TV", "SHOW TV", "NOW TV", "TV8", "BEYAZ TV", "TEVE2", "360", "A2", "KANAL 7", "TABİİ TV"],
             "Haber": ["CNN TÜRK", "TRT HABER", "HABERTÜRK", "NTV", "HALK TV", "SÖZCÜ", "EKOL TV", "A HABER", "TV100", "TVNET", "TGRT HABER", "24 TV", "KRT", "TYT TÜRK", "HABER GLOBAL", "A PARA", "BLOOMBERG", "TELE1"],
