@@ -488,7 +488,14 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', eve
              
 
         document.addEventListener('DOMContentLoaded', () => {
-            setTheme(localStorage.getItem('themeChoice') || 'dark');
+    const savedTheme = localStorage.getItem('themeChoice');
+    if (savedTheme) {
+        setTheme(savedTheme);
+    } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        setTheme(prefersDark ? 'dark' : 'normal');
+    }
+            
             fetch('kanallar.json?v=' + Date.now())
                 .then(res => res.json())
                 .then(data => { 
