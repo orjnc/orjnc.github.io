@@ -479,24 +479,28 @@ function doSearch() {
         if(themeMeta) themeMeta.setAttribute('content', '#000000'); 
     }
 }
-             window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+             // 1. Telefonun modu uygulama açıkken değişirse anında tepki verir
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
     if (!localStorage.getItem('themeChoice')) {
         const newMode = event.matches ? "dark" : "normal";
         setTheme(newMode);
     }
 });
 
+// 2. Uygulama ilk açıldığında çalışacak kısım
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Tema Ayarı
     const savedTheme = localStorage.getItem('themeChoice');
+    
     if (savedTheme) {
+        // Kullanıcı daha önce seçim yaptıysa onu uygula
         setTheme(savedTheme);
     } else {
+        // Kullanıcı seçmediyse telefonun moduna bak
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         setTheme(prefersDark ? 'dark' : 'normal');
     }
 
-    // 2. Kanal Yükleme (Burası bozuktu, düzelttim)
+    // Kanal verilerini getiren orijinal kodun
     fetch('kanallar.json?v=' + Date.now())
         .then(res => res.json())
         .then(data => { 
@@ -505,8 +509,9 @@ document.addEventListener('DOMContentLoaded', () => {
             renderGrid(data); 
             checkHash(); 
         })
-        .catch(err => console.error("Veri çekme hatası:", err));
+        .catch(err => console.error("Veri yüklenemedi:", err));
 });
+             
              
 
              
