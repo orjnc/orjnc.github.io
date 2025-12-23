@@ -318,7 +318,7 @@
         <div onclick="toggleSidebar()" class="nav-btn"><i class="fas fa-bars"></i><small>MORE</small></div>
     </div>
 
-             <script>
+         <script>
         // --- KANAL YÖNETİM MASASI ---
         const KATEGORI_HARITASI = {
             "Ulusal": ["TRT 1", "ATV", "KANAL D", "STAR TV", "SHOW TV", "NOW TV", "TV8", "BEYAZ TV", "TEVE2", "360", "A2", "KANAL 7", "TABİİ TV"],
@@ -333,50 +333,24 @@
         let favorites = JSON.parse(localStorage.getItem('myTVfavs')) || [];
         const hls = new Hls();
         const video = document.getElementById('video');
-        
-        
-    
-        let allChannels = [];
-        let favorites = JSON.parse(localStorage.getItem('myTVfavs')) || [];
-        const hls = new Hls();
-        const video = document.getElementById('video');
 
-        // LOGO VE KATEGORİ DÜZELTİCİ (TEKNİK REHBERE UYGUN)
         function getSafeLogo(k) {
             if (!k.logo) return 'logolar/default.png';
             let filename = k.logo.split('/').pop().replace(/\.(jpg|jpeg|png|gif|webp)$/i, '');
             return 'logolar/' + filename.toLowerCase() + '.png';
         }
 
-                    function getSafeCategory(k) {
+        function getSafeCategory(k) {
             if (k.kategori && k.kategori !== "undefined" && k.kategori.trim() !== "") {
                 return k.kategori;
             }
-
             const kanalAdi = k.ad ? k.ad.toUpperCase() : "";
-
             for (const [kategori, kanallar] of Object.entries(KATEGORI_HARITASI)) {
                 if (kanallar.some(anahtar => kanalAdi.includes(anahtar.toUpperCase()))) {
                     return kategori;
                 }
             }
-
             return "Genel";
-                    }
-                 
-
-            const kanalAdi = k.ad.toUpperCase();
-
-            // Yönetim masasındaki listeleri tek tek kontrol et
-            for (const [kategori, kanallar] of Object.entries(KATEGORI_HARITASI)) {
-                if (kanallar.some(anahtar => kanalAdi.includes(anahtar.toUpperCase()))) {
-                    return kategori;
-                }
-            }
-
-            return "Genel"; // Eşleşme olmazsa Genel kategorisine atar
-                }
-        
         }
 
         function setTheme(mode) {
@@ -397,7 +371,6 @@
                 });
         });
 
-        // KATEGORİLERİ OTOMATİK OLUŞTURAN YENİ SİSTEM
         function renderCategories(data) {
             const catContainer = document.getElementById('category-list');
             const categories = ['Tümü', ...new Set(data.map(k => getSafeCategory(k)))];
