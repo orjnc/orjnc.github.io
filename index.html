@@ -287,15 +287,8 @@
     </div>
 
     <div id="main-content">
-        <div class="category-container" id="category-list">
-            <button class="cat-btn" onclick="filterCategory('Ulusal', this)">Ulusal</button>
-            <button class="cat-btn" onclick="filterCategory('Spor', this)">Spor</button>
-            <button class="cat-btn" onclick="filterCategory('Haber', this)">Haber</button>
-            <button class="cat-btn" onclick="filterCategory('Müzik', this)">Müzik</button>
-            <button class="cat-btn" onclick="filterCategory('Belgesel', this)">Belgesel</button>
-        </div>
-
-        <div class="promo-slider" id="promo-slider">
+        <div class="category-container" id="category-list"></div>
+      <div class="promo-slider" id="promo-slider">
             <div class="promo-card" id="featured-card" onclick="playFeatured()" style="cursor: pointer;">
                 <div>
                     <h3 class="m-0" id="featured-title" style="font-weight: 800;">Yükleniyor...</h3>
@@ -326,10 +319,22 @@
     </div>
 
     <script>
-        let allChannels = [];
+                let allChannels = [];
         let favorites = JSON.parse(localStorage.getItem('myTVfavs')) || [];
         const hls = new Hls();
         const video = document.getElementById('video');
+
+        // LOGO VE KATEGORİ DÜZELTİCİ (TEKNİK REHBERE UYGUN)
+        function getSafeLogo(k) {
+            if (!k.logo) return 'logolar/default.png';
+            let filename = k.logo.split('/').pop().replace(/\.(jpg|jpeg|png|gif|webp)$/i, '');
+            return 'logolar/' + filename.toLowerCase() + '.png';
+        }
+
+        function getSafeCategory(k) {
+            if (!k.kategori || k.kategori.trim() === "") return "Genel";
+            return k.kategori;
+        }
 
         function setTheme(mode) {
             const body = document.body;
@@ -341,10 +346,31 @@
             setTheme(localStorage.getItem('themeChoice') || 'dark');
             fetch('kanallar.json?v=' + Date.now())
                 .then(res => res.json())
-                .then(data => { allChannels = data; renderGrid(data); checkHash(); });
+                .then(data => { 
+                    allChannels = data; 
+                    renderCategories(data); 
+                    renderGrid(data); 
+                    checkHash(); 
+                });
         });
 
-        function renderGrid(data) {
+        // KATEGORİLERİ OTOMATİK OLUŞTURAN YENİ SİSTEM
+        function renderCategories(data) {
+            const catContainer = document.getElementById('category-list');
+            const categories = ['Tümü', ...new Set(data.map(k => getSafeCategory(k)))];
+            catContainer.innerHTML = '';
+            categories.forEach(cat => {
+                const isAll = cat === 'Tümü';
+                catContainer.innerHTML += `<button class="cat-btn ${isAll ? 'active' : ''}" onclick="${isAll ? 'renderGrid(allChannels, this)' : `filterCategory('${cat}', this)`}">${cat}</button>`;
+            });
+        }
+
+        function renderGrid(data, btn) {
+            if(btn) {
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                if(btn.innerText === 'Tümü') document.getElementById('promo-slider').classList.remove('promo-hidden');
+            }
             const container = document.getElementById('grid-container');
             container.innerHTML = "";
             data.forEach(k => {
@@ -352,8 +378,8 @@
                 container.innerHTML += `
                     <div class="channel-square">
                         <i class="fas fa-star fav-star ${isFav}" onclick="toggleFav(event, '${k.ad}')"></i>
-                        <div class="w-100 h-100 d-flex align-items-center justify-content-center" onclick="playChannel('${k.url}', '${k.ad}', false, '${k.kategori}')">
-                            <img src="${k.logo}" class="square-logo" onerror="this.src='https://via.placeholder.com/150?text=TV'">
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center" onclick="playChannel('${k.url}', '${k.ad}', false, '${getSafeCategory(k)}')">
+                            <img src="${getSafeLogo(k)}" class="square-logo" onerror="this.src='logolar/default.png'">
                         </div>
                     </div>`;
             });
@@ -366,18 +392,18 @@
             data.forEach(k => {
                 const isFav = favorites.includes(k.ad);
                 container.innerHTML += `
-                    <div class="list-item" onclick="playChannel('${k.url}', '${k.ad}')">
-                        <img src="${k.logo}" class="list-logo" onerror="this.src='https://via.placeholder.com/150?text=TV'">
+                    <div class="list-item" onclick="playChannel('${k.url}', '${k.ad}', false, '${getSafeCategory(k)}')">
+                        <img src="${getSafeLogo(k)}" class="list-logo" onerror="this.src='logolar/default.png'">
                         <div class="list-info">
-                            <span style="font-weight:bold; font-size:0.9rem;">${k.ad}</span>
-                            <div class="small">${k.kategori}</div>
+                            <span style="font-weight:bold;">${k.ad}</span>
+                            <div class="small text-muted">${getSafeCategory(k)}</div>
                         </div>
                         <i class="fa${isFav ? 's' : 'r'} fa-star" onclick="toggleFav(event, '${k.ad}')" style="color: ${isFav ? 'gold' : 'white'}; margin-left: auto; padding: 10px;"></i>
                     </div>`;
             });
         }
 
-        function playChannel(url, ad, fromHash = false, kategori = "Canlı") {
+        function playChannel(url, ad, fromHash = false, kategori = "Genel") {
             if(!fromHash) history.pushState({page: 'player'}, ad, "#" + encodeURIComponent(ad));
             document.getElementById('player-box').style.display = "block";
             document.getElementById('main-content').style.display = "none";
@@ -387,47 +413,24 @@
             const shuffled = [...allChannels].sort(() => 0.5 - Math.random()).slice(0, 5);
             renderList(shuffled, 'suggested-list');
             if (Hls.isSupported()) { hls.loadSource(url); hls.attachMedia(video); hls.on(Hls.Events.MANIFEST_PARSED, () => video.play()); }
-            else if (video.canPlayType('application/vnd.apple.mpegurl')) { video.src = url; }
+            else if (video.canPlayType('application/vnd.apple.mpegurl')) { video.src = url; video.play(); }
         }
 
         function showHome() {
-    // Önce kategorileri tekrar görünür yap
-    const catList = document.getElementById('category-list');
-    if(catList) catList.style.display = "flex";
-    
-    // Sonra ana sayfaya yönlendir veya içeriği sıfırla
-    window.location.href = "https://orjnc.github.io"; 
-        }
-
-        function showSearch() {
-            document.getElementById('home-section').style.display = "none";
-            document.getElementById('search-section').style.display = "block";
             document.getElementById('player-box').style.display = "none";
             document.getElementById('main-content').style.display = "block";
-            const promo = document.getElementById('promo-slider');
-            if (promo) promo.classList.add('promo-hidden');
-            const si = document.getElementById('searchInput');
-            if (si) setTimeout(() => si.focus(), 300);
+            document.getElementById('home-section').style.display = "block";
+            document.getElementById('search-section').style.display = "none";
+            document.getElementById('category-list').style.display = "flex";
+            video.pause();
+            history.pushState("", document.title, window.location.pathname);
         }
 
-        function showFavorites() {
-    document.getElementById('home-section').style.display = "block";
-    document.getElementById('search-section').style.display = "none";
-    document.getElementById('player-box').style.display = "none";
-    document.getElementById('main-content').style.display = "block";
-    
-    // KATEGORİLERİ GİZLEME SATIRI:
-    document.getElementById('category-list').style.display = "none";
-    
-    const promo = document.getElementById('promo-slider');
-    if (promo) promo.classList.add('promo-hidden');
-    renderGrid(allChannels.filter(k => favorites.includes(k.ad)));
-        }
-
-        function doSearch() {
-            const q = document.getElementById('searchInput').value.toLowerCase();
-            const res = allChannels.filter(k => k.ad.toLowerCase().includes(q) || k.kategori.toLowerCase().includes(q));
-            renderList(res, 'search-results');
+        function filterCategory(cat, btn) {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('promo-slider').classList.add('promo-hidden');
+            renderGrid(allChannels.filter(k => getSafeCategory(k) === cat));
         }
 
         function toggleFav(e, name) {
@@ -435,18 +438,7 @@
             const idx = favorites.indexOf(name);
             if (idx > -1) favorites.splice(idx, 1); else favorites.push(name);
             localStorage.setItem('myTVfavs', JSON.stringify(favorites));
-            if (document.getElementById('search-section').style.display === "block") doSearch();
-            else if (document.getElementById('promo-slider').classList.contains('promo-hidden')) showFavorites();
-            else renderGrid(allChannels);
-        }
-
-        function filterCategory(cat, btn) {
-            const isAlreadyActive = btn.classList.contains('active');
-            const allBtns = document.querySelectorAll('.cat-btn');
-            const promo = document.getElementById('promo-slider');
-            allBtns.forEach(b => { b.classList.remove('active'); b.classList.remove('cat-hidden'); });
-            if (isAlreadyActive) { promo.classList.remove('promo-hidden'); renderGrid(allChannels); }
-            else { btn.classList.add('active'); promo.classList.add('promo-hidden'); renderGrid(allChannels.filter(k => k.kategori === cat)); }
+            renderGrid(allChannels);
         }
 
         function toggleSidebar() { 
@@ -454,10 +446,16 @@
             const ov = document.getElementById('overlay');
             ov.style.display = (ov.style.display === 'block') ? 'none' : 'block';
         }
+
         function checkHash() {
             const h = window.location.hash.substring(1);
-            if(h) { const c = allChannels.find(k => k.ad === decodeURIComponent(h)); if(c) playChannel(c.url, c.ad, true, c.kategori); }
+            if(h) { 
+                const decodedName = decodeURIComponent(h);
+                const c = allChannels.find(k => k.ad === decodedName); 
+                if(c) playChannel(c.url, c.ad, true, getSafeCategory(c)); 
+            }
         }
+        
     </script>
     <script src="oneriler.js"></script>
 
