@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+    <meta id="theme-meta" name="theme-color" content="#000000">
     <meta name="color-scheme" content="dark">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -461,9 +462,23 @@ function doSearch() {
         }
 
         function setTheme(mode) {
-            const body = document.body;
-            if (mode === 'normal') { body.classList.add('normal-mode'); localStorage.setItem('themeChoice', 'normal'); }
-            else { body.classList.remove('normal-mode'); localStorage.setItem('themeChoice', 'dark'); }
+    const body = document.body;
+    const themeMeta = document.getElementById('theme-meta'); // Adres çubuğu rengini kontrol eden araç
+
+    if (mode === 'normal') { 
+        body.classList.add('normal-mode'); 
+        localStorage.setItem('themeChoice', 'normal');
+        // Normal modda senin istediğin mor:
+        if(themeMeta) themeMeta.setAttribute('content', '#B900CA'); 
+    }
+    else { 
+        body.classList.remove('normal-mode'); 
+        localStorage.setItem('themeChoice', 'dark');
+        // Koyu modda siyah:
+        if(themeMeta) themeMeta.setAttribute('content', '#000000'); 
+    }
+        }
+             
         }
 
         document.addEventListener('DOMContentLoaded', () => {
