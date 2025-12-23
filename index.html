@@ -357,14 +357,32 @@ function updateNavActive(id) {
 
 // Arama ekranını açan fonksiyon
 function showSearch() {
+    // Diğer tüm bölümleri gizle
     document.getElementById('player-box').style.display = "none";
     document.getElementById('home-section').style.display = "none";
     document.getElementById('category-list').style.display = "none";
     document.getElementById('promo-slider').style.display = "none";
+    
+    // Arama bölümünü göster
     document.getElementById('search-section').style.display = "block";
-    updateNavActive('btn-search'); // Butonu beyaz yapar
+    
+    // Alt menüdeki butonu beyaz yap
+    updateNavActive('btn-search');
+    
+    // Video oynuyorsa durdur
     if(typeof video !== 'undefined') video.pause();
+
+    // Saniyeler içinde klavyeyi açan odaklama komutu
+    setTimeout(() => {
+        const input = document.getElementById('searchInput');
+        if(input) {
+            input.focus();
+            // Mobil cihazlarda klavyeyi zorlamak için bazen gerekli
+            input.click(); 
+        }
+    }, 300);
 }
+             
 
 // Favoriler ekranını açan fonksiyon
 function showFavorites() {
@@ -381,7 +399,20 @@ function showFavorites() {
     updateNavActive('btn-fav'); // Butonu beyaz yapar
     if(typeof video !== 'undefined') video.pause();
 }
+
              
+             // Arama kutusuna yazılan metne göre kanalları filtreler
+function doSearch() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    
+    // Kanallar içinde isme göre filtreleme yapar
+    const res = allChannels.filter(k => k.ad.toLowerCase().includes(q));
+    
+    // Sonuçları 'search-results' id'li div içerisine döker
+    renderList(res, 'search-results');
+}
+             
+          
              
              // --- KANAL YÖNETİM MASASI ---
         const KATEGORI_HARITASI = {
