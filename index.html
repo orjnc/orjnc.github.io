@@ -663,152 +663,7 @@ body:not(.normal-mode) .cat-btn:not(.active) {
         
          <script>
 
-            document.addEventListener('DOMContentLoaded', () => {
-    const savedTheme = localStorage.getItem('themeChoice');
-    const toggle = document.getElementById('darkModeToggle');
-    
-    if (savedTheme === 'dark') {
-        setTheme('dark');
-        if (toggle) toggle.checked = true;
-    } else {
-        setTheme('normal');
-        if (toggle) toggle.checked = false;
-    }
-
-    fetch('kanallar.json?v=' + Date.now())
-        .then(res => res.json())
-        .then(data => { 
-            allChannels = data; 
-            renderCategories(data); 
-            renderGrid(data); 
-            checkHash(); 
-        });
-});
-
-function toggleThemeAction() {
-    const toggle = document.getElementById('darkModeToggle');
-    if (toggle && toggle.checked) { setTheme('dark'); } 
-    else { setTheme('normal'); }
-}
-
-function updateNavActive(id) {
-    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-    const target = document.getElementById(id);
-    if(target) target.classList.add('active');
-}
-
-function showSearch() {
-    document.getElementById('player-box').style.display = "none";
-    document.getElementById('home-section').style.display = "none";
-    document.getElementById('category-list').style.display = "none";
-    document.getElementById('promo-slider').style.display = "none";
-    document.getElementById('search-section').style.display = "block";
-    updateNavActive('btn-search');
-    setTimeout(() => { document.getElementById('searchInput')?.focus(); }, 300);
-}
-
-function showFavorites() {
-    const favChannels = allChannels.filter(k => favorites.includes(k.ad));
-    document.getElementById('player-box').style.display = "none";
-    document.getElementById('search-section').style.display = "none";
-    document.getElementById('home-section').style.display = "block";
-    document.getElementById('category-list').style.display = "none";
-    document.getElementById('promo-slider').style.display = "none";
-    renderGrid(favChannels);
-    updateNavActive('btn-fav');
-}
-
-function doSearch() {
-    const q = document.getElementById('searchInput').value.toLowerCase();
-    const res = allChannels.filter(k => k.ad.toLowerCase().includes(q));
-    renderList(res, 'search-results');
-}
-          
-             
-             // --- KANAL YÖNETİM MASASI ---
-        const KATEGORI_HARITASI = {
-            "Ulusal": ["TRT 1", "ATV", "KANAL D", "STAR TV", "SHOW TV", "NOW TV", "TV8", "BEYAZ TV", "TEVE2", "360", "A2", "KANAL 7", "TABİİ TV"],
-            "Haber": ["CNN TÜRK", "TRT HABER", "HABERTÜRK", "NTV", "HALK TV", "SÖZCÜ", "EKOL TV", "A HABER", "TV100", "TVNET", "TGRT HABER", "24 TV", "KRT", "TYT TÜRK", "HABER GLOBAL", "A PARA", "BLOOMBERG", "TELE1"],
-            "Spor": ["FB TV", "HT SPOR", "A SPOR", "BEIN SPORTS HABER", "TRT SPOR", "TRT SPOR YILDIZ", "TABİİ SPOR", "SPORTS TV", "TJK"],
-            "Müzik": ["POWERTÜRK", "POWER TV", "POWER LOVE", "POWERTÜRK AKUSTİK", "POWERTÜRK SLOW", "POWERTÜRK TAPTAZE", "NR1 TÜRK", "NR1", "NR1 AŞK", "NR1 DANCE", "NR1 RAP", "DREAM TÜRK"],
-            "Belgesel": ["DMAX", "TLC", "TRT 2", "BELGESEL", "WILD", "NATIONAL"],
-            "Sinema": ["FX", "CNBC-E", "SİNEMA", "FİLM", "MOVIE", "AKSİYON"]
-        };
-
-        let allChannels = [];
-        let favorites = JSON.parse(localStorage.getItem('myTVfavs')) || [];
-        const hls = new Hls();
-        const video = document.getElementById('video');
-
-        function getSafeLogo(k) {
-            if (!k.logo) return 'logolar/default.png';
-            let filename = k.logo.split('/').pop().replace(/\.(jpg|jpeg|png|gif|webp)$/i, '');
-            return 'logolar/' + filename.toLowerCase() + '.png';
-        }
-
-        function getSafeCategory(k) {
-            if (k.kategori && k.kategori !== "undefined" && k.kategori.trim() !== "") {
-                return k.kategori;
-            }
-            const kanalAdi = k.ad ? k.ad.toUpperCase() : "";
-            for (const [kategori, kanallar] of Object.entries(KATEGORI_HARITASI)) {
-                if (kanallar.some(anahtar => kanalAdi.includes(anahtar.toUpperCase()))) {
-                    return kategori;
-                }
-            }
-            return "Genel";
-        }
-             
-             
-             // 1. Telefonun modu uygulama açıkken değişirse anında tepki verir
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-    if (!localStorage.getItem('themeChoice')) {
-        const newMode = event.matches ? "dark" : "normal";
-        setTheme(newMode);
-    }
-});
-
-             document.addEventListener('DOMContentLoaded', () => {
-    const savedTheme = localStorage.getItem('themeChoice');
-    const toggle = document.getElementById('darkModeToggle');
-    
-    // 1. Tema ve Switch Ayarı
-    if (savedTheme === 'dark') {
-        setTheme('dark');
-        if (toggle) toggle.checked = true; // Switch'i açık konuma getir
-    } else {
-        setTheme('normal'); // Varsayılan veya seçim normal ise
-        if (toggle) toggle.checked = false; // Switch'i kapalı konuma getir
-    }
-
-    // 2. Kanal Verilerini Yükleme (Burası kritik, silinmemeli)
-    fetch('kanallar.json?v=' + Date.now())
-        .then(res => res.json())
-        .then(data => { 
-            allChannels = data; 
-            renderCategories(data); 
-            renderGrid(data); 
-            checkHash(); 
-        });
-});
-             
-
-    // Kanal verilerini getiren kodun devamı...
-    fetch('kanallar.json?v=' + Date.now())
-        .then(res => res.json())
-        .then(data => { 
-            allChannels = data; 
-            renderCategories(data); 
-            renderGrid(data); 
-            checkHash(); 
-        });
-});
-             
-             
-             function setTheme(mode) {
-    const body = document.body;
-    const themeMeta = document.getElementById('theme-meta');
-
+            
     if (mode === 'normal') { 
         body.classList.add('normal-mode'); 
         localStorage.setItem('themeChoice', 'normal');
@@ -861,116 +716,201 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', eve
             });
         }
 
-        function renderList(data, targetId) {
-            const container = document.getElementById(targetId);
-            if(!container) return;
-            container.innerHTML = "";
-            data.forEach(k => {
-                const isFav = favorites.includes(k.ad);
-                container.innerHTML += `
-                    <div class="list-item" onclick="playChannel('${k.url}', '${k.ad}', false, '${getSafeCategory(k)}')">
-                        <img src="${getSafeLogo(k)}" class="list-logo" onerror="this.src='logolar/default.png'">
-                        <div class="list-info">
-                            <span style="font-weight:bold;">${k.ad}</span>
-                            <div class="small text-muted">${getSafeCategory(k)}</div>
-                        </div>
-                        <i class="fa${isFav ? 's' : 'r'} fa-star" onclick="toggleFav(event, '${k.ad}')" style="color: ${isFav ? 'gold' : 'white'}; margin-left: auto; padding: 10px;"></i>
-                    </div>`;
-            });
+        <script>
+    // --- TEMEL DEĞİŞKENLER ---
+    let allChannels = [];
+    let favorites = JSON.parse(localStorage.getItem('myTVfavs')) || [];
+    const hls = new Hls();
+    const video = document.getElementById('video');
+
+    // --- 1. SAYFA YÜKLENDİĞİNDE ÇALIŞACAK ANA BLOK ---
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('themeChoice');
+        const toggle = document.getElementById('darkModeToggle');
+        
+        // Tema ve Switch Ayarı
+        if (savedTheme === 'dark') {
+            setTheme('dark');
+            if (toggle) toggle.checked = true;
+        } else {
+            setTheme('normal');
+            if (toggle) toggle.checked = false;
         }
 
-        function playChannel(url, ad, fromHash = false, kategori = "Genel") {
-            if(!fromHash) history.pushState({page: 'player'}, ad, "#" + encodeURIComponent(ad));
-            document.getElementById('player-box').style.display = "block";
-            document.getElementById('main-content').style.display = "none";
-            document.getElementById('now-playing').innerText = ad;
-            document.getElementById('player-cat-info').innerText = "Canlı Yayın • " + kategori;
-            window.scrollTo(0,0);
-            const shuffled = [...allChannels].sort(() => 0.5 - Math.random()).slice(0, 5);
-            renderList(shuffled, 'suggested-list');
-            if (Hls.isSupported()) { hls.loadSource(url); hls.attachMedia(video); hls.on(Hls.Events.MANIFEST_PARSED, () => video.play()); }
-            else if (video.canPlayType('application/vnd.apple.mpegurl')) { video.src = url; video.play(); }
+        // Kanal Verilerini Yükleme
+        fetch('kanallar.json?v=' + Date.now())
+            .then(res => res.json())
+            .then(data => { 
+                allChannels = data; 
+                renderCategories(data); 
+                renderGrid(data); 
+                checkHash(); 
+            })
+            .catch(err => console.error("Kanal yükleme hatası:", err));
+    });
+
+    // --- 2. TEMA VE SIDEBAR FONKSİYONLARI ---
+    function setTheme(mode) {
+        const body = document.body;
+        const themeMeta = document.getElementById('theme-meta');
+        if (mode === 'normal') { 
+            body.classList.add('normal-mode'); 
+            localStorage.setItem('themeChoice', 'normal');
+            if(themeMeta) themeMeta.setAttribute('content', '#230c40'); 
+        } else { 
+            body.classList.remove('normal-mode'); 
+            localStorage.setItem('themeChoice', 'dark');
+            if(themeMeta) themeMeta.setAttribute('content', '#000000'); 
         }
-
-        function showHome() {
-    // 1. Sayfa Görünümünü Resetle
-    document.getElementById('player-box').style.display = "none";
-    document.getElementById('main-content').style.display = "block";
-    document.getElementById('home-section').style.display = "block";
-    document.getElementById('search-section').style.display = "none";
-    document.getElementById('category-list').style.display = "flex";
-    document.getElementById('promo-slider').classList.remove('promo-hidden');
-
-    // 2. Videoyu ve Kaynağı Tamamen Temizle (Performans için kritik)
-    if (video) {
-        video.pause();
-        video.src = ""; // Belleği boşaltır
-        video.load();
-    }
-    if (hls) {
-        hls.detachMedia(); // HLS bağlantısını koparır
-        hls.stopLoad();    // Veri indirmeyi tamamen durdurur
     }
 
-    // 3. Navigasyon Butonlarını Güncelle
-    updateNavActive('btn-home'); // Anasayfa ikonunu beyaz/aktif yapar
+    function toggleThemeAction() {
+        const toggle = document.getElementById('darkModeToggle');
+        if (toggle && toggle.checked) { setTheme('dark'); } 
+        else { setTheme('normal'); }
+    }
 
-    // 4. Listeyi ve Kategoriyi Sıfırla
-    renderGrid(allChannels); // Tüm kanalları tekrar dök
-    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-    document.querySelector('.cat-btn:first-child')?.classList.add('active'); // "Tümü" butonunu seçili yap
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        sidebar.classList.toggle('active');
+        overlay.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
+    }
 
-    // 5. URL'yi Temizle
-    history.pushState("", document.title, window.location.pathname);
-    
-    // 6. Sayfayı en yukarı kaydır
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-             window.onpopstate = function() {
-    showHome();
-};
+    // --- 3. NAVİGASYON VE GÖRÜNÜM FONKSİYONLARI ---
+    function updateNavActive(id) {
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        const target = document.getElementById(id);
+        if(target) target.classList.add('active');
+    }
 
-        function filterCategory(cat, btn) {
+    function showHome() {
+        document.getElementById('player-box').style.display = "none";
+        document.getElementById('main-content').style.display = "block";
+        document.getElementById('home-section').style.display = "block";
+        document.getElementById('search-section').style.display = "none";
+        document.getElementById('category-list').style.display = "flex";
+        document.getElementById('promo-slider').classList.remove('promo-hidden');
+        if (video) { video.pause(); video.src = ""; }
+        if (hls) { hls.detachMedia(); hls.stopLoad(); }
+        updateNavActive('btn-home');
+        renderGrid(allChannels);
+        history.pushState("", document.title, window.location.pathname);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showSearch() {
+        document.getElementById('player-box').style.display = "none";
+        document.getElementById('home-section').style.display = "none";
+        document.getElementById('category-list').style.display = "none";
+        document.getElementById('promo-slider').style.display = "none";
+        document.getElementById('search-section').style.display = "block";
+        updateNavActive('btn-search');
+        setTimeout(() => { document.getElementById('searchInput')?.focus(); }, 300);
+    }
+
+    function showFavorites() {
+        const favChannels = allChannels.filter(k => favorites.includes(k.ad));
+        document.getElementById('player-box').style.display = "none";
+        document.getElementById('search-section').style.display = "none";
+        document.getElementById('home-section').style.display = "block";
+        document.getElementById('category-list').style.display = "none";
+        document.getElementById('promo-slider').style.display = "none";
+        renderGrid(favChannels);
+        updateNavActive('btn-fav');
+    }
+
+    // --- 4. VERİ İŞLEME VE OYNATICI ---
+    function getSafeLogo(k) {
+        if (!k.logo) return 'logolar/default.png';
+        let filename = k.logo.split('/').pop().replace(/\.(jpg|jpeg|png|gif|webp)$/i, '');
+        return 'logolar/' + filename.toLowerCase() + '.png';
+    }
+
+    function getSafeCategory(k) {
+        return k.kategori || "Genel";
+    }
+
+    function renderCategories(data) {
+        const catContainer = document.getElementById('category-list');
+        const categories = ['Tümü', ...new Set(data.map(k => getSafeCategory(k)))];
+        catContainer.innerHTML = categories.map(cat => {
+            const isAll = cat === 'Tümü';
+            return `<button class="cat-btn ${isAll ? 'active' : ''}" onclick="${isAll ? 'renderGrid(allChannels, this)' : `filterCategory('${cat}', this)`}">${cat}</button>`;
+        }).join('');
+    }
+
+    function renderGrid(data, btn) {
+        if(btn) {
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            document.getElementById('promo-slider').classList.add('promo-hidden');
-            renderGrid(allChannels.filter(k => getSafeCategory(k) === cat));
+            if(btn.innerText === 'Tümü') document.getElementById('promo-slider').classList.remove('promo-hidden');
         }
-
-        function toggleFav(e, name) {
-            e.stopPropagation();
-            const idx = favorites.indexOf(name);
-            if (idx > -1) favorites.splice(idx, 1); else favorites.push(name);
-            localStorage.setItem('myTVfavs', JSON.stringify(favorites));
-            renderGrid(allChannels);
-        }
-
-      function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
-    
-    // Sidebar'ı aç/kapat
-    sidebar.classList.toggle('active');
-    
-    // Overlay'i sidebar'ın durumuna göre göster/gizle
-    if (sidebar.classList.contains('active')) {
-        overlay.style.display = 'block';
-    } else {
-        overlay.style.display = 'none';
+        const container = document.getElementById('grid-container');
+        container.innerHTML = data.map(k => `
+            <div class="channel-square">
+                <i class="fas fa-star fav-star ${favorites.includes(k.ad) ? 'active' : ''}" onclick="toggleFav(event, '${k.ad}')"></i>
+                <div class="w-100 h-100 d-flex align-items-center justify-content-center" onclick="playChannel('${k.url}', '${k.ad}', false, '${getSafeCategory(k)}')">
+                    <img src="${getSafeLogo(k)}" class="square-logo" onerror="this.src='logolar/default.png'">
+                </div>
+            </div>`).join('');
     }
-      }
-             
 
-        function checkHash() {
-            const h = window.location.hash.substring(1);
-            if(h) { 
-                const decodedName = decodeURIComponent(h);
-                const c = allChannels.find(k => k.ad === decodedName); 
-                if(c) playChannel(c.url, c.ad, true, getSafeCategory(c)); 
-            }
+    function playChannel(url, ad, fromHash = false, kategori = "Genel") {
+        if(!fromHash) history.pushState({page: 'player'}, ad, "#" + encodeURIComponent(ad));
+        document.getElementById('player-box').style.display = "block";
+        document.getElementById('main-content').style.display = "none";
+        document.getElementById('now-playing').innerText = ad;
+        document.getElementById('player-cat-info').innerText = "Canlı Yayın • " + kategori;
+        window.scrollTo(0,0);
+        if (Hls.isSupported()) { hls.loadSource(url); hls.attachMedia(video); hls.on(Hls.Events.MANIFEST_PARSED, () => video.play()); }
+        else if (video.canPlayType('application/vnd.apple.mpegurl')) { video.src = url; video.play(); }
+    }
+
+    function doSearch() {
+        const q = document.getElementById('searchInput').value.toLowerCase();
+        const res = allChannels.filter(k => k.ad.toLowerCase().includes(q));
+        const container = document.getElementById('search-results');
+        container.innerHTML = res.map(k => `
+            <div class="list-item" onclick="playChannel('${k.url}', '${k.ad}', false, '${getSafeCategory(k)}')">
+                <img src="${getSafeLogo(k)}" class="list-logo" onerror="this.src='logolar/default.png'">
+                <div class="list-info"><strong>${k.ad}</strong><div class="small text-muted">${getSafeCategory(k)}</div></div>
+            </div>`).join('');
+    }
+
+    function toggleFav(e, name) {
+        e.stopPropagation();
+        const idx = favorites.indexOf(name);
+        if (idx > -1) favorites.splice(idx, 1); else favorites.push(name);
+        localStorage.setItem('myTVfavs', JSON.stringify(favorites));
+        renderGrid(allChannels);
+    }
+
+    function checkHash() {
+        const h = window.location.hash.substring(1);
+        if(h) { 
+            const decodedName = decodeURIComponent(h);
+            const c = allChannels.find(k => k.ad === decodedName); 
+            if(c) playChannel(c.url, c.ad, true, getSafeCategory(c)); 
         }
-        
-    </script>
+    }
+
+    window.onpopstate = () => showHome();
+</script>
+
+<script>
+    // Promo Animasyon Sistemi
+    const observer = new MutationObserver(() => {
+        const pCard = document.getElementById('featured-card');
+        if (pCard) {
+            pCard.classList.remove('promo-active');
+            void pCard.offsetWidth;
+            pCard.classList.add('promo-active');
+        }
+    });
+    const targetNode = document.getElementById('featured-card');
+    if (targetNode) observer.observe(targetNode, { attributes: true, childList: true, subtree: true });
+</script>
     <script src="oneriler.js"></script>
 
 <script>
