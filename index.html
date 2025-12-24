@@ -14,19 +14,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
 
-/* Bu kod, alttan kayan kanalların yazının arkasından görünmesini engeller */
 .player-info-sticky {
-    background-color: #000 !important; /* Karanlık modda siyah duvar */
+    background-color: #000 !important;
     position: sticky !important;
-    top: 70px !important;
+    top: 260px !important; /* Videonun hemen bittiği yer */
     z-index: 1100 !important;
+    padding: 12px 20px;
+    border-bottom: 2px solid #222;
 }
+        
 
 body.normal-mode .player-info-sticky {
     background-color: #230c40 !important;
     position: sticky !important;
-    top: 275px !important; /* Burası yarım kalmış olabilir, 275px olmalı */
-}       
+    top: 260px !important;
+    z-index: 1100 !important;
+}
+        
         
         
         /* 1. RENK DEĞİŞKENLERİ */
