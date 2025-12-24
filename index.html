@@ -432,6 +432,29 @@ body:not(.normal-mode) #video-title-container {
     -webkit-backdrop-filter: blur(15px) !important;
     border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
+
+        /* KOYU MOD: Seçili olan kategoriyi belirginleştirme */
+body:not(.normal-mode) .cat-btn.active {
+    /* Bulanık beyaz-gri cam efekti */
+    background: rgba(255, 255, 255, 0.25) !important; 
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    
+    /* Parlama ve vurgu efekti */
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    
+    /* Pembe rengi Koyu Modda devre dışı bırakıyoruz */
+    --selected-cat: transparent; 
+}
+
+/* KOYU MOD: Diğer butonları biraz daha sade tutma */
+body:not(.normal-mode) .cat-btn:not(.active) {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
         
         
     </style>
