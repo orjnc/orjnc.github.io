@@ -13,6 +13,21 @@
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+
+/* Bu kod, alttan kayan kanalların yazının arkasından görünmesini engeller */
+.player-info-sticky {
+    background-color: #000 !important; /* Karanlık modda siyah duvar */
+    position: sticky !important;
+    top: 70px !important;
+    z-index: 1100 !important;
+}
+
+/* Normal modda ise arka planı senin morunla kapatır */
+body.normal-mode .player-info-sticky {
+    background-color: #230c40 !important;
+}
+        
+        
         /* 1. RENK DEĞİŞKENLERİ */
 :root { 
     --bg: #000000; 
@@ -220,6 +235,9 @@ body.normal-mode #sticky-player-header {
 
 /* Video wrapper'ın arkasından bir şey sızmaması için */
 .video-wrapper {
+    position: sticky !important;
+    top: 70px !important; /* Logonun (header) bittiği yerden başlasın */
+    z-index: 1100 !important;
     background: #000 !important;
 }
             
@@ -419,8 +437,8 @@ body.normal-mode .list-info div {
     </div>
 
     <div id="player-box">
-        <div id="sticky-player-header" style="position: sticky; top: 0; z-index: 1200;">
-            
+        <div id="sticky-player-header" style="position: relative; z-index: 1200;">
+       
     
     <div class="video-wrapper">
         <video id="video" controls autoplay playsinline></video>
