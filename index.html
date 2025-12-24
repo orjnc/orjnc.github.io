@@ -316,6 +316,50 @@ center {
     color: #ffffff !important; 
     opacity: 1 !important;
 }
+        /* SADECE OYNATICI SAYFASI İÇİN ÖZEL İYİLEŞTİRMELER */
+
+/* 1. Normal Modda Player Arka Planını Mor Temaya Bağla */
+body.normal-mode #player-box { 
+    background: linear-gradient(135deg, #1a0b2e 0%, #4a148c 100%) !important; 
+}
+
+/* 2. Video ve Başlık Alanını Sabitle (Sticky) */
+.video-wrapper {
+    position: sticky !important;
+    top: 0;
+    z-index: 2200;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+}
+
+.player-info-sticky {
+    position: sticky !important;
+    top: 0; /* Mobilde video hemen üstte olduğu için 0 idealdir */
+    z-index: 2100;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Normal modda başlık alanını mor cam yap */
+body.normal-mode .player-info-sticky {
+    background: rgba(35, 12, 64, 0.7) !important;
+}
+
+/* 3. Önerilen Kanal Kartlarını Cam Efektli Yap (Glassmorphism) */
+#suggested-list .list-item {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 15px;
+    margin-bottom: 10px;
+}
+
+/* 4. Kaydırma Alanı İçin Alt Boşluk */
+#player-box {
+    padding-bottom: 150px !important;
+}
         
     </style>
 </head>
