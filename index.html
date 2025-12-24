@@ -208,7 +208,22 @@ center {
     border: 1px solid rgba(255, 255, 255, 0.15);
     transition: all 0.3s ease;
 
-    /* NORMAL MOD: TOZ BULUTU / CAM EFEKTİ */
+   /* Sabitlenen tüm üst alanı (Video + Bilgi) opak yapar */
+#sticky-player-header {
+    background: #000; /* Koyu modda arkası simsiyah olsun, sızıntı yapmasın */
+}
+
+/* Normal modda ise senin mor renginle arkasını tamamen kapatalım */
+body.normal-mode #sticky-player-header {
+    background: #230c40 !important; 
+}
+
+/* Video wrapper'ın arkasından bir şey sızmaması için */
+.video-wrapper {
+    background: #000 !important;
+}
+            
+            /* NORMAL MOD: TOZ BULUTU / CAM EFEKTİ */
     background: rgba(255, 255, 255, 0.1) !important; 
     backdrop-filter: blur(10px); 
     -webkit-backdrop-filter: blur(10px);
@@ -233,7 +248,18 @@ center {
         video { width: 100%; aspect-ratio: 16/9; }
         .player-info-sticky { padding: 15px 20px; border-bottom: 2px solid #222; }
 
-/* --- NORMAL MOD BLOĞU --- */
+/* Oynatıcı sayfasındayken video header'ın altına girmez, hemen altından başlar */
+#player-box {
+    margin-top: 0; 
+}
+
+/* Eğer player açıkken hala logonun üzerine biniyorsa bu değeri kullan: */
+#sticky-player-header {
+    top: 0px !important; /* Header yüksekliği kadar aşağı çekmek gerekirse burayı 70px yapabilirsin */
+}
+        
+        
+        /* --- NORMAL MOD BLOĞU --- */
 
 /* 1. Arka plan */
 body.normal-mode #player-box {
@@ -393,7 +419,8 @@ body.normal-mode .list-info div {
     </div>
 
     <div id="player-box">
-        <div style="position: sticky; top: 0; z-index: 1200;">
+        <div id="sticky-player-header" style="position: sticky; top: 0; z-index: 1200;">
+            
     
     <div class="video-wrapper">
         <video id="video" controls autoplay playsinline></video>
