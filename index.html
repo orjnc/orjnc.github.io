@@ -174,13 +174,6 @@ center {
     /* 1. NORMAL MOD: Senin Mor Rengin */
     background: rgba(37, 12, 68, 0.7) !important; 
 }
-
-/* 2. KOYU MOD: Otomatik Siyah Cam Efekti (AYNEN KORUNDU) */
-@media (prefers-color-scheme: dark) {
-    .header {
-        background: rgba(0, 0, 0, 0.7) !important; 
-    }
-}
         
         
         .logo-container { flex: 1; display: flex; justify-content: center; align-items: center; }
@@ -204,14 +197,6 @@ center {
     -webkit-backdrop-filter: blur(10px);
 }
 
-/* KOYU MOD: SİSTEM KOYU MODDA İSE SİYAH KALIR */
-@media (prefers-color-scheme: dark) {
-    .channel-square {
-        background: var(--card) !important; 
-        backdrop-filter: none; 
-        border: 1px solid #222; 
-    }
-}
         
         .square-logo { width: 70%; height: 70%; object-fit: contain; }
         .fav-star { position: absolute; top: 10px; right: 10px; font-size: 0.8rem; color: rgba(255,255,255,0.2); z-index: 5; }
@@ -244,13 +229,6 @@ center {
     border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-/* KOYU MOD: Siyah Cam Efekti */
-@media (prefers-color-scheme: dark) {
-    .bottom-nav { 
-        background: rgba(26, 26, 26, 0.8) !important; /* Koyu modda siyah sis */
-        border: 1px solid #333;
-    }
-}
         .nav-btn { color: #666; font-size: 1.2rem; display: flex; flex-direction: column; align-items: center; text-decoration: none; cursor: pointer; }
         .nav-btn.active { color: var(--accent); }
         .nav-btn small { font-size: 0.6rem; margin-top: 4px; font-weight: bold; }
@@ -617,20 +595,17 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', eve
     }
 });
 
-// 2. Uygulama ilk açıldığında çalışacak kısım
 document.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('themeChoice');
     
     if (savedTheme) {
-        // Kullanıcı daha önce seçim yaptıysa onu uygula
         setTheme(savedTheme);
     } else {
-        // Kullanıcı seçmediyse telefonun moduna bak
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        setTheme(prefersDark ? 'dark' : 'normal');
+        // Varsayılan olarak her zaman Mor (Normal) modla başla
+        setTheme('normal'); 
     }
 
-    // Kanal verilerini getiren orijinal kodun
+    // Kanal verilerini getiren kodun devamı...
     fetch('kanallar.json?v=' + Date.now())
         .then(res => res.json())
         .then(data => { 
@@ -638,9 +613,9 @@ document.addEventListener('DOMContentLoaded', () => {
             renderCategories(data); 
             renderGrid(data); 
             checkHash(); 
-        })
-        .catch(err => console.error("Veri yüklenemedi:", err));
+        });
 });
+             
              
              function setTheme(mode) {
     const body = document.body;
