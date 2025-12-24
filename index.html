@@ -14,11 +14,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
 
+/* Kanal bilgisi videonun hemen altında bitsin */
 .player-info-sticky {
     background-color: #000 !important;
     position: sticky !important;
-    top: 260px !important; /* Videonun hemen bittiği yer */
-    z-index: 1100 !important;
+    top: 260px !important; /* Bu rakam videoyu tam öper */
+    z-index: 1090 !important;
     padding: 12px 20px;
     border-bottom: 2px solid #222;
 }
@@ -259,14 +260,23 @@ body.normal-mode #sticky-player-header {
 
         #player-box { display: none; background: #000; }
 
+#suggested-list {
+    /* Video (205px) + Bilgi Paneli (60px) + Boşluk payı */
+    /* Sayfa ilk açıldığında listenin videonun altında başlamasını sağlar */
+    margin-top: 15px !important; 
+    padding: 10px;
+    
+    /* Önemli: Listenin en sonundaki kanalın 'Geri' butonunun altında kalmaması için */
+    padding-bottom: 120px !important; 
+}
+        
+        
+/* Video logonun hemen altında dursun */
 .video-wrapper {
     position: sticky !important;
-    top: 70px !important;
+    top: 70px !important; 
     z-index: 1100 !important;
     background: #000 !important;
-    /* Ekstra güvenlik: */
-    width: 100%;
-    overflow: hidden;
 }
         
 
@@ -430,7 +440,12 @@ body.normal-mode .list-info div {
     color: #ffffff !important; 
     opacity: 1 !important;
 }
-        
+        /* Bu kod önerilenlerin videoya yapışmasını engeller */
+#suggested-container {
+    margin-top: 20px !important; /* Videodan 20px aşağıda başlasın */
+    padding-bottom: 100px !important; /* En alttaki kanallar butonların altında kalmasın */
+            }
+            
     </style>
 </head>
 <body>
@@ -460,26 +475,24 @@ body.normal-mode .list-info div {
         <i class="fas fa-tv fs-4" style="color: var(--accent);"></i>
     </div>
 
-    <div id="player-box">
-        <div id="sticky-player-header" style="position: relative; z-index: 1200;">
-       
-    
-    <div class="video-wrapper">
-        <video id="video" controls autoplay playsinline></video>
+    <div id="player-box" class="container-fluid p-0" style="display: none;">
+    <div id="sticky-player-header" style="position: relative; z-index: 1200;">
+        <div class="video-wrapper">
+            <video id="video" controls autoplay playsinline></video>
+        </div>
+
+        <div class="player-info-sticky">
+            <h5 id="now-playing" class="m-0 text-truncate">Kanal Adı</h5>
+            <p class="small mt-1 mb-0" id="player-cat-info">Canlı Yayın</p>
+        </div>
     </div>
 
-    <div class="player-info-sticky">
-        <h5 id="now-playing" class="m-0 text-truncate">Kanal Adı</h5>
-        <p class="small mt-1 mb-0" id="player-cat-info">Canlı Yayın</p>
-    </div>
-
-</div> 
-
-<div class="px-3 mt-4">
+    </div> <div class="px-3 mt-4" id="suggested-container">
     <h6 class="mb-3" style="font-weight: bold; opacity: 0.8;">Önerilen Kanallar</h6>
     <div id="suggested-list">
         </div>
-</div>
+    </div>
+    
         
             
         </div>
