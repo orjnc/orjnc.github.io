@@ -45,24 +45,6 @@ body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
 }
-
-        /* Normal modda en üstte sabit kalan alanın rengi */
-body.normal-mode .player-info-sticky {
-    background: #230c40 !important; /* Navigasyon barı rengiyle aynı */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-/* Normal modda kanal adı ve "Canlı Yayın" yazısını beyaz ve net yap */
-body.normal-mode #now-playing {
-    color: #ffffff !important;
-    font-weight: 600;
-}
-
-body.normal-mode #player-cat-info {
-    color: rgba(255, 255, 255, 0.7) !important; /* "Canlı Yayın" yazısı biraz daha şeffaf beyaz */
-}
-        
-        
 /* 2. ADIM: METİN VE KART GÖRÜNÜMÜ SABİTLEME */
 
 /* Tüm metin etiketlerini tek seferde temaya bağla */
@@ -233,34 +215,6 @@ center {
         video { width: 100%; aspect-ratio: 16/9; }
         .player-info-sticky { padding: 15px 20px; border-bottom: 2px solid #222; }
 
-/* --- NORMAL MOD BLOĞU --- */
-
-/* 1. Arka plan */
-body.normal-mode #player-box {
-    background: linear-gradient(135deg, #1a0b2e 0%, #4a148c 100%) !important;
-    background-attachment: fixed !important;
-}
-
-/* 2. Kanal adı şeridi (Senin sorduğun kısım) */
-body.normal-mode .player-info-sticky {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-    background: rgba(0, 0, 0, 0.1) !important;
-}
-
-/* 3. Cam Kartlar */
-body.normal-mode .list-item {
-    background: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-}
-
-/* 4. Yazı Rengi */
-body.normal-mode .list-info span, 
-body.normal-mode .list-info div {
-    color: #ffffff !important;
-}
-     
         /* Navigasyon */
 .bottom-nav { 
     position: fixed; 
@@ -393,18 +347,13 @@ body.normal-mode .list-info div {
     </div>
 
     <div id="player-box">
-        <div style="position: sticky; top: 0; z-index: 1200;">
-    
-    <div class="video-wrapper">
-        <video id="video" controls autoplay playsinline></video>
-    </div>
-
-    <div class="player-info-sticky">
-        <h5 id="now-playing" class="m-0 text-truncate">Kanal Adı</h5>
-        <p class="small mt-1 mb-0" id="player-cat-info">Canlı Yayın</p>
-    </div>
-
+        <div class="video-wrapper"><video id="video" controls autoplay playsinline></video></div>
+        <div class="player-info-sticky">
+            <h5 id="now-playing" class="m-0 text-truncate">Kanal Adı</h5>
+            <p class="small mt-1 mb-0" id="player-cat-info">Canlı Yayın</p>
         </div>
+        <div class="p-3"><div id="suggested-list"></div></div>
+    </div>
 
     <div id="main-content">
         <div class="category-container" id="category-list"></div>
