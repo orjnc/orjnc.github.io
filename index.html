@@ -14,7 +14,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
 
-/* Kanal bilgisi videonun hemen altında bitsin */
+#suggested-container {
+    margin-top: 25px !important; /* Videonun altındaki boşluk */
+    padding-bottom: 120px !important; /* En altta butonların altında kalmasın */
+}
+        
+        
+        /* Kanal bilgisi videonun hemen altında bitsin */
 .player-info-sticky {
     background-color: #000 !important;
     position: sticky !important;
@@ -274,7 +280,7 @@ body.normal-mode #sticky-player-header {
 /* Video logonun hemen altında dursun */
 .video-wrapper {
     position: sticky !important;
-    top: 70px !important; 
+    top: 260px !important; 
     z-index: 1100 !important;
     background: #000 !important;
 }
@@ -489,8 +495,7 @@ body.normal-mode .list-info div {
 
     </div> <div class="px-3 mt-4" id="suggested-container">
     <h6 class="mb-3" style="font-weight: bold; opacity: 0.8;">Önerilen Kanallar</h6>
-    <div id="suggested-list">
-        </div>
+    <div id="suggested-list"></div>
     </div>
     
         
