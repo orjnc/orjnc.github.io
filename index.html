@@ -360,6 +360,29 @@ body.normal-mode .player-info-sticky {
     background: rgba(35, 12, 64, 0.7) !important;
 }
 
+/* KOYU MOD ÖZEL: Player Başlık Alanı (Siyah Cam Efekti) */
+body:not(.normal-mode) .player-info-sticky {
+    /* Mor arka planı tamamen iptal edip şeffaf siyah yapıyoruz */
+    background: rgba(0, 0, 0, 0.6) !important; 
+    
+    /* Buzlu cam efekti */
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    
+    /* Üst ve alt sınır çizgilerini belirginleştirerek derinlik katıyoruz */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Koyu modda kanal ismi ve altındaki yazıların rengini garantiye alalım */
+body:not(.normal-mode) #now-playing, 
+body:not(.normal-mode) #player-cat-info {
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5); /* Yazı okunabilirliği için hafif gölge */
+}
+        
+
+        
 /* 3. Önerilen Kanal Kartlarını Cam Efektli Yap (Glassmorphism) */
 #suggested-list .list-item {
     background: rgba(255, 255, 255, 0.1) !important;
