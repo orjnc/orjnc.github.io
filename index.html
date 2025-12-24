@@ -742,14 +742,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function showHome() {
-            document.getElementById('player-box').style.display = "none";
-            document.getElementById('main-content').style.display = "block";
-            document.getElementById('home-section').style.display = "block";
-            document.getElementById('search-section').style.display = "none";
-            document.getElementById('category-list').style.display = "flex";
-            video.pause();
-            history.pushState("", document.title, window.location.pathname);
+    // 1. Sayfa Görünümünü Resetle
+    document.getElementById('player-box').style.display = "none";
+    document.getElementById('main-content').style.display = "block";
+    document.getElementById('home-section').style.display = "block";
+    document.getElementById('search-section').style.display = "none";
+    document.getElementById('category-list').style.display = "flex";
+    document.getElementById('promo-slider').classList.remove('promo-hidden');
+
+    // 2. Videoyu ve Kaynağı Tamamen Temizle (Performans için kritik)
+    if (video) {
+        video.pause();
+        video.src = ""; // Belleği boşaltır
+        video.load();
+    }
+    if (hls) {
+        hls.detachMedia(); // HLS bağlantısını koparır
+        hls.stopLoad();    // Veri indirmeyi tamamen durdurur
+    }
+
+    // 3. Navigasyon Butonlarını Güncelle
+    updateNavActive('btn-home'); // Anasayfa ikonunu beyaz/aktif yapar
+
+    // 4. Listeyi ve Kategoriyi Sıfırla
+    renderGrid(allChannels); // Tüm kanalları tekrar dök
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.cat-btn:first-child')?.classList.add('active'); // "Tümü" butonunu seçili yap
+
+    // 5. URL'yi Temizle
+    history.pushState("", document.title, window.location.pathname);
+    
+    // 6. Sayfayı en yukarı kaydır
+    window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+             window.onpopstate = function() {
+    showHome();
+};
 
         function filterCategory(cat, btn) {
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
