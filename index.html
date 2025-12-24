@@ -109,6 +109,24 @@ body {
     overflow-y: auto;
 }
 
+/* Sidebar açıkken ana sayfanın kaymasını engeller */
+body.sidebar-open {
+    overflow: hidden !important;
+    height: 100vh !important;
+}
+
+/* Overlay'in arkadaki her şeyi tıklanamaz yapması için */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px);
+    z-index: 2400; /* Sidebar'ın hemen altında */
+    display: none;
+    pointer-events: auto; /* Arkaya tıklamayı engeller */
+}
+        
+        
 /* Sidebar Aktifleştiğinde (Açıldığında) */
 .sidebar.active { 
     opacity: 1 !important; 
@@ -914,15 +932,18 @@ document.addEventListener('DOMContentLoaded', () => {
       function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
-    
-    // Sidebar'ı aç/kapat
+    const body = document.body;
+
     sidebar.classList.toggle('active');
-    
-    // Overlay'i sidebar'ın durumuna göre göster/gizle
+
     if (sidebar.classList.contains('active')) {
+        // SİDEBAR AÇILDIĞINDA
         overlay.style.display = 'block';
+        body.classList.add('sidebar-open'); // Kaydırmayı kilitler
     } else {
+        // SİDEBAR KAPANDIĞINDA
         overlay.style.display = 'none';
+        body.classList.remove('sidebar-open'); // Kaydırmayı açar
     }
       }
              
