@@ -12,421 +12,733 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        /* --- ORIJINAL STIL AYARLARI --- */
-        body {
-            background-color: #000;
-            color: #fff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding-top: 70px;
-            transition: background 0.3s ease;
-        }
+        /* 1. RENK DEĞİŞKENLERİ */
+:root { 
+    --bg: #000000; 
+    --card: #121212; 
+    --accent: #ff005c; 
+    --text: #ffffff; 
+    --gray: #888888; 
+    --selected-cat: #F683BE; 
+}
 
-        body.normal-mode {
-            background-color: #230c40;
-        }
+/* 2. NORMAL MOD (RENKLİ MOD) AYARLARI */
+body.normal-mode {
+    --bg: linear-gradient(135deg, #1a0b2e 0%, #4a148c 100%);
+    --card: rgba(255, 255, 255, 0.1); 
+    --text: #ffffff; 
+    --gray: #cccccc;
+}
 
-        /* HEADER & NAVBAR */
-        .navbar-custom {
-            height: 70px;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            padding: 0 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
+/* 3. ANA GÖVDE AYARLARI */
+html { 
+    background-color: var(--bg); 
+}
 
-        /* STICKY PLAYER - BU KISIM TAMİR EDİLDİ */
-        .video-wrapper {
-            position: sticky !important;
-            top: 70px !important;
-            z-index: 1100 !important;
-            background: #000 !important;
-            width: 100%;
-            overflow: hidden;
-            aspect-ratio: 16 / 9;
-        }
+body { 
+    background: var(--bg) !important; 
+    background-attachment: fixed !important;
+    background-size: cover !important;
+    color: var(--text) !important; /* Yazıları değişkene bağladık ki okunsun */
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+}
 
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-        }
+        /* Normal modda en üstte sabit kalan alanın rengi */
+body.normal-mode .player-info-sticky {
+    background: #230c40 !important; /* Navigasyon barı rengiyle aynı */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
 
-        .player-info-sticky {
-            background-color: #000 !important;
-            position: sticky !important;
-            top: calc(70px + 56.25vw) !important; /* Dinamik video yüksekliği */
-            z-index: 1090 !important;
-            padding: 12px 20px;
-            border-bottom: 2px solid #222;
-        }
+/* Normal modda kanal adı ve "Canlı Yayın" yazısını beyaz ve net yap */
+body.normal-mode #now-playing {
+    color: #ffffff !important;
+    font-weight: 600;
+}
 
-        body.normal-mode .player-info-sticky {
-            background-color: #230c40 !important;
-        }
+body.normal-mode #player-cat-info {
+    color: rgba(255, 255, 255, 0.7) !important; /* "Canlı Yayın" yazısı biraz daha şeffaf beyaz */
+}
+        
+        
+/* 2. ADIM: METİN VE KART GÖRÜNÜMÜ SABİTLEME */
 
-        #suggested-container {
-            margin-top: 25px !important;
-            padding-bottom: 120px !important;
-        }
+/* Tüm metin etiketlerini tek seferde temaya bağla */
+.category-item, .channel-name, .sidebar h4, .nav-link, p, span, h1, h2, h3 {
+    color: var(--text) !important;
+    transition: color 0.3s ease;
+}
 
-        /* KART TASARIMLARI */
-        .channel-card {
-            background: #111;
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            transition: 0.3s;
-            cursor: pointer;
-            position: relative;
-            border: 1px solid transparent;
-            height: 100%;
-        }
+/* Kategori listesindeki ikonlar için */
+.category-item i {
+    color: var(--text);
+    opacity: 0.8;
+}
 
-        .channel-card:hover {
-            transform: translateY(-5px);
-            border-color: #7000ff;
-            background: #1a1a1a;
-        }
+/* Kanal kartlarının arka planı (Karanlıkta koyu, Normalde hafif şeffaf) */
+.channel-card {
+    background: var(--card) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.2s, background 0.3s;
+}
 
-        .channel-card img {
-            width: 60px;
-            height: 60px;
-            object-fit: contain;
-            margin-bottom: 10px;
-        }
+/* Sidebar (Yan Menü) Arka Planı */
+.sidebar {
+    background-color: var(--card) !important;
+    backdrop-filter: blur(10px); /* Modern bir görünüm için cam efekti */
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+        
+        
+        .list-info span, .list-info div { color: #ffffff !important; }
 
-        /* FAVORİ BUTONU */
-        .fav-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            color: #444;
-            font-size: 1.2rem;
-            transition: 0.3s;
-            z-index: 5;
+        /* Sidebar & Menu */
+        .sidebar { 
+    position: fixed; 
+    left: -280px; 
+    top: 0; 
+    height: 100%; 
+    width: 280px; 
+    /* ARKA PLANI BİRAZ DAHA SIK YAPALIM Kİ ARKASI GÖZÜKMESİN */
+    background: rgba(18, 18, 18, 0.98) !important; 
+    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+    
+    /* EN ÖNEMLİ SATIR: Header 2000 ise bu 3000 olmalı */
+    z-index: 3000 !important; 
+    
+    padding: 30px 20px; 
+    border-right: 1px solid #222; 
+    display: flex; 
+    flex-direction: column; 
         }
+        .sidebar.active { left: 0; }
+        .menu-item { display: flex; align-items: center; gap: 15px; padding: 15px; color: var(--text); text-decoration: none; border-radius: 12px; transition: 0.3s; margin-bottom: 5px; cursor: pointer; }
+        .menu-item i { color: var(--accent); font-size: 1.2rem; width: 25px; }
+        .menu-item:hover { background: rgba(255, 0, 92, 0.1); }
+        .sidebar-logo { max-height: 42px; width: auto; object-fit: contain; }
 
-        .fav-btn.active {
-            color: #ff0055;
+        /* Kategori Butonları */
+        .category-container { display: flex; gap: 10px; overflow-x: auto; padding: 15px 15px 20px 15px; white-space: nowrap; scrollbar-width: none; min-height: 75px; transition: all 0.6s ease; }
+        /* Kategori Butonları */
+.cat-btn { 
+    background: rgba(255, 255, 255, 0.1) !important; /* Normal Mod: Şeffaf beyaz */
+    color: #ffffff; 
+    border: 1px solid rgba(255, 255, 255, 0.15); 
+    padding: 10px 22px !important; 
+    border-radius: 100px !important; 
+    font-size: 0.85rem; 
+    font-weight: 600; 
+    cursor: pointer; 
+    transition: all 0.5s ease; 
+    flex-shrink: 0; 
+    backdrop-filter: blur(10px); /* Toz bulutu efekti */
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Koyu Modda Butonları Eski Haline Döndür */
+@media (prefers-color-scheme: dark) {
+    .cat-btn { 
+        background: #1a1a1a !important; 
+        backdrop-filter: none; 
+        border: 1px solid #333; 
+    }
+}
+
+         /* Ekranın ortasındaki gereksiz eski ikonları ve yazıları gizler */
+#home-section > i, 
+#home-section > small, 
+#home-section > br,
+#main-content > i,
+#main-content > small,
+center {
+    display: none !important;
+}
+
+/* Arama sayfasındaki benzer fazlalıkları da temizler */
+#search-section > i,
+#search-section > small,
+#search-section > br {
+    display: none !important;
+}
+        
+        .cat-btn.active { background: var(--selected-cat) !important; color: white; border-color: var(--selected-cat); }
+        .cat-hidden { display: none; }
+
+        /* Header & Grid */
+        .header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 10px 20px; 
+    position: sticky; 
+    top: 0; 
+    height: 70px; 
+    z-index: 2000; /* Sidebar'ın arkasında kalması için */
+    
+    /* TOZ BULUTU (BLUR) HER İKİ MODDA DA SABİT */
+    backdrop-filter: blur(15px); 
+    -webkit-backdrop-filter: blur(15px); 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    /* 1. NORMAL MOD: Senin Mor Rengin */
+    background: rgba(37, 12, 68, 0.7) !important; 
+}
+
+/* 2. KOYU MOD: Otomatik Siyah Cam Efekti */
+@media (prefers-color-scheme: dark) {
+    .header {
+        background: rgba(0, 0, 0, 0.7) !important; /* Moru tamamen öldürüp siyah sis yapar */
+    }
+}
+        
+        .logo-container { flex: 1; display: flex; justify-content: center; align-items: center; }
+        .site-logo { max-height: 48px; width: auto; object-fit: contain; cursor: pointer; }
+        .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 15px; }
+        .channel-square { 
+    /* SENİN ORİJİNAL YAPIN */
+    border-radius: 18px; 
+    aspect-ratio: 1/1; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    position: relative; 
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: all 0.3s ease;
+
+    /* NORMAL MOD: TOZ BULUTU / CAM EFEKTİ */
+    background: rgba(255, 255, 255, 0.1) !important; 
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* KOYU MOD: SİSTEM KOYU MODDA İSE SİYAH KALIR */
+@media (prefers-color-scheme: dark) {
+    .channel-square {
+        background: var(--card) !important; 
+        backdrop-filter: none; 
+        border: 1px solid #222; 
+    }
+}
+        
+        .square-logo { width: 70%; height: 70%; object-fit: contain; }
+        .fav-star { position: absolute; top: 10px; right: 10px; font-size: 0.8rem; color: rgba(255,255,255,0.2); z-index: 5; }
+        .fav-star.active { color: #ffc107; }
+
+        /* Player */
+        #player-box { display: none; background: #000; }
+        .video-wrapper { position: sticky; top: 0; z-index: 1100; background: #000; }
+        video { width: 100%; aspect-ratio: 16/9; }
+        .player-info-sticky { padding: 15px 20px; border-bottom: 2px solid #222; }
+
+/* --- NORMAL MOD BLOĞU --- */
+
+/* 1. Arka plan */
+body.normal-mode #player-box {
+    background: linear-gradient(135deg, #1a0b2e 0%, #4a148c 100%) !important;
+    background-attachment: fixed !important;
+}
+
+/* 2. Kanal adı şeridi (Senin sorduğun kısım) */
+body.normal-mode .player-info-sticky {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 3. Cam Kartlar */
+body.normal-mode .list-item {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+/* 4. Yazı Rengi */
+body.normal-mode .list-info span, 
+body.normal-mode .list-info div {
+    color: #ffffff !important;
+}
+     
+        /* Navigasyon */
+.bottom-nav { 
+    position: fixed; 
+    bottom: 15px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    width: 92%; 
+    border-radius: 25px; 
+    display: flex; 
+    justify-content: space-around; 
+    padding: 12px; 
+    z-index: 2500; /* Sidebar'ın altında kalsın */
+    transition: all 0.4s ease;
+
+    /* NORMAL MOD: Buzlu Cam Efekti */
+    background: rgba(255, 255, 255, 0.1) !important; 
+    backdrop-filter: blur(15px); 
+    -webkit-backdrop-filter: blur(15px); 
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* KOYU MOD: Siyah Cam Efekti */
+@media (prefers-color-scheme: dark) {
+    .bottom-nav { 
+        background: rgba(26, 26, 26, 0.8) !important; /* Koyu modda siyah sis */
+        border: 1px solid #333;
+    }
+}
+        .nav-btn { color: #666; font-size: 1.2rem; display: flex; flex-direction: column; align-items: center; text-decoration: none; cursor: pointer; }
+        .nav-btn.active { color: var(--accent); }
+        .nav-btn small { font-size: 0.6rem; margin-top: 4px; font-weight: bold; }
+        
+        #main-content { padding-bottom: 120px; }
+        .overlay { 
+    display:none; 
+    position: fixed; 
+    inset: 0; 
+    background: rgba(0,0,0,0.8); 
+    /* Header (2000) ile Sidebar (3000) arasında kalmalı */
+    z-index: 2500 !important; 
         }
+        
+        #search-section { padding: 15px; display: none; }
+        .search-input { background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 15px; padding: 12px 20px; width: 100%; margin-bottom: 20px; }
+        .list-item { background: var(--card); border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 12px; border: 1px solid #222; cursor: pointer; }
+        .list-logo { width: 55px; height: 55px; object-fit: contain; }
 
-        /* SIDEBAR */
-        #sidebar {
-            position: fixed;
-            left: -280px;
-            top: 0;
-            width: 280px;
-            height: 100%;
-            background: #111;
-            z-index: 3000;
-            transition: 0.3s;
-            padding: 20px;
-            box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+        /* Promo Card */
+        .promo-slider { padding: 0 15px; margin-bottom: 30px; transition: 0.5s; }
+        .promo-card { 
+    aspect-ratio: 3/4; 
+    width: 100%; 
+    max-width: 400px; 
+    margin: 0 auto; 
+    border-radius: 25px; 
+    display: flex; 
+    align-items: flex-end; 
+    padding: 25px; 
+    border: 1px solid rgba(255,255,255,0.1); 
+    background-size: cover; 
+    background-position: center; 
+    position: relative; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    /* EKLEDİĞİMİZ KISIM: */
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s ease;
+    overflow: hidden;
+}
+
+/* Geçiş anında devreye girecek yeni sınıf */
+/* Mevcut olanı bununla değiştir veya kontrol et */
+.promo-active {
+    animation: promoSwift 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+        @keyframes promoSwift {
+    0% { 
+        opacity: 0; 
+        transform: scale(0.95) translateY(5px); 
+        filter: blur(5px); 
+    }
+    100% { 
+        opacity: 1; 
+        transform: scale(1) translateY(0); 
+        filter: blur(0); 
+    }
         }
+         
+        .promo-card > div { position: relative; z-index: 2; width: 100%; }
+        .promo-hidden { display: none !important; }
+        /* Player açıkken en alttaki kanalın rahat görünmesi için boşluk */
+#player-box {
+    padding-bottom: 120px !important;
+    min-height: 100vh;
+}
 
-        #sidebar.active {
-            left: 0;
-        }
-
-        #overlay {
-            position: fixed;
-            display: none;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 2500;
-            top: 0;
-            left: 0;
-        }
-
-        /* PROMO ANİMASYONU */
-        .promo-active {
-            animation: pulseGlow 2s infinite;
-        }
-
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 0 5px #7000ff; }
-            50% { box-shadow: 0 0 18px #7000ff; }
-            100% { box-shadow: 0 0 5px #7000ff; }
-        }
-
-        /* DİĞER ORIJINAL STİLLER */
-        .cursor-pointer { cursor: pointer; }
-        .text-purple { color: #a252ff; }
-        .hover-bg:hover { background: rgba(255,255,255,0.1); }
+        /* Tıklanan (aktif olan) butonun ikon ve metin rengini beyaz yapar */
+.nav-btn.active, 
+.nav-btn.active i, 
+.nav-btn.active small { 
+    color: #ffffff !important; 
+    opacity: 1 !important;
+}
+        
     </style>
 </head>
-<body class="dark-mode">
+<body>
 
-    <div id="overlay" onclick="toggleSidebar()"></div>
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-    <div id="sidebar">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="text-purple m-0">Menü</h4>
-            <i class="fas fa-times cursor-pointer" onclick="toggleSidebar()"></i>
+    <div class="sidebar" id="sidebar">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <img src="logolar/logo.png" alt="orjnc tv+" class="sidebar-logo">
+            <i class="fas fa-times fs-4" onclick="toggleSidebar()"></i>
         </div>
-        <button class="btn btn-outline-light w-100 mb-3" onclick="toggleTheme()">
-            <i class="fas fa-adjust me-2"></i> Tema Değiştir
-        </button>
-        <hr>
-        <div id="sidebar-content">
-            </div>
+        <div class="menu-links">
+            <a href="javascript:void(0)" onclick="showFavorites(); toggleSidebar();" class="menu-item"><i class="fas fa-star"></i> Favorilerim</a>
+            <hr style="border-color: #333; margin: 10px 0;">
+            <div onclick="setTheme('dark')" class="menu-item"><i class="fas fa-moon"></i> <span>Koyu Mod</span></div>
+            <div onclick="setTheme('normal')" class="menu-item"><i class="fas fa-palette"></i> <span>Normal Mod</span></div>
+            <hr style="border-color: #333; margin: 10px 0;">
+            <div class="menu-item"><i class="fas fa-code-branch"></i> Version <span class="ms-auto small text-muted">1.0.8</span></div>
+        </div>
     </div>
 
-    <nav class="navbar-custom justify-content-between">
-        <div class="d-flex align-items-center">
-            <i class="fas fa-bars me-3 fs-4 cursor-pointer" onclick="toggleSidebar()"></i>
-            <img src="logolar/logo.png" height="40" alt="Logo" class="cursor-pointer" onclick="location.reload()">
+    <div class="header">
+        <i class="fas fa-bars fs-4" onclick="toggleSidebar()"></i>
+        <div class="logo-container">
+            <a href="javascript:void(0)" onclick="showHome()"><img src="logolar/logo.png" alt="orjnc tv+" class="site-logo"></a>
         </div>
-        
-        <div class="mx-3 flex-grow-1 d-none d-md-block" style="max-width: 500px;">
-            <div class="input-group">
-                <span class="input-group-text bg-dark border-0 text-secondary"><i class="fas fa-search"></i></span>
-                <input type="text" id="searchInput" class="form-control bg-dark text-white border-0" placeholder="Kanal veya kategori ara...">
-            </div>
+        <i class="fas fa-tv fs-4" style="color: var(--accent);"></i>
+    </div>
+
+    <div id="player-box">
+        <div style="position: sticky; top: 0; z-index: 1200;">
+    
+    <div class="video-wrapper">
+        <video id="video" controls autoplay playsinline></video>
+    </div>
+
+    <div class="player-info-sticky">
+        <h5 id="now-playing" class="m-0 text-truncate">Kanal Adı</h5>
+        <p class="small mt-1 mb-0" id="player-cat-info">Canlı Yayın</p>
+    </div>
+
         </div>
 
-        <div class="d-flex align-items-center">
-            <div id="fav-count-badge" class="me-3 small text-secondary"></div>
-            <i class="fas fa-moon fs-5 cursor-pointer" onclick="toggleTheme()"></i>
-        </div>
-    </nav>
-
-    <main class="container-fluid">
-        <div id="player-box" style="display: none;">
-            <div id="sticky-player-header">
-                <div class="video-wrapper">
-                    <video id="video" controls autoplay playsinline></video>
-                </div>
-                <div class="player-info-sticky">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <h5 id="now-playing" class="m-0 text-truncate">Kanal Adı</h5>
-                            <p class="small mt-1 mb-0 opacity-75" id="player-cat-info">Canlı Yayın</p>
-                        </div>
-                        <button class="btn btn-sm btn-outline-danger border-0" onclick="closePlayer()">
-                            <i class="fas fa-times"></i>
-                        </button>
+    <div id="main-content">
+        <div class="category-container" id="category-list"></div>
+      <div class="promo-slider" id="promo-slider">
+            <div class="promo-card" id="featured-card" onclick="playFeatured()" style="cursor: pointer;">
+                <div>
+                    <h3 class="m-0" id="featured-title" style="font-weight: 800;">Yükleniyor...</h3>
+                    <div class="d-flex gap-2 mt-2 align-items-center">
+                        <span class="badge bg-danger">LIVE</span>
+                        <span id="featured-desc" class="small">Lütfen bekleyin...</span>
                     </div>
                 </div>
             </div>
-
-            <div id="suggested-container" class="px-2 mt-4">
-                <h6 class="small fw-bold text-uppercase opacity-50 mb-3 ml-2">Sizin İçin Önerilenler</h6>
-                <div id="suggested-list" class="row g-2"></div>
-            </div>
         </div>
 
-        <div id="main-content">
-            <div id="featured-area" class="mt-3"></div>
-            
-            <div class="d-flex justify-content-between align-items-center mt-4 mb-2 px-2">
-                <h5 id="grid-title" class="m-0 fw-bold">Tüm Kanallar</h5>
-            </div>
-
-            <div id="channel-grid" class="row g-3"></div>
+        <div id="search-section">
+            <input type="text" id="searchInput" class="search-input" placeholder="Kanal ara..." onkeyup="doSearch()">
+            <div id="search-results"></div>
         </div>
-    </main>
 
-    <script>
-        /* --- ORIJINAL JS MANTIĞI VE TÜM FONKSİYONLAR --- */
+        <div id="home-section">
+            <div class="px-3 mb-3"><span style="font-weight:bold;">TV Channels</span></div>
+            <div id="grid-container" class="grid-container"></div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+    <a href="https://orjnc.github.io/" class="nav-btn active" id="btn-home" style="text-decoration: none;">
+        <i class="fas fa-house"></i>
+        <small>ANASAYFA</small>
+    </a>
+    
+    <div onclick="showSearch()" class="nav-btn" id="btn-search">
+        <i class="fas fa-search"></i>
+        <small>ARA</small>
+    </div>
+    
+    <div onclick="showFavorites()" class="nav-btn" id="btn-fav">
+        <i class="fas fa-heart"></i>
+        <small>FAVORİLER</small>
+    </div>
+    
+    <div onclick="toggleSidebar()" class="nav-btn">
+        <i class="fas fa-bars"></i>
+        <small>DAHA FAZLA</small>
+    </div>
+    </div>
+    
+        
+         <script>
+             // Tıklanan butonu beyaz (aktif) yapma fonksiyonu
+function updateNavActive(id) {
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+    const target = document.getElementById(id);
+    if(target) target.classList.add('active');
+}
+
+// Arama ekranını açan fonksiyon
+function showSearch() {
+    // Diğer tüm bölümleri gizle
+    document.getElementById('player-box').style.display = "none";
+    document.getElementById('home-section').style.display = "none";
+    document.getElementById('category-list').style.display = "none";
+    document.getElementById('promo-slider').style.display = "none";
+    
+    // Arama bölümünü göster
+    document.getElementById('search-section').style.display = "block";
+    
+    // Alt menüdeki butonu beyaz yap
+    updateNavActive('btn-search');
+    
+    // Video oynuyorsa durdur
+    if(typeof video !== 'undefined') video.pause();
+
+    // Saniyeler içinde klavyeyi açan odaklama komutu
+    setTimeout(() => {
+        const input = document.getElementById('searchInput');
+        if(input) {
+            input.focus();
+            // Mobil cihazlarda klavyeyi zorlamak için bazen gerekli
+            input.click(); 
+        }
+    }, 300);
+}
+             
+
+// Favoriler ekranını açan fonksiyon
+function showFavorites() {
+    // Sadece favorilere eklenen kanalları filtrele
+    const favChannels = allChannels.filter(k => favorites.includes(k.ad));
+    
+    document.getElementById('player-box').style.display = "none";
+    document.getElementById('search-section').style.display = "none";
+    document.getElementById('home-section').style.display = "block";
+    document.getElementById('category-list').style.display = "none";
+    document.getElementById('promo-slider').style.display = "none";
+    
+    renderGrid(favChannels); // Sadece favorileri ekrana basar
+    updateNavActive('btn-fav'); // Butonu beyaz yapar
+    if(typeof video !== 'undefined') video.pause();
+}
+
+             
+             // Arama kutusuna yazılan metne göre kanalları filtreler
+function doSearch() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    
+    // Kanallar içinde isme göre filtreleme yapar
+    const res = allChannels.filter(k => k.ad.toLowerCase().includes(q));
+    
+    // Sonuçları 'search-results' id'li div içerisine döker
+    renderList(res, 'search-results');
+}
+             
+          
+             
+             // --- KANAL YÖNETİM MASASI ---
+        const KATEGORI_HARITASI = {
+            "Ulusal": ["TRT 1", "ATV", "KANAL D", "STAR TV", "SHOW TV", "NOW TV", "TV8", "BEYAZ TV", "TEVE2", "360", "A2", "KANAL 7", "TABİİ TV"],
+            "Haber": ["CNN TÜRK", "TRT HABER", "HABERTÜRK", "NTV", "HALK TV", "SÖZCÜ", "EKOL TV", "A HABER", "TV100", "TVNET", "TGRT HABER", "24 TV", "KRT", "TYT TÜRK", "HABER GLOBAL", "A PARA", "BLOOMBERG", "TELE1"],
+            "Spor": ["FB TV", "HT SPOR", "A SPOR", "BEIN SPORTS HABER", "TRT SPOR", "TRT SPOR YILDIZ", "TABİİ SPOR", "SPORTS TV", "TJK"],
+            "Müzik": ["POWERTÜRK", "POWER TV", "POWER LOVE", "POWERTÜRK AKUSTİK", "POWERTÜRK SLOW", "POWERTÜRK TAPTAZE", "NR1 TÜRK", "NR1", "NR1 AŞK", "NR1 DANCE", "NR1 RAP", "DREAM TÜRK"],
+            "Belgesel": ["DMAX", "TLC", "TRT 2", "BELGESEL", "WILD", "NATIONAL"],
+            "Sinema": ["FX", "CNBC-E", "SİNEMA", "FİLM", "MOVIE", "AKSİYON"]
+        };
+
         let allChannels = [];
         let favorites = JSON.parse(localStorage.getItem('myTVfavs')) || [];
         const hls = new Hls();
+        const video = document.getElementById('video');
 
-        // 1. Kategori Güvenliği (Orijinal Fonksiyon)
-        function getSafeCategory(channel) {
-            if (channel.kategori) return channel.kategori;
-            const name = channel.ad.toLowerCase();
-            if (name.includes('spor') || name.includes('beın')) return 'Spor';
-            if (name.includes('haber')) return 'Haber';
-            if (name.includes('belgesel')) return 'Belgesel';
-            if (name.includes('çocuk') || name.includes('trt çocuk')) return 'Çocuk';
-            return 'Genel';
+        function getSafeLogo(k) {
+            if (!k.logo) return 'logolar/default.png';
+            let filename = k.logo.split('/').pop().replace(/\.(jpg|jpeg|png|gif|webp)$/i, '');
+            return 'logolar/' + filename.toLowerCase() + '.png';
         }
 
-        // 2. Veri Yükleme
-        fetch('kanallar.json')
-            .then(response => response.json())
-            .then(data => {
-                allChannels = data;
-                renderGrid(allChannels);
-                renderSidebar();
-                checkHash();
-                updateFavBadge();
-            })
-            .catch(err => console.error("Kanal verisi yüklenemedi:", err));
-
-        // 3. Grid Oluşturma (Tüm detaylar ve Favori mantığı)
-        function renderGrid(list) {
-            const grid = document.getElementById('channel-grid');
-            grid.innerHTML = list.map(c => `
-                <div class="col-6 col-md-4 col-lg-2">
-                    <div class="channel-card" onclick="playChannel('${c.url}', '${c.ad}', true, '${getSafeCategory(c)}')">
-                        <i class="fas fa-heart fav-btn ${favorites.includes(c.ad) ? 'active' : ''}" 
-                           onclick="event.stopPropagation(); toggleFav('${c.ad}')"></i>
-                        <img src="logolar/${c.ad}.png" onerror="this.src='logolar/default.png'" alt="${c.ad}">
-                        <div class="small text-truncate fw-bold">${c.ad}</div>
-                        <div style="font-size: 10px;" class="opacity-50">${getSafeCategory(c)}</div>
-                    </div>
-                </div>
-            `).join('');
+        function getSafeCategory(k) {
+            if (k.kategori && k.kategori !== "undefined" && k.kategori.trim() !== "") {
+                return k.kategori;
+            }
+            const kanalAdi = k.ad ? k.ad.toUpperCase() : "";
+            for (const [kategori, kanallar] of Object.entries(KATEGORI_HARITASI)) {
+                if (kanallar.some(anahtar => kanalAdi.includes(anahtar.toUpperCase()))) {
+                    return kategori;
+                }
+            }
+            return "Genel";
         }
 
-        // 4. Kanal Oynatma (Sticky ve HLS mantığı)
-        function playChannel(url, ad, scroll, kategori) {
-            const playerBox = document.getElementById('player-box');
-            const mainContent = document.getElementById('main-content');
-            const video = document.getElementById('video');
+        function setTheme(mode) {
+    const body = document.body;
+    const themeMeta = document.getElementById('theme-meta');
 
-            playerBox.style.display = 'block';
-            mainContent.style.display = 'none';
+    if (mode === 'normal') { 
+        body.classList.add('normal-mode'); 
+        localStorage.setItem('themeChoice', 'normal');
+        
+        // Burayı yeni renginle güncelledik:
+        if(themeMeta) themeMeta.setAttribute('content', '#230c40'); 
+        
+        body.style.color = '#ffffff';
+    } 
+    else { 
+        body.classList.remove('normal-mode'); 
+        localStorage.setItem('themeChoice', 'dark');
+        
+        // Karanlık modda siyah kalmaya devam eder:
+        if(themeMeta) themeMeta.setAttribute('content', '#000000'); 
+        
+        body.style.color = '#ffffff';
+    }
+        }
+             
+             // 1. Telefonun modu uygulama açıkken değişirse anında tepki verir
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+    if (!localStorage.getItem('themeChoice')) {
+        const newMode = event.matches ? "dark" : "normal";
+        setTheme(newMode);
+    }
+});
+
+// 2. Uygulama ilk açıldığında çalışacak kısım
+document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('themeChoice');
+    
+    if (savedTheme) {
+        // Kullanıcı daha önce seçim yaptıysa onu uygula
+        setTheme(savedTheme);
+    } else {
+        // Kullanıcı seçmediyse telefonun moduna bak
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        setTheme(prefersDark ? 'dark' : 'normal');
+    }
+
+    // Kanal verilerini getiren orijinal kodun
+    fetch('kanallar.json?v=' + Date.now())
+        .then(res => res.json())
+        .then(data => { 
+            allChannels = data; 
+            renderCategories(data); 
+            renderGrid(data); 
+            checkHash(); 
+        })
+        .catch(err => console.error("Veri yüklenemedi:", err));
+});
+             
+             
+
+             
+        function renderCategories(data) {
+            const catContainer = document.getElementById('category-list');
+            const categories = ['Tümü', ...new Set(data.map(k => getSafeCategory(k)))];
+            catContainer.innerHTML = '';
+            categories.forEach(cat => {
+                const isAll = cat === 'Tümü';
+                catContainer.innerHTML += `<button class="cat-btn ${isAll ? 'active' : ''}" onclick="${isAll ? 'renderGrid(allChannels, this)' : `filterCategory('${cat}', this)`}">${cat}</button>`;
+            });
+        }
+
+        function renderGrid(data, btn) {
+            if(btn) {
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                if(btn.innerText === 'Tümü') document.getElementById('promo-slider').classList.remove('promo-hidden');
+            }
+            const container = document.getElementById('grid-container');
+            container.innerHTML = "";
+            data.forEach(k => {
+                const isFav = favorites.includes(k.ad) ? 'active' : '';
+                container.innerHTML += `
+                    <div class="channel-square">
+                        <i class="fas fa-star fav-star ${isFav}" onclick="toggleFav(event, '${k.ad}')"></i>
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center" onclick="playChannel('${k.url}', '${k.ad}', false, '${getSafeCategory(k)}')">
+                            <img src="${getSafeLogo(k)}" class="square-logo" onerror="this.src='logolar/default.png'">
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function renderList(data, targetId) {
+            const container = document.getElementById(targetId);
+            if(!container) return;
+            container.innerHTML = "";
+            data.forEach(k => {
+                const isFav = favorites.includes(k.ad);
+                container.innerHTML += `
+                    <div class="list-item" onclick="playChannel('${k.url}', '${k.ad}', false, '${getSafeCategory(k)}')">
+                        <img src="${getSafeLogo(k)}" class="list-logo" onerror="this.src='logolar/default.png'">
+                        <div class="list-info">
+                            <span style="font-weight:bold;">${k.ad}</span>
+                            <div class="small text-muted">${getSafeCategory(k)}</div>
+                        </div>
+                        <i class="fa${isFav ? 's' : 'r'} fa-star" onclick="toggleFav(event, '${k.ad}')" style="color: ${isFav ? 'gold' : 'white'}; margin-left: auto; padding: 10px;"></i>
+                    </div>`;
+            });
+        }
+
+        function playChannel(url, ad, fromHash = false, kategori = "Genel") {
+            if(!fromHash) history.pushState({page: 'player'}, ad, "#" + encodeURIComponent(ad));
+            document.getElementById('player-box').style.display = "block";
+            document.getElementById('main-content').style.display = "none";
             document.getElementById('now-playing').innerText = ad;
             document.getElementById('player-cat-info').innerText = "Canlı Yayın • " + kategori;
-
-            if (Hls.isSupported()) {
-                hls.loadSource(url);
-                hls.attachMedia(video);
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = url;
-            }
-
-            window.location.hash = encodeURIComponent(ad);
-            if (scroll) window.scrollTo({ top: 0, behavior: 'smooth' });
-            
-            renderSuggested(kategori, ad);
+            window.scrollTo(0,0);
+            const shuffled = [...allChannels].sort(() => 0.5 - Math.random()).slice(0, 5);
+            renderList(shuffled, 'suggested-list');
+            if (Hls.isSupported()) { hls.loadSource(url); hls.attachMedia(video); hls.on(Hls.Events.MANIFEST_PARSED, () => video.play()); }
+            else if (video.canPlayType('application/vnd.apple.mpegurl')) { video.src = url; video.play(); }
         }
 
-        // 5. Önerilenler (Kategori Bazlı Orijinal Mantık)
-        function renderSuggested(kategori, currentAd) {
-            const suggested = allChannels.filter(c => getSafeCategory(c) === kategori && c.ad !== currentAd).slice(0, 12);
-            const container = document.getElementById('suggested-list');
-            
-            if (suggested.length === 0) {
-                container.innerHTML = '<div class="col-12 p-3 opacity-50 small">Bu kategori için başka öneri bulunamadı.</div>';
-                return;
-            }
-
-            container.innerHTML = suggested.map(c => `
-                <div class="col-6 col-md-4 col-lg-2">
-                    <div class="channel-card py-2" onclick="playChannel('${c.url}', '${c.ad}', true, '${getSafeCategory(c)}')">
-                        <img src="logolar/${c.ad}.png" style="height: 35px; width: 35px; margin-bottom: 5px;">
-                        <div style="font-size: 11px;" class="text-truncate">${c.ad}</div>
-                    </div>
-                </div>
-            `).join('');
+        function showHome() {
+            document.getElementById('player-box').style.display = "none";
+            document.getElementById('main-content').style.display = "block";
+            document.getElementById('home-section').style.display = "block";
+            document.getElementById('search-section').style.display = "none";
+            document.getElementById('category-list').style.display = "flex";
+            video.pause();
+            history.pushState("", document.title, window.location.pathname);
         }
 
-        // 6. Favori Sistemi
-        function toggleFav(ad) {
-            if (favorites.includes(ad)) {
-                favorites = favorites.filter(f => f !== ad);
-            } else {
-                favorites.push(ad);
-            }
+        function filterCategory(cat, btn) {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('promo-slider').classList.add('promo-hidden');
+            renderGrid(allChannels.filter(k => getSafeCategory(k) === cat));
+        }
+
+        function toggleFav(e, name) {
+            e.stopPropagation();
+            const idx = favorites.indexOf(name);
+            if (idx > -1) favorites.splice(idx, 1); else favorites.push(name);
             localStorage.setItem('myTVfavs', JSON.stringify(favorites));
-            updateFavBadge();
             renderGrid(allChannels);
         }
 
-        function updateFavBadge() {
-            const badge = document.getElementById('fav-count-badge');
-            if (badge) badge.innerText = favorites.length > 0 ? favorites.length + " Favori" : "";
-        }
-
-        // 7. Sidebar & Kategoriler
-        function renderSidebar() {
-            const sidebarContent = document.getElementById('sidebar-content');
-            const categories = ['Tümü', 'Favorilerim', ...new Set(allChannels.map(c => getSafeCategory(c)))];
-            
-            sidebarContent.innerHTML = categories.map(cat => `
-                <div class="p-2 mb-1 rounded cursor-pointer hover-bg d-flex align-items-center" onclick="filterByCategory('${cat}')">
-                    <i class="fas ${cat === 'Favorilerim' ? 'fa-heart text-danger' : 'fa-chevron-right'} me-2 small"></i>
-                    ${cat}
-                </div>
-            `).join('');
-        }
-
-        function filterByCategory(cat) {
-            const title = document.getElementById('grid-title');
-            title.innerText = cat;
-            
-            let filtered;
-            if (cat === 'Tümü') filtered = allChannels;
-            else if (cat === 'Favorilerim') filtered = allChannels.filter(c => favorites.includes(c.ad));
-            else filtered = allChannels.filter(c => getSafeCategory(c) === cat);
-
-            renderGrid(filtered);
-            toggleSidebar();
-            document.getElementById('player-box').style.display = 'none';
-            document.getElementById('main-content').style.display = 'block';
-        }
-
-        // 8. Arama Motoru (Orijinal Arama Mantığı)
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            const filtered = allChannels.filter(c => 
-                c.ad.toLowerCase().includes(term) || 
-                getSafeCategory(c).toLowerCase().includes(term)
-            );
-            renderGrid(filtered);
-            document.getElementById('grid-title').innerText = term ? `"${term}" için sonuçlar` : "Tüm Kanallar";
-        });
-
-        // 9. Tema & UI Kontrolleri
-        function toggleTheme() {
-            document.body.classList.toggle('normal-mode');
-            const isNormal = document.body.classList.contains('normal-mode');
-            document.getElementById('theme-meta').content = isNormal ? "#230c40" : "#000000";
-        }
-
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            sidebar.classList.toggle('active');
-            overlay.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
-        }
-
-        function closePlayer() {
-            document.getElementById('player-box').style.display = 'none';
-            document.getElementById('main-content').style.display = 'block';
-            document.getElementById('video').pause();
-            window.location.hash = "";
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('active');
+            const ov = document.getElementById('overlay');
+            ov.style.display = (ov.style.display === 'block') ? 'none' : 'block';
         }
 
         function checkHash() {
-            const hash = window.location.hash.substring(1);
-            if (hash) {
-                const name = decodeURIComponent(hash);
-                const channel = allChannels.find(c => c.ad === name);
-                if (channel) playChannel(channel.url, channel.ad, true, getSafeCategory(channel));
+            const h = window.location.hash.substring(1);
+            if(h) { 
+                const decodedName = decodeURIComponent(h);
+                const c = allChannels.find(k => k.ad === decodedName); 
+                if(c) playChannel(c.url, c.ad, true, getSafeCategory(c)); 
             }
         }
+        
+    </script>
+    <script src="oneriler.js"></script>
 
-        // 10. MutationObserver (Öne Çıkan Animasyonu)
-        const observer = new MutationObserver(() => {
+<script>
+// Animasyonu tetikleyen sistem
+const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        if (mutation.type === "childList" || mutation.attributeName === "style") {
             const pCard = document.getElementById('featured-card');
             if (pCard) {
                 pCard.classList.remove('promo-active');
-                void pCard.offsetWidth;
+                void pCard.offsetWidth; // Reflow tetikleyici
                 pCard.classList.add('promo-active');
             }
-        });
-        const target = document.getElementById('featured-area');
-        if (target) observer.observe(target, { childList: true });
+        }
+    });
+});
+const targetNode = document.getElementById('featured-card');
+if (targetNode) {
+    observer.observe(targetNode, { attributes: true, childList: true, subtree: true });
+}
+</script>
 
-    </script>
-    
-    <script src="oneriler.js"></script>
 </body>
 </html>
+        
