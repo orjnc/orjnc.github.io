@@ -232,14 +232,6 @@ center {
 body.normal-mode #sticky-player-header {
     background: #230c40 !important; 
 }
-
-/* Video wrapper'ın arkasından bir şey sızmaması için */
-.video-wrapper {
-    position: sticky !important;
-    top: 70px !important; /* Logonun (header) bittiği yerden başlasın */
-    z-index: 1100 !important;
-    background: #000 !important;
-}
             
             /* NORMAL MOD: TOZ BULUTU / CAM EFEKTİ */
     background: rgba(255, 255, 255, 0.1) !important; 
@@ -260,11 +252,24 @@ body.normal-mode #sticky-player-header {
         .fav-star { position: absolute; top: 10px; right: 10px; font-size: 0.8rem; color: rgba(255,255,255,0.2); z-index: 5; }
         .fav-star.active { color: #ffc107; }
 
-        /* Player */
         #player-box { display: none; background: #000; }
-        .video-wrapper { position: sticky; top: 0; z-index: 1100; background: #000; }
-        video { width: 100%; aspect-ratio: 16/9; }
-        .player-info-sticky { padding: 15px 20px; border-bottom: 2px solid #222; }
+
+.video-wrapper {
+    position: sticky !important;
+    top: 70px !important; 
+    z-index: 1100 !important;
+    background: #000 !important;
+}
+
+video { width: 100%; aspect-ratio: 16/9; }
+
+.player-info-sticky { 
+    padding: 15px 20px; 
+    border-bottom: 2px solid #222; 
+    position: sticky !important;
+    top: 300px; /* Video yüksekliği kadar aşağıda durmalı, bunu az önce konuştuğumuz z-index ayarlarıyla zaten CSS'te aşağıda tanımlamıştık */
+}
+        
 
 /* Oynatıcı sayfasındayken video header'ın altına girmez, hemen altından başlar */
 #player-box {
@@ -273,7 +278,7 @@ body.normal-mode #sticky-player-header {
 
 /* Eğer player açıkken hala logonun üzerine biniyorsa bu değeri kullan: */
 #sticky-player-header {
-    top: 0px !important; /* Header yüksekliği kadar aşağı çekmek gerekirse burayı 70px yapabilirsin */
+    top: 70px !important; /* Header yüksekliği kadar aşağı çekmek gerekirse burayı 70px yapabilirsin */
 }
         
         
