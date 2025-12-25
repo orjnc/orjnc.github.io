@@ -285,8 +285,17 @@ main {
     -webkit-backdrop-filter: blur(10px);
 }
 
+        .square-logo { 
+    width: 70%; 
+    height: 70%; 
+    object-fit: contain;
+    content-visibility: auto; 
+    image-rendering: -webkit-optimize-contrast;
+    /* --- YENİ EKLENENLER --- */
+    will-change: transform; /* Tarayıcıyı bu öğeyi GPU katmanında tutmaya zorlar */
+    transform: translateZ(0); /* Donanım hızlandırmasını tetikler (bellekten atılmayı önler) */
+        }
         
-        .square-logo { width: 70%; height: 70%; object-fit: contain; content-visibility: auto; image-rendering: -webkit-optimize-contrast; }
         .fav-star { position: absolute; top: 10px; right: 10px; font-size: 0.8rem; color: rgba(255,255,255,0.2); z-index: 5; }
         .fav-star.active { color: #ffc107; }
 
@@ -924,7 +933,7 @@ document.getElementById('theme-toggle').checked = (localStorage.getItem('themeCh
                     <div class="channel-square">
                         <i class="fas fa-star fav-star ${isFav}" onclick="toggleFav(event, '${k.ad}')"></i>
                         <div class="w-100 h-100 d-flex align-items-center justify-content-center" onclick="playChannel('${k.url}', '${k.ad}', false, '${getSafeCategory(k)}')">
-                            <img src="${getSafeLogo(k)}" class="square-logo" onerror="this.src='logolar/default.png'">
+                            <img src="${getSafeLogo(k)}" class="square-logo" loading="eager" decoding="sync" onerror="this.src='logolar/default.png'">
                         </div>
                     </div>`;
             });
