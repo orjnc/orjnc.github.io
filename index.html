@@ -712,36 +712,40 @@ function updateNavActive(id) {
 
 // Arama ekranını açan fonksiyon
 function showSearch() {
-    // Diğer tüm bölümleri gizle
+    // URL'ye #search ekle (Sayfa yenilenmeden)
+    if(window.location.hash !== "#search") {
+        history.pushState({page: 'search'}, "Arama", "#search");
+    }
+
     document.getElementById('player-box').style.display = "none";
     document.getElementById('home-section').style.display = "none";
     document.getElementById('category-list').style.display = "none";
     document.getElementById('promo-slider').style.display = "none";
     
-    // Arama bölümünü göster
     document.getElementById('search-section').style.display = "block";
     
-    // Alt menüdeki butonu beyaz yap
     updateNavActive('btn-search');
     
-    // Video oynuyorsa durdur
     if(typeof video !== 'undefined') video.pause();
 
-    // Saniyeler içinde klavyeyi açan odaklama komutu
     setTimeout(() => {
         const input = document.getElementById('searchInput');
         if(input) {
             input.focus();
-            // Mobil cihazlarda klavyeyi zorlamak için bazen gerekli
             input.click(); 
         }
     }, 300);
 }
              
+             
 
 // Favoriler ekranını açan fonksiyon
 function showFavorites() {
-    // Sadece favorilere eklenen kanalları filtrele
+    // URL'ye #favorites ekle
+    if(window.location.hash !== "#favorites") {
+        history.pushState({page: 'favorites'}, "Favoriler", "#favorites");
+    }
+
     const favChannels = allChannels.filter(k => favorites.includes(k.ad));
     
     document.getElementById('player-box').style.display = "none";
@@ -750,10 +754,11 @@ function showFavorites() {
     document.getElementById('category-list').style.display = "none";
     document.getElementById('promo-slider').style.display = "none";
     
-    renderGrid(favChannels); // Sadece favorileri ekrana basar
-    updateNavActive('btn-fav'); // Butonu beyaz yapar
+    renderGrid(favChannels); 
+    updateNavActive('btn-fav'); 
     if(typeof video !== 'undefined') video.pause();
 }
+             
 
              
              // Arama kutusuna yazılan metne göre kanalları filtreler
@@ -965,10 +970,17 @@ document.getElementById('theme-toggle').checked = (localStorage.getItem('themeCh
     // 6. Sayfayı en yukarı kaydır
     window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-             window.onpopstate = function() {
-    showHome();
-};
 
+window.onpopstate = function() {
+    const h = window.location.hash;
+    if (!h || h === "") {
+        showHome();
+    } else {
+        checkHash();
+    }
+};
+             
+             
         function filterCategory(cat, btn) {
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -1009,15 +1021,25 @@ document.getElementById('theme-toggle').checked = (localStorage.getItem('themeCh
       }
              
              
+function checkHash() {
+    const h = window.location.hash.substring(1);
+    if(!h) return;
 
-        function checkHash() {
-            const h = window.location.hash.substring(1);
-            if(h) { 
-                const decodedName = decodeURIComponent(h);
-                const c = allChannels.find(k => k.ad === decodedName); 
-                if(c) playChannel(c.url, c.ad, true, getSafeCategory(c)); 
-            }
-        }
+    if(h === "search") {
+        showSearch();
+    } 
+    else if(h === "favorites") {
+        showFavorites();
+    } 
+    else {
+        // Eğer hash bir kanal adıysa mevcut kanal oynatma mantığı çalışır
+        const decodedName = decodeURIComponent(h);
+        const c = allChannels.find(k => k.ad === decodedName); 
+        if(c) playChannel(c.url, c.ad, true, getSafeCategory(c)); 
+    }
+}
+             
+        
         
     </script>
     <script src="oneriler.js"></script>
