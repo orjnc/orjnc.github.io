@@ -369,7 +369,35 @@ body:not(.normal-mode) .bottom-nav {
         }
         
         #search-section { padding: 15px; display: none; }
-        .search-input { background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 15px; padding: 12px 20px; width: 100%; margin-bottom: 20px; }
+         .search-input {
+    /* Temanın kart rengini (mor veya siyah) hafif şeffaf yaparak cam efekti verir */
+    background: rgba(255, 255, 255, 0.05) !important; 
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    
+    /* İnce, şık bir çerçeve */
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: var(--text) !important;
+    border-radius: 15px !important;
+    padding: 12px 20px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+/* Arama barına tıklandığında (Focus) */
+.search-input:focus {
+    /* Siyah modda siyah cam, mavi modda mavi cam parlaması sağlar */
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid var(--selected-cat) !important;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+/* "Kanal ara..." yazısı */
+.search-input::placeholder {
+    color: var(--gray) !important;
+    opacity: 0.7;
+}
+        
         .list-item { background: var(--card); border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 12px; border: 1px solid #222; cursor: pointer; }
         .list-logo { width: 55px; height: 55px; object-fit: contain; }
 
