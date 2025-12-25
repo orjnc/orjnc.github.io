@@ -936,8 +936,12 @@ document.getElementById('theme-toggle').checked = (localStorage.getItem('themeCh
             else if (video.canPlayType('application/vnd.apple.mpegurl')) { video.src = url; video.play(); }
         }
 
-        function showHome() {
-    // 1. Sayfa Görünümünü Resetle
+
+function showHome() {
+    // 1. URL'yi temizle ama sayfayı yenileme
+    history.pushState("", document.title, window.location.pathname);
+
+    // 2. Görünürlük ayarlarını yap
     document.getElementById('player-box').style.display = "none";
     document.getElementById('main-content').style.display = "block";
     document.getElementById('home-section').style.display = "block";
@@ -945,16 +949,21 @@ document.getElementById('theme-toggle').checked = (localStorage.getItem('themeCh
     document.getElementById('category-list').style.display = "flex";
     document.getElementById('promo-slider').classList.remove('promo-hidden');
 
-    // 2. Videoyu ve Kaynağı Tamamen Temizle (Performans için kritik)
-    if (video) {
-        video.pause();
-        video.src = ""; // Belleği boşaltır
-        video.load();
-    }
-    if (hls) {
-        hls.detachMedia(); // HLS bağlantısını koparır
-        hls.stopLoad();    // Veri indirmeyi tamamen durdurur
-    }
+    // 3. Videoyu ve HLS'yi durdur
+    if (video) { video.pause(); video.src = ""; video.load(); }
+    if (hls) { hls.detachMedia(); hls.stopLoad(); }
+
+    // 4. KRİTİK NOKTA: İçerikleri baştan oluştur
+    renderGrid(allChannels); 
+    
+    // Eğer oneriler.js içinde slider'ı başlatan bir fonksiyon varsa 
+    // onu burada çağıracağız. (Örn: if(window.initSlider) initSlider();)
+
+    updateNavActive('btn-home');
+    window.scrollTo(0, 0);
+}
+             
+             
 
     // 3. Navigasyon Butonlarını Güncelle
     updateNavActive('btn-home'); // Anasayfa ikonunu beyaz/aktif yapar
@@ -973,8 +982,8 @@ document.getElementById('theme-toggle').checked = (localStorage.getItem('themeCh
 
 window.onpopstate = function() {
     const h = window.location.hash;
-    if (!h || h === "") {
-        showHome();
+    if (!h || h === "" || h === "#") {
+        showHome(); // Refresh yerine fonksiyonu çağır, daha hızlıdır.
     } else {
         checkHash();
     }
