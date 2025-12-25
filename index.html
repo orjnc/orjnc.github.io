@@ -164,8 +164,8 @@ body:not(.normal-mode) .sidebar {
 }
 
 .overlay {
-    background: rgba(0, 0, 0, 0.4) !important; /* 0.8 yerine 0.4 yaparak arkadaki moru görmeni sağlarız */
-    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.5) !important; /* 0.8 yerine 0.5 yap, arkası görünsün */
+    backdrop-filter: blur(5px); /* Hafif bulanıklık çok daha modern durur */
 }
         
 
@@ -208,16 +208,14 @@ center {
         .cat-btn.active { background: var(--selected-cat) !important; color: white; border-color: var(--selected-cat); }
         .cat-hidden { display: none; }
 
-        .header { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    padding: 10px 20px; 
-    position: sticky; 
-    top: 0; 
-    height: 70px; 
-    /* Z-INDEX 4000 YAPTIK: Videonun (1100) üstüne çıktı, Sidebar'ın (3000) da üstüne çıktı. */
-    z-index: 4000; 
+        .header {
+    position: fixed !important; /* sticky yerine fixed yapıyoruz */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999 !important; /* En üstte durması için */
+    background: var(--bg); /* Arka planının kaybolmaması için */
+    height: 70px;
 
     /* SENİN ORİJİNAL EFEKTLERİN (AYNEN KORUNDU) */
     backdrop-filter: blur(15px); 
@@ -231,6 +229,10 @@ center {
         main-content'e pay veriyoruz */
 #main-content {
     padding-top: 80px; /* Header boyu kadar üstten boşluk */
+}
+
+main {
+    padding-top: 80px !important; 
 }
         
         .logo-container { flex: 1; display: flex; justify-content: center; align-items: center; }
@@ -934,20 +936,27 @@ document.getElementById('theme-toggle').checked = (localStorage.getItem('themeCh
       function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
-    const body = document.body; // Body etiketine ulaşmak için
+    const body = document.body;
     
-    // Sidebar'ı aç/kapat
     sidebar.classList.toggle('active');
     
-    // Overlay ve Kaydırma Kontrolü
     if (sidebar.classList.contains('active')) {
         overlay.style.display = 'block';
-        body.classList.add('no-scroll'); // Kaydırmayı engelle
+        // Sayfanın en üste zıplamasını engelleyen güvenli yöntem:
+        body.style.top = `-${window.scrollY}px`;
+        body.style.position = 'fixed';
+        body.style.width = '100%';
     } else {
         overlay.style.display = 'none';
-        body.classList.remove('no-scroll'); // Kaydırmayı tekrar aç
+        // Eski konuma geri dön:
+        const scrollY = body.style.top;
+        body.style.position = '';
+        body.style.top = '';
+        body.style.width = '';
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
     }
       }
+             
              
 
         function checkHash() {
