@@ -286,7 +286,7 @@ main {
 }
 
         
-        .square-logo { width: 70%; height: 70%; object-fit: contain; }
+        .square-logo { width: 70%; height: 70%; object-fit: contain; content-visibility: auto; image-rendering: -webkit-optimize-contrast; }
         .fav-star { position: absolute; top: 10px; right: 10px; font-size: 0.8rem; color: rgba(255,255,255,0.2); z-index: 5; }
         .fav-star.active { color: #ffc107; }
 
@@ -682,6 +682,16 @@ body:not(.normal-mode) .cat-btn:not(.active) {
         const hls = new Hls();
         const video = document.getElementById('video');
 
+             // ADIM 1: Tüm logoları tarayıcı hafızasına önden yükleyen fonksiyon
+function preloadAllLogos(data) {
+    data.forEach(k => {
+        const img = new Image();
+        // getSafeLogo fonksiyonunu kullanarak doğru dosya yolunu alıyoruz
+        img.src = getSafeLogo(k);
+    });
+    console.log("Sistem: Tüm kanal logoları arka planda yüklenmeye başladı.");
+}
+             
              
     // Uygulama ilk açıldığında çalışacak kısım
 document.addEventListener('DOMContentLoaded', () => {
@@ -701,6 +711,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(res => res.json())
         .then(data => { 
             allChannels = data; 
+            preloadAllLogos(data);
             renderCategories(data); 
             renderGrid(data); 
             checkHash(); 
