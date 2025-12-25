@@ -872,15 +872,18 @@ document.getElementById('theme-toggle').checked = (localStorage.getItem('themeCh
     setTheme(isChecked ? 'dark' : 'normal');
              }
              
-function renderCategories() {
+
+             function renderCategories() {
     const container = document.getElementById('category-list');
+    // Kategorileri benzersiz olarak alıyoruz
     const categories = [...new Set(allChannels.map(c => getSafeCategory(c)))];
     
-    // "Tümü" butonunu buradan sildik, sadece dinamik kategoriler kalacak
+    // Sadece butonları oluşturuyoruz, hiçbirine önceden 'active' demiyoruz
     container.innerHTML = categories.map(cat => `
         <button class="cat-btn" onclick="filterCategory('${cat}')">${cat}</button>
     `).join('');
-}
+             }
+             
              
              
         
@@ -935,7 +938,8 @@ function renderCategories() {
             else if (video.canPlayType('application/vnd.apple.mpegurl')) { video.src = url; video.play(); }
         }
 
-function showHome() {
+
+    function showHome() {
     // 1. Sayfa Görünümünü Resetle
     document.getElementById('player-box').style.display = "none";
     document.getElementById('main-content').style.display = "block";
@@ -943,8 +947,9 @@ function showHome() {
     document.getElementById('search-section').style.display = "none";
     document.getElementById('category-list').style.display = "flex";
 
-const promo = document.getElementById('promo-slider');
-    if(promo) {
+    // Öneri kartını (promo-slider) kesin görünür yapalım
+    const promo = document.getElementById('promo-slider');
+    if (promo) {
         promo.classList.remove('promo-hidden');
         promo.style.setProperty('display', 'block', 'important'); 
     }
@@ -965,8 +970,9 @@ const promo = document.getElementById('promo-slider');
 
     // 4. Listeyi ve Kategoriyi Sıfırla
     renderGrid(allChannels); 
+    
+    // TÜM KATEGORİ BUTONLARININ SEÇİMİNİ KALDIR (Ulusal vs. takılı kalmaz)
     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-    document.querySelector('.cat-btn:first-child')?.classList.add('active');
 
     // 5. URL'yi Temizle
     history.pushState("", document.title, window.location.pathname);
@@ -974,6 +980,7 @@ const promo = document.getElementById('promo-slider');
     // 6. Sayfayı en yukarı kaydır
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+             
     
              
     window.onpopstate = function() {
@@ -987,17 +994,20 @@ const promo = document.getElementById('promo-slider');
              
       
      function filterCategory(category) {
+    // Tıklanan butonu yakalayalım
     const btn = event?.currentTarget || event?.target;
+    // Butonun zaten seçili olup olmadığını kontrol edelim
     const isAlreadyActive = btn?.classList.contains('active');
 
-    // Tüm aktif sınıfları temizle
+    // ÖNCE: Tüm butonların aktiflik ışığını söndür
     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
 
     if (isAlreadyActive) {
-        // EĞER SEÇİLİ OLAN KATEGORİYE TEKRAR BASILDIYSA: Ana ekrana dön
+        // DURUM A: Zaten seçili butona tıklandı (Kapatma modu)
+        // showHome() her şeyi sıfırlayıp önerileri geri getirecek
         showHome();
     } else {
-        // YENİ BİR KATEGORİ SEÇİLDİYSE
+        // DURUM B: Yeni bir kategoriye tıklandı (Filtreleme modu)
         btn?.classList.add('active');
 
         // Önerileri (Promo) kesin gizle
@@ -1007,18 +1017,19 @@ const promo = document.getElementById('promo-slider');
             promoSlider.style.setProperty('display', 'none', 'important');
         }
 
-        // Listeyi filtrele ve göster
+        // Listeyi sadece o kategoriye göre filtrele
         const filtered = allChannels.filter(c => getSafeCategory(c) === category);
         renderGrid(filtered);
         
-        // Arama kısmını kapat, home-section'ı göster (içerik için)
+        // Arama kısmını kapat, ana içerik alanını aç
         document.getElementById('search-section').style.display = "none";
         document.getElementById('home-section').style.display = "block";
         
-        // URL'yi temiz tut
+        // URL'yi temizle (history yönetimi)
         history.pushState("", document.title, window.location.pathname);
     }
      }
+             
              
              
         
