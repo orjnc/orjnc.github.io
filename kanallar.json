@@ -133,7 +133,7 @@
     },
     {
         "ad": "Halk TV",
-        "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/halktv.jpg",
+        "logo": "https://github.com/orjnc/orjnc.github.io/blob/main/logolar/halk.png",
         "url": "https://halktv.daioncdn.net/halktv/halktv.m3u8?app=c86957d3-74a7-44da-9ad2-dc358c769609&ce=3",
         "ref": "https://halktv.com.tr/canli-yayin"
     },
@@ -169,21 +169,15 @@
     },
     {
         "ad": "TGRT Haber",
-        "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/tgrt.jpg",
+        "logo": "https://github.com/orjnc/orjnc.github.io/blob/main/logolar/tgrthaber.png",
         "url": "https://canli.tgrthaber.com/tgrt.m3u8",
         "ref": "https://www.tgrthaber.com/canli"
     },
     {
         "ad": "24 TV",
-        "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/24.jpg",
+        "logo": "https://github.com/orjnc/orjnc.github.io/blob/main/logolar/24tv.png",
         "url": "https://turkmedya-live.ercdn.net/tv24/tv24.m3u8",
         "ref": "https://www.yirmidort.tv/canli-yayin"
-    },
-    {
-        "ad": "KRT",
-        "logo": "https://raw.githubusercontent.com/orjnc/Tv-listem/main/logolar/krt.jpg",
-        "url": "https://www.youtube.com/live/sKTq8zmzBvo",
-        "ref": "https://www.youtube.com/live/sKTq8zmzBvo"
     },
     {
         "ad": "TYT Türk",
