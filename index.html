@@ -46,6 +46,12 @@ body.normal-mode {
     --gray: #cccccc;
 }
 
+/* Sayfa kaydırılırken tarayıcı boşluklarında görünecek ana renk */
+html {
+    background-color: #230c40; /* Varsayılan Mor */
+    transition: background-color 0.3s ease;
+}
+        
 /* 3. ANA GÖVDE AYARLARI */
 html { 
     background-color: var(--bg); 
@@ -839,30 +845,36 @@ window.addEventListener('DOMContentLoaded', () => {
     if (hash === "favorites") showFavorites();
 });
              
-             
-             function setTheme(mode) {
+       function setTheme(mode) {
     const body = document.body;
     const themeMeta = document.getElementById('theme-meta');
+    const htmlEl = document.documentElement; // HTML etiketini yakala
 
     if (mode === 'normal') { 
         body.classList.add('normal-mode'); 
         localStorage.setItem('themeChoice', 'normal');
         
-        // NORMAL MOD: Senin belirlediğin mor tonu (#230c40)
-        if(themeMeta) themeMeta.setAttribute('content', '#230c40'); 
+        // --- YENİ EKLEME ---
+        // Normal modda (gradyan varken) kaydırma boşluğu mor olsun
+        htmlEl.style.backgroundColor = '#441281'; 
         
+        if(themeMeta) themeMeta.setAttribute('content', '#230c40'); 
         body.style.color = '#ffffff';
     } 
     else { 
         body.classList.remove('normal-mode'); 
         localStorage.setItem('themeChoice', 'dark');
         
-        // KOYU MOD: Adres çubuğu dahil her yer ZİFİRİ SİYAH (#000000)
-        if(themeMeta) themeMeta.setAttribute('content', '#000000'); 
+        // --- YENİ EKLEME ---
+        // Karanlık modda kaydırma boşluğu siyah olsun
+        htmlEl.style.backgroundColor = '#000000'; 
         
+        if(themeMeta) themeMeta.setAttribute('content', '#000000'); 
         body.style.color = '#ffffff';
     }
-             }
+       }
+             
+             
 
 document.getElementById('theme-toggle').checked = (localStorage.getItem('themeChoice') === 'dark');
              
