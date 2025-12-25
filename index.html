@@ -369,20 +369,30 @@ body:not(.normal-mode) .bottom-nav {
         }
         
         #search-section { padding: 15px; display: none; }
-         .search-input {
-    /* Temanın kart rengini (mor veya siyah) hafif şeffaf yaparak cam efekti verir */
+         /* Arama Barını Sağdan Sola Uzat */
+
+        
+        .search-input {
+    width: 100% !important; /* Sağdan sola tam en */
     background: rgba(255, 255, 255, 0.05) !important; 
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    
-    /* İnce, şık bir çerçeve */
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     color: var(--text) !important;
-    border-radius: 15px !important;
-    padding: 12px 20px;
+    border-radius: 12px !important;
+    padding: 12px 15px; /* Boyutu korumak için dikey padding'i sabit tuttuk */
     outline: none;
-    transition: all 0.3s ease;
+    display: block;
 }
+
+/* Arama sayfasındayken arka plan kaymasını engellemek için */
+.no-scroll {
+    overflow: hidden !important;
+    height: 100vh !important;
+    position: fixed; /* Kesin çözüm için sabitliyoruz */
+    width: 100%;
+}
+        
 
 /* Arama barına tıklandığında (Focus) */
 .search-input:focus {
@@ -774,7 +784,7 @@ function showSearch() {
     document.getElementById('home-section').style.display = "none";
     document.getElementById('category-list').style.display = "none";
     document.getElementById('promo-slider').style.display = "none";
-    
+    document.body.classList.add('no-scroll');
     document.getElementById('search-section').style.display = "block";
     
     updateNavActive('btn-search');
@@ -1006,8 +1016,9 @@ document.getElementById('theme-toggle').checked = (localStorage.getItem('themeCh
     document.getElementById('home-section').style.display = "block";
     document.getElementById('search-section').style.display = "none";
     document.getElementById('category-list').style.display = "flex";
+    document.body.classList.remove('no-scroll');
 
-    // Öneri kartını (promo-slider) kesin görünür yapalım
+         // Öneri kartını (promo-slider) kesin görünür yapalım
     const promo = document.getElementById('promo-slider');
     if (promo) {
         promo.classList.remove('promo-hidden');
