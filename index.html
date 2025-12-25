@@ -872,18 +872,18 @@ document.getElementById('theme-toggle').checked = (localStorage.getItem('themeCh
     setTheme(isChecked ? 'dark' : 'normal');
              }
              
-
+function renderCategories() {
+    const container = document.getElementById('category-list');
+    const categories = [...new Set(allChannels.map(c => getSafeCategory(c)))];
+    
+    // "Tümü" butonunu buradan sildik, sadece dinamik kategoriler kalacak
+    container.innerHTML = categories.map(cat => `
+        <button class="cat-btn" onclick="filterCategory('${cat}')">${cat}</button>
+    `).join('');
+}
              
-        function renderCategories(data) {
-            const catContainer = document.getElementById('category-list');
-            const categories = ['Tümü', ...new Set(data.map(k => getSafeCategory(k)))];
-            catContainer.innerHTML = '';
-            categories.forEach(cat => {
-                const isAll = cat === 'Tümü';
-                catContainer.innerHTML += `<button class="cat-btn ${isAll ? 'active' : ''}" onclick="${isAll ? 'renderGrid(allChannels, this)' : `filterCategory('${cat}', this)`}">${cat}</button>`;
-            });
-        }
-
+             
+        
         function renderGrid(data, btn) {
             if(btn) {
                 document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
@@ -986,33 +986,40 @@ const promo = document.getElementById('promo-slider');
 };
              
       
-             function filterCategory(category) {
-    // Kategori butonlarının aktiflik durumunu yönetir
-    document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
-    // Eğer buton tıklanarak geldiyse aktif sınıfını ekle
-    if(event && event.target) {
-        event.target.classList.add('active');
-    }
+     function filterCategory(category) {
+    const btn = event?.currentTarget || event?.target;
+    const isAlreadyActive = btn?.classList.contains('active');
 
-    const promoSlider = document.getElementById('promo-slider');
-    
-    if (category === 'Tümü') {
-        showHome(); // "Tümü" seçilirse zaten her şeyi gösteren showHome çalışır
+    // Tüm aktif sınıfları temizle
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+
+    if (isAlreadyActive) {
+        // EĞER SEÇİLİ OLAN KATEGORİYE TEKRAR BASILDIYSA: Ana ekrana dön
+        showHome();
     } else {
-        // BURASI ÖNEMLİ: Kategori seçildiyse promo'yu hem sınıfla hem de style ile kesin gizle
+        // YENİ BİR KATEGORİ SEÇİLDİYSE
+        btn?.classList.add('active');
+
+        // Önerileri (Promo) kesin gizle
+        const promoSlider = document.getElementById('promo-slider');
         if (promoSlider) {
             promoSlider.classList.add('promo-hidden');
-            promoSlider.style.setProperty('display', 'none', 'important'); 
+            promoSlider.style.setProperty('display', 'none', 'important');
         }
-        
-        // Kanalları filtrele ve ekrana bas
+
+        // Listeyi filtrele ve göster
         const filtered = allChannels.filter(c => getSafeCategory(c) === category);
         renderGrid(filtered);
         
-        // URL'yi temizle
+        // Arama kısmını kapat, home-section'ı göster (içerik için)
+        document.getElementById('search-section').style.display = "none";
+        document.getElementById('home-section').style.display = "block";
+        
+        // URL'yi temiz tut
         history.pushState("", document.title, window.location.pathname);
     }
-         }
+     }
+             
              
         
 
