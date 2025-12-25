@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
     <meta id="theme-meta" name="theme-color" content="#230c40">
     <meta name="color-scheme" content="dark">
     <meta charset="UTF-8">
@@ -77,6 +79,21 @@ body {
     transition: color 0.3s ease;
 }
 
+
+        /* Plyr Temasını Sitenin Accent Rengine Uydurma */
+:root {
+    --plyr-color-main: #ff005c; /* Sitenizdeki --accent rengi */
+}
+
+/* Video köşelerini yuvarlatma (Sitenin genel havasına uyması için) */
+.plyr {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+        
+
+        
 /* Sidebar açıkken kaydırmayı durduran sınıf */
 .no-scroll {
     overflow: hidden;
@@ -731,6 +748,7 @@ body:not(.normal-mode) .cat-btn:not(.active) {
         
          <script>
         let allChannels = [];
+        let player; // Plyr instance'ını tutacak değişken
         let favorites = JSON.parse(localStorage.getItem('myTVfavs')) || [];
         const hls = new Hls();
         const video = document.getElementById('video');
@@ -1001,17 +1019,47 @@ document.getElementById('theme-toggle').checked = (localStorage.getItem('themeCh
         }
 
         function playChannel(url, ad, fromHash = false, kategori = "Genel") {
-            if(!fromHash) history.pushState({page: 'player'}, ad, "#" + encodeURIComponent(ad));
-            document.getElementById('player-box').style.display = "block";
-            document.getElementById('main-content').style.display = "none";
-            document.getElementById('now-playing').innerText = ad;
-            document.getElementById('player-cat-info').innerText = "Canlı Yayın • " + kategori;
-            window.scrollTo(0,0);
-            const shuffled = [...allChannels].sort(() => 0.5 - Math.random()).slice(0, 5);
-            renderList(shuffled, 'suggested-list');
-            if (Hls.isSupported()) { hls.loadSource(url); hls.attachMedia(video); hls.on(Hls.Events.MANIFEST_PARSED, () => video.play()); }
-            else if (video.canPlayType('application/vnd.apple.mpegurl')) { video.src = url; video.play(); }
+    if(!fromHash) history.pushState({page: 'player'}, ad, "#" + encodeURIComponent(ad));
+    document.getElementById('player-box').style.display = "block";
+    document.getElementById('main-content').style.display = "none";
+    document.getElementById('now-playing').innerText = ad;
+    document.getElementById('player-cat-info').innerText = "Canlı Yayın • " + kategori;
+    window.scrollTo(0,0);
+    const shuffled = [...allChannels].sort(() => 0.5 - Math.random()).slice(0, 5);
+    renderList(shuffled, 'suggested-list');
+
+    // --- PLYR ENTEGRASYONU BAŞLANGICI ---
+    const video = document.getElementById('video');
+
+    // Eğer eski bir oynatıcı varsa temizle (Çakışmayı önler)
+    if (window.player && typeof window.player.destroy === 'function') {
+        window.player.destroy();
+    }
+
+    if (Hls.isSupported()) {
+        const hlsInstance = new Hls(); // hls değişken ismini çakışmaması için güncelledik
+        hlsInstance.loadSource(url);
+        hlsInstance.attachMedia(video);
+        hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+            window.player = new Plyr(video, {
+                controls: ['play-large', 'play', 'mute', 'volume', 'fullscreen', 'settings'],
+                settings: ['quality', 'speed'],
+                displayDuration: false,
+                invertTime: false
+            });
+            video.play().catch(() => {
+                console.log("Otomatik oynatma engellendi, etkileşim bekleniyor.");
+            });
+        });
+    } 
+    else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = url;
+        window.player = new Plyr(video);
+        video.play();
+    }
+    // --- PLYR ENTEGRASYONU BİTİŞİ ---
         }
+             
 
 
     function showHome() {
