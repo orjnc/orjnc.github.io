@@ -935,42 +935,49 @@ document.getElementById('theme-toggle').checked = (localStorage.getItem('themeCh
             else if (video.canPlayType('application/vnd.apple.mpegurl')) { video.src = url; video.play(); }
         }
 
-        function showHome() {
+function showHome() {
     // 1. Sayfa Görünümünü Resetle
     document.getElementById('player-box').style.display = "none";
     document.getElementById('main-content').style.display = "block";
     document.getElementById('home-section').style.display = "block";
     document.getElementById('search-section').style.display = "none";
     document.getElementById('category-list').style.display = "flex";
-    document.getElementById('promo-slider').classList.remove('promo-hidden');
 
-    // 2. Videoyu ve Kaynağı Tamamen Temizle (Performans için kritik)
+    // Öneri kartını zorla görünür yapıyoruz
+    const promo = document.getElementById('promo-slider');
+    if(promo) {
+        promo.classList.remove('promo-hidden');
+        promo.style.setProperty('display', 'block', 'important'); 
+    }
+
+    // 2. Videoyu ve Kaynağı Tamamen Temizle
     if (video) {
         video.pause();
-        video.src = ""; // Belleği boşaltır
+        video.src = ""; 
         video.load();
     }
     if (hls) {
-        hls.detachMedia(); // HLS bağlantısını koparır
-        hls.stopLoad();    // Veri indirmeyi tamamen durdurur
+        hls.detachMedia();
+        hls.stopLoad();
     }
 
     // 3. Navigasyon Butonlarını Güncelle
-    updateNavActive('btn-home'); // Anasayfa ikonunu beyaz/aktif yapar
+    updateNavActive('btn-home');
 
     // 4. Listeyi ve Kategoriyi Sıfırla
-    renderGrid(allChannels); // Tüm kanalları tekrar dök
+    renderGrid(allChannels); 
     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-    document.querySelector('.cat-btn:first-child')?.classList.add('active'); // "Tümü" butonunu seçili yap
+    document.querySelector('.cat-btn:first-child')?.classList.add('active');
 
     // 5. URL'yi Temizle
     history.pushState("", document.title, window.location.pathname);
     
     // 6. Sayfayı en yukarı kaydır
     window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-window.onpopstate = function() {
+}
+    
+             
+    window.onpopstate = function() {
     const h = window.location.hash;
     if (!h || h === "") {
         showHome();
