@@ -943,8 +943,7 @@ function showHome() {
     document.getElementById('search-section').style.display = "none";
     document.getElementById('category-list').style.display = "flex";
 
-    // Öneri kartını zorla görünür yapıyoruz
-    const promo = document.getElementById('promo-slider');
+const promo = document.getElementById('promo-slider');
     if(promo) {
         promo.classList.remove('promo-hidden');
         promo.style.setProperty('display', 'block', 'important'); 
