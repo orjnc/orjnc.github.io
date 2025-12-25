@@ -986,13 +986,36 @@ function showHome() {
     }
 };
              
-             
-        function filterCategory(cat, btn) {
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById('promo-slider').classList.add('promo-hidden');
-            renderGrid(allChannels.filter(k => getSafeCategory(k) === cat));
+      
+             function filterCategory(category) {
+    // Kategori butonlarının aktiflik durumunu yönetir
+    document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
+    // Eğer buton tıklanarak geldiyse aktif sınıfını ekle
+    if(event && event.target) {
+        event.target.classList.add('active');
+    }
+
+    const promoSlider = document.getElementById('promo-slider');
+    
+    if (category === 'Tümü') {
+        showHome(); // "Tümü" seçilirse zaten her şeyi gösteren showHome çalışır
+    } else {
+        // BURASI ÖNEMLİ: Kategori seçildiyse promo'yu hem sınıfla hem de style ile kesin gizle
+        if (promoSlider) {
+            promoSlider.classList.add('promo-hidden');
+            promoSlider.style.setProperty('display', 'none', 'important'); 
         }
+        
+        // Kanalları filtrele ve ekrana bas
+        const filtered = allChannels.filter(c => getSafeCategory(c) === category);
+        renderGrid(filtered);
+        
+        // URL'yi temizle
+        history.pushState("", document.title, window.location.pathname);
+    }
+         }
+             
+        
 
         function toggleFav(e, name) {
             e.stopPropagation();
